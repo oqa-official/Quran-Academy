@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
+import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
@@ -15,13 +15,32 @@ const images = [
 export default function Hero() {
   const [current, setCurrent] = useState(0);
 
-  // Auto-slide every 4s
+  // Auto-slide every 5s
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  // ✅ Variants with proper typing
+  const textVariants: Variants = {
+    hidden: { opacity: 0, y: -40 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  const imageVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.6 },
+    show: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 1, ease: "easeOut" },
+    },
+  };
 
   return (
     <section className="relative w-full min-h-[110vh] flex flex-col justify-center max-md:min-h-[125vh] overflow-hidden">
@@ -35,8 +54,9 @@ export default function Hero() {
             unoptimized
             fill
             priority={index === 0}
-            className={`object-cover transition-opacity duration-[3000ms] ease-in-out ${index === current ? "opacity-100" : "opacity-0"
-              }`}
+            className={`object-cover transition-opacity duration-[3000ms] ease-in-out ${
+              index === current ? "opacity-100" : "opacity-0"
+            }`}
           />
         ))}
 
@@ -47,24 +67,45 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-10 justify-between h-full container text-white">
         {/* Left Content */}
-        <div className="w-full md:w-1/2 flex flex-col items-start text-left space-y-10">
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+        <motion.div
+          initial="hidden"
+          animate="show"
+          transition={{ staggerChildren: 0.3 }}
+          className="w-full md:w-1/2 flex flex-col items-start text-left space-y-10"
+        >
+          <motion.h1
+            variants={textVariants}
+            className="text-4xl md:text-6xl font-bold leading-tight"
+          >
             Choose the Right Path for{" "}
             <span className="text-accent">Quranic Education</span>
-          </h1>
-          <p className="max-w-xl text-lg md:text-xl italic">
-            Build a stronger connection with the Quran through guided online classes
-          </p>
-          <Button
-            size={"lg"}
-            className="bg-accent hover:bg-accent-hover text-black py-3 px-10  rounded-full transition"
+          </motion.h1>
+
+          <motion.p
+            variants={textVariants}
+            className="max-w-xl text-lg md:text-xl italic"
           >
-            Enroll Now For Free
-          </Button>
-        </div>
+            Build a stronger connection with the Quran through guided online
+            classes
+          </motion.p>
+
+          <motion.div variants={textVariants}>
+            <Button
+              size={"lg"}
+              className="bg-accent hover:bg-accent-hover text-black py-6 px-10 text-lg rounded-full transition"
+            >
+              Enroll Now For Free
+            </Button>
+          </motion.div>
+        </motion.div>
 
         {/* Right Image */}
-        <div className="w-full md:w-1/2 flex justify-center mt-10 md:mt-0 relative">
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={imageVariants}
+          className="w-full md:w-1/2 flex justify-center mt-10 md:mt-0 relative"
+        >
           {/* Glowing background */}
           <div className="absolute inset-0 flex justify-center items-center">
             <div className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-to-tr from-yellow-400/40 to-yellow-200/20 blur-3xl opacity-80 animate-pulse" />
@@ -78,12 +119,10 @@ export default function Hero() {
             height={500}
             className="w-full max-w-md object-contain relative z-10"
           />
-        </div>
-
+        </motion.div>
       </div>
 
-
-      {/* Wavy Shape Divider (Flipped) */}
+      {/* Wavy Shape Divider */}
       <div className="absolute -bottom-2 left-0 right-0 z-20">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -104,8 +143,6 @@ export default function Hero() {
           </g>
         </svg>
       </div>
-
-
     </section>
   );
 }

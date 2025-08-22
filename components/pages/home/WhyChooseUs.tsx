@@ -1,23 +1,44 @@
+"use client";
+import { TextAnimate } from "@/components/magicui/text-animate";
+import { motion } from "framer-motion";
+
+
 export default function WhyChooseUs() {
     return (
         <section className="py-16 mt-20 bg-white relative">
             {/* Decorative Lamp */}
-            <div className="absolute top-0 md:left-10 -left-2">
+            <motion.div
+                initial={{ opacity: 0, x: -100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                viewport={{ once: false }}
+                className="absolute top-0 md:left-10 -left-2">
                 <img src="/assets/home/lamp.png" alt="lamp" className="md:w-[250px] w-[80px]" />
-            </div>
+            </motion.div>
 
             <div className="container mx-auto px-6 lg:px-12 relative z-10">
                 {/* Top Section */}
                 <div className="text-center max-w-3xl mx-auto mb-12">
-                    <img
-                        src="/assets/home/verse.png"
-                        alt="Quran verse"
-                        className="mx-auto mb-6"
-                    />
+                    <motion.div
+                        initial={{ opacity: 0, y: -50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        viewport={{ once: true }} // run only first time in view
+                    >
+                        <img
+                            src="/assets/home/verse.png"
+                            alt="Quran verse"
+                            className="mx-auto mb-6"
+                        />
+                    </motion.div>
 
-                    <h2 className="text-2xl md:text-3xl -mt-3 font-bold mb-2 text-primary">
+
+
+                    <TextAnimate animation="blurIn" by="word" duration={0.6} as="h2" className="text-2xl md:text-3xl -mt-3 font-bold mb-2 text-primary">
                         Why Choose Quran Academy?
-                    </h2>
+                    </TextAnimate>
+
+                    {/* </h2> */}
                     <img src="/assets/home/arrow.png" alt="Quran verse" className="w-[200px] text-center mx-auto mb-2" />
 
                     <p className="text-gray-600">
