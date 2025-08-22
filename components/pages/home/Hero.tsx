@@ -43,7 +43,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative w-full min-h-[110vh] flex flex-col justify-center max-md:min-h-[125vh] overflow-hidden">
+    <section className="relative w-full min-h-[110vh] flex flex-col justify-center max-md:min-h-[105vh] overflow-hidden">
       {/* Background Carousel */}
       <div className="absolute inset-0">
         {images.map((src, index) => (
@@ -65,7 +65,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center gap-10 justify-between h-full container text-white">
+      <div className="relative z-10 flex flex-col md:flex-row items-center md:gap-10 gap-5 justify-between h-full container text-white">
         {/* Left Content */}
         <motion.div
           initial="hidden"

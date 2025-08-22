@@ -22,7 +22,7 @@ export default function CourseCard({
   img,
 }: Props) {
   return (
-    <div className="relative overflow-hidden bg-white rounded-t-full shadow-xl w-96 h-auto transition hover:shadow-2xl hover:cursor-pointer hover:scale-[1.005]">
+    <div className="relative overflow-hidden bg-white rounded-t-full shadow-xl w-88 h-auto transition hover:shadow-2xl hover:cursor-pointer hover:scale-[1.005]">
       {/* Minaret Dome */}
       <div className="absolute top-0 left-0 right-0 h-44">
         <div className="absolute inset-0 bg-white [clip-path:polygon(0_100%,_100%_100%,_100%_25%,_50%_0%,_0%_25%)] shadow-md"></div>

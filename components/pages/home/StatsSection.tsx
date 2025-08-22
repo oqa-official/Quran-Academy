@@ -28,7 +28,7 @@ export default function StatsSection() {
           {stats.map((item, index) => {
             const isEven = index % 2 === 0;
             const ref = useRef(null);
-            const inView = useInView(ref, { once: false, margin: "-50px" });
+            const inView = useInView(ref, { once: true, margin: "-50px" });
 
             return (
               <motion.div
@@ -43,7 +43,7 @@ export default function StatsSection() {
                 }
                 transition={{
                   duration: 0.5,
-                  delay: index * 0.2, // staggered effect
+                  delay: index * 0.1, // staggered effect
                   ease: "easeOut",
                 }}
                 whileHover={{

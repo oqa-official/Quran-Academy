@@ -85,7 +85,7 @@ export default function FeaturedCourses() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 md:gap-32 gap-10 place-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 md:gap-32 gap-10 place-items-center ">
           {courses.map((course, idx) => (
             <CourseCard key={idx} {...course} />
           ))}
