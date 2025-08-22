@@ -74,7 +74,7 @@ export default function HowItWorks() {
                         <motion.div
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
-                            transition={{ duration: 1, ease: "easeOut" , delay: i * 0.6 }}
+                            transition={{ duration: 1, ease: "easeOut" , delay: i * 0.3 }}
                             viewport={{ once: true }}
                             key={i}
                             className="bg-white border rounded-2xl shadow-md p-5 text-center cursor-pointer 

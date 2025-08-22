@@ -6,19 +6,25 @@ import { Mail, Phone, Facebook, Twitter, Instagram, Linkedin } from "lucide-reac
 
 export default function Footer() {
   return (
-    <footer className="flex flex-col relative ">
-      <div className="bg-primary  text-white max-sm:py-10">
-        <div className="absolute top-0 left-0 w-full h-full">
+    <footer className="flex flex-col">
+
+      <div className="bg-primary relative   text-white max-sm:py-10 overflow-hidden">
+        <div className="absolute top-0 right-0">
           <motion.img
-          initial={{ opacity: 0, x: -100 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 2, ease: "easeOut" }}
-        viewport={{ once: false }}
-          src="/assets/home/lamp2.png" alt="lamp" className="md:w-[200px] w-[100px]" />
+            initial={{ opacity: 0, x: -100 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            viewport={{ once: false }}
+            src="/assets/home/lamp2.png"
+            alt="lamp"
+            className="md:w-[200px] w-[100px] scale-x-[-1]"
+          />
         </div>
 
+
+
         {/* First Row */}
-        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8 border-b border-white/20">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8 border-b border-white/20">
           {/* Logo */}
           <div>
             <h2 className="text-2xl font-bold text-accent">Quran Acedemy</h2>
