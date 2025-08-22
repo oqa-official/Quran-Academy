@@ -24,7 +24,7 @@ export default function StatsSection() {
   return (
     <section className="py-16 mt-10">
       <div className="container">
-        <div className="flex flex-wrap justify-center items-center gap-6 min-h-[40vh]">
+        <div className="flex flex-wrap justify-center gap-6">
           {stats.map((item, index) => {
             const isEven = index % 2 === 0;
             const ref = useRef(null);
@@ -34,16 +34,16 @@ export default function StatsSection() {
               <motion.div
                 ref={ref}
                 key={index}
-                className={`flex flex-col items-center p-6 rounded-2xl shadow-md cursor-pointer w-[220px] sm:w-[200px] ${
-                  isEven ? "bg-primary text-white" : "bg-white text-navy"
-                }`}
+                className={`flex flex-col items-center p-6 rounded-2xl shadow-md cursor-pointer 
+                  basis-full sm:basis-[calc(50%-1.5rem)] lg:basis-[calc(33.333%-1.5rem)]
+                  ${isEven ? "bg-primary text-white" : "bg-white text-navy"}`}
                 initial={{ opacity: 0, y: 40, scale: 0.9 }}
                 animate={
                   inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40 }
                 }
                 transition={{
                   duration: 0.5,
-                  delay: index * 0.1, // staggered effect
+                  delay: index * 0.1,
                   ease: "easeOut",
                 }}
                 whileHover={{
