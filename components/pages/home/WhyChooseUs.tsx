@@ -107,7 +107,7 @@ export default function WhyChooseUs() {
                     </div>
 
                     {/* Right Image */}
-                    <div className="md:max-w-[50%] flex justify-center overflow-hidden rounded-md">
+                    <div className="md:max-w-[50%]  justify-center overflow-hidden rounded-md hidden md:flex">
                         <img
                             src="/assets/home/side.png"
                             alt="Why choose us"

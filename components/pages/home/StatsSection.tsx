@@ -24,7 +24,7 @@ export default function StatsSection() {
   return (
     <section className="py-16 mt-10">
       <div className="container">
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 justify-center gap-6">
           {stats.map((item, index) => {
             const isEven = index % 2 === 0;
             const ref = useRef(null);
@@ -58,7 +58,7 @@ export default function StatsSection() {
                   }`}
                 />
                 <h3
-                  className={`text-xl font-extrabold ${
+                  className={`md:text-xl text-lg font-extrabold ${
                     isEven ? "text-white" : "text-navy"
                   }`}
                 >

@@ -136,9 +136,7 @@ export default function Header() {
                   <span className="flex items-center gap-2">
                     <PhoneCall size={16} className="text-accent" /> 0092 311 4581 622
                   </span>
-                  <span className="flex items-center gap-2">
-                    <LogIn size={16} className="text-accent" /> Login
-                  </span>
+                 
                 </div>
 
                 {/* Mobile Nav */}
@@ -173,6 +171,9 @@ export default function Header() {
                 {/* CTA */}
                 <Button className="w-full rounded-full bg-primary hover:bg-primary-hover">
                   Free Trial
+                </Button>
+                <Button className="w-full rounded-full bg-accent hover:bg-accent-hover text-primary">
+                  Login
                 </Button>
               </div>
             </SheetContent>

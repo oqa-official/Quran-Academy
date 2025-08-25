@@ -65,7 +65,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center md:gap-10 gap-5 justify-between h-full container text-white">
+      <div className="relative z-10 flex flex-col md:flex-row items-center md:gap-10 justify-between h-full container text-white">
         {/* Left Content */}
         <motion.div
           initial="hidden"
@@ -75,7 +75,7 @@ export default function Hero() {
         >
           <motion.h1
             variants={textVariants}
-            className="text-4xl md:text-6xl font-bold leading-tight"
+            className="text-3xl sm:text-4xl xl:text-6xl font-bold leading-tight"
           >
             Choose the Right Path for{" "}
             <span className="text-accent">Quranic Education</span>
@@ -92,7 +92,7 @@ export default function Hero() {
           <motion.div variants={textVariants}>
             <Button
               size={"lg"}
-              className="bg-accent hover:bg-accent-hover text-black py-6 px-10 text-lg rounded-full transition"
+              className="bg-accent hover:bg-accent-hover text-black md:py-6 py-2 md:px-10 px-6 text-lg rounded-full transition"
             >
               Enroll Now For Free
             </Button>
@@ -117,13 +117,13 @@ export default function Hero() {
             alt="Hero Quran"
             width={500}
             height={500}
-            className="w-full max-w-md object-contain relative z-10"
+            className="w-[75%] xl:w-full max-w-md object-contain relative z-10"
           />
         </motion.div>
       </div>
 
       {/* Wavy Shape Divider */}
-      <div className="absolute -bottom-2 left-0 right-0 z-20">
+      <div className="absolute -bottom-2 md:-bottom-2 left-0 right-0 z-20">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1000 100"
