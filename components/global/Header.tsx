@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { menuItems } from "@/lib/constants/menuitems";
 import { BookOpen, LogIn, Mail, PhoneCall, Menu } from "lucide-react";
@@ -9,14 +10,20 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { motion, Variants } from "framer-motion";
 
 export default function Header() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
-  // ✅ Properly typed Framer Motion variants
+  // ✅ Auto-close mobile nav on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   const container: Variants = {
     hidden: { opacity: 0 },
     show: {
@@ -90,7 +97,7 @@ export default function Header() {
                   }`}
                 >
                   <Icon
-                    size={18}
+                    size={16}
                     className={`transition ${
                       isActive
                         ? "text-accent fill-accent"
@@ -98,6 +105,9 @@ export default function Header() {
                     }`}
                   />
                   <span>{itemData.label}</span>
+                  <span className="text-[10px] -mt-2 capitalize">
+                    {itemData.desc}
+                  </span>
                 </Link>
               </motion.div>
             );
@@ -114,9 +124,9 @@ export default function Header() {
           </Button>
         </motion.div>
 
-        {/* Mobile Menu (no animation for now) */}
+        {/* Mobile Menu */}
         <div className="md:hidden">
-          <Sheet>
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button size="icon" className="text-white hover:bg-accent">
                 <Menu size={30} />
@@ -124,6 +134,7 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[80%] sm:w-[400px] px-10">
               <SheetHeader />
+              <SheetTitle></SheetTitle>
               <div className="mt-6 space-y-4">
                 {/* Mobile top row */}
                 <div className="flex flex-col gap-2 text-sm border-b pb-4">
@@ -136,7 +147,6 @@ export default function Header() {
                   <span className="flex items-center gap-2">
                     <PhoneCall size={16} className="text-accent" /> 0092 311 4581 622
                   </span>
-                 
                 </div>
 
                 {/* Mobile Nav */}

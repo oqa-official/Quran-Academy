@@ -3,6 +3,7 @@ import { Poppins, Merriweather } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/global/Header";
 import Footer from "@/components/global/Footer";
+import { OfferPopup } from "@/components/global/OfferPopup";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${merriweather.variable} antialiased bg-[#EFF2FA]`}
       >
+        <OfferPopup/>
         <Header />
         {children}
         <Footer/>

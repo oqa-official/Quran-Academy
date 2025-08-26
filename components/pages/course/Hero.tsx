@@ -33,7 +33,7 @@ export default function Hero() {
 
 
     return (
-        <section className="relative w-full py-16 2xl:py-20 flex flex-col justify-center  overflow-hidden">
+        <section className="relative w-full py-16  flex flex-col justify-center  overflow-hidden">
             {/* Background Carousel */}
             <div className="absolute inset-0 ">
                 <Image
@@ -55,37 +55,22 @@ export default function Hero() {
                     initial="hidden"
                     animate="show"
                     transition={{ staggerChildren: 0.3 }}
-                    className="w-full md:w-1/2 flex flex-col items-start text-left space-y-7"
+                    className="w-full md:w-1/2 flex flex-col items-start text-left md:space-y-7 space-y-3"
                 >
+                    <p className="text-2xl font-medium leading-tight">Read, Learn, Memorize and Revise</p>
                     <motion.h2
                         variants={textVariants}
-                        className="text-3xl sm:text-4xl xl:text-5xl font-bold leading-tight"
+                        className="text-2xl font-bold leading-tight"
                     >
-                        Learn Quranic Studies for beginner
-
-                        {" "}
-                        <span className="text-accent"></span>
+                        <span className="text-accent text-3xl sm:text-4xl xl:text-5xl">Online Quran Courses</span>
                     </motion.h2>
 
                     <motion.p
                         variants={textVariants}
                         className="max-w-xl text-lg md:text-xl italic"
                     >
-                        Learn the art of Quranic recitation with clarity and confidence.
+                       We warmly welcome all genders to come and understand the Holy Quran under our expertise.
                     </motion.p>
-
-                  
-
-
-                    <motion.div variants={textVariants}>
-                        <Button
-                            size={"sm"}
-                            className="bg-accent hover:bg-accent-hover text-black py-5 px-6 text-lg rounded-sm transition"
-                        >
-                            Enroll In This Course
-                        </Button>
-                    </motion.div>
-
                    
                 </motion.div>
 

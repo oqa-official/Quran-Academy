@@ -8,10 +8,10 @@ import {
 } from "lucide-react";
 
 export const menuItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "About Us", href: "/about", icon: UsersRound },
-  { label: "Courses", href: "/courses", icon: BookOpen },
-  { label: "Library", href: "/library", icon: LibraryBig },
-  { label: "Contact", href: "/contact", icon: Phone },
-  { label: "Career", href: "/career", icon: Briefcase },
+  { label: "Home", href: "/", icon: Home, desc:"Welcome Page" },
+  { label: "About Us", href: "/about", icon: UsersRound, desc:"Who we are" },
+  { label: "Courses", href: "/courses", icon: BookOpen , desc:"What we offer"},
+  { label: "Library", href: "/library", icon: LibraryBig , desc:"books colletions"},
+  { label: "Contact", href: "/contact", icon: Phone , desc:"For Quick Queries"},
+  { label: "Career", href: "/career", icon: Briefcase , desc:"For careers",},
 ];

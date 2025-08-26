@@ -7,10 +7,10 @@ import {
     TabsTrigger,
     TabsContent,
 } from "@/components/ui/tabs"; // shadcn tabs
-import { Card, CardContent } from "@/components/ui/card";
 import Overview from "./Overview";
 import CurriculumTab from "./CurriculumTab";
 import ReviewComponent from "./Reviews";
+import InstructorInfo from "./InstructorInfo";
 
 export default function CoursePageLayout() {
     const [rating] = useState(4.5);
@@ -26,6 +26,8 @@ export default function CoursePageLayout() {
                     <h1 className="text-4xl font-bold mb-2">
                         Learn Quranic Studies for Beginner
                     </h1>
+
+                    
 
                     <div className="flex gap-4">
                         <div className="flex items-center gap-2 text-yellow-500">
@@ -56,46 +58,53 @@ export default function CoursePageLayout() {
                 </div>
 
                 {/* Tabs */}
-                <Tabs defaultValue="overview" className="w-full">
-                    <TabsList className="flex space-x-2">
-                        <TabsTrigger
-                            value="overview"
-                            className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-md px-4 py-2 text-lg font-semibold"
-                        >
-                            <h2>Overview</h2>
-                        </TabsTrigger>
+                   <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="flex space-x-2">
+                <TabsTrigger
+                    value="overview"
+                    className="border-b-2 rounded-sm border-primary text-primary data-[state=active]:bg-primary data-[state=active]:text-white  px-6 py-4 text-lg font-semibold"
+                >
+                    <h2>Overview</h2>
+                </TabsTrigger>
 
-                        <TabsTrigger
-                            value="curriculum"
-                            className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-md px-4 py-2 text-lg font-semibold"
-                        >
-                            <h2>Curriculum</h2>
-                        </TabsTrigger>
+                <TabsTrigger
+                    value="curriculum"
+                    className="border-b-2 rounded-sm border-primary text-primary data-[state=active]:bg-primary data-[state=active]:text-white px-6 py-4 text-lg font-semibold"
+                >
+                    <h2>Curriculum</h2>
+                </TabsTrigger>
 
-                        <TabsTrigger
-                            value="reviews"
-                            className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-md px-4 py-2 text-lg font-semibold"
-                        >
-                            <h2>Reviews</h2>
-                        </TabsTrigger>
-                    </TabsList>
+                <TabsTrigger
+                    value="instructor"
+                    className="border-b-2 border-primary text-primary data-[state=active]:bg-primary data-[state=active]:text-white rounded-sm px-6 py-4 text-lg font-semibold"
+                >
+                    <h2>Instructor</h2>
+                </TabsTrigger>
 
+                <TabsTrigger
+                    value="reviews"
+                    className="border-b-2 border-primary text-primary data-[state=active]:bg-primary data-[state=active]:text-white rounded-sm px-6 py-4 text-lg font-semibold"
+                >
+                    <h2>Reviews</h2>
+                </TabsTrigger>
+            </TabsList>
 
-                    {/* Overview Tab */}
-                    <TabsContent value="overview">
-                        <Overview />
-                    </TabsContent>
+            <TabsContent value="overview">
+                <Overview />
+            </TabsContent>
 
-                    {/* Curriculum Tab */}
-                    <TabsContent value="curriculum">
-                        <CurriculumTab />
-                    </TabsContent>
+            <TabsContent value="curriculum">
+                <CurriculumTab />
+            </TabsContent>
 
-                    {/* Reviews Tab */}
-                    <TabsContent value="reviews">
-                        <ReviewComponent />
-                    </TabsContent>
-                </Tabs>
+            <TabsContent value="instructor">
+                <InstructorInfo />
+            </TabsContent>
+
+            <TabsContent value="reviews">
+                <ReviewComponent />
+            </TabsContent>
+        </Tabs>
             </div>
         </div>
 

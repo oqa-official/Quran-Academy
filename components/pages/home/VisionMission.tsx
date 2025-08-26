@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function VisionMission() {
     return (
         <section
-            className="relative w-full py-20 text-center text-white max-sm:min-h-[80vh] flex items-center"
+            className="relative w-full py-20 text-center text-white max-sm:min-h-[50vh] flex items-center"
             style={{
                 backgroundImage: "url('/assets/home/missionbg.png')", // Replace with your background image
                 backgroundSize: "cover",

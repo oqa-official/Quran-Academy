@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 
 const images = [
   "/assets/home/hero1.png",
-  "/assets/home/hero5.png",
+  "/assets/home/hero6.png",
   "/assets/home/hero3.png",
   "/assets/home/hero4.png",
 ];
@@ -43,7 +43,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative w-full min-h-[110vh] flex flex-col justify-center max-md:min-h-[105vh] overflow-hidden">
+    <section className="relative w-full md:min-h-[100vh] flex flex-col justify-center max-md:py-20 max-md:pb-24 md:pb-10 overflow-hidden">
       {/* Background Carousel */}
       <div className="absolute inset-0">
         {images.map((src, index) => (
@@ -65,13 +65,13 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center md:gap-10 justify-between h-full container text-white">
+      <div className="relative z-10 flex flex-col md:flex-row items-center  md:gap-10 justify-between h-full container text-white">
         {/* Left Content */}
         <motion.div
           initial="hidden"
           animate="show"
           transition={{ staggerChildren: 0.3 }}
-          className="w-full md:w-1/2 flex flex-col items-start text-left space-y-10"
+          className="w-full md:w-1/2 flex flex-col items-start text-left space-y-8"
         >
           <motion.h1
             variants={textVariants}
@@ -104,7 +104,7 @@ export default function Hero() {
           initial="hidden"
           animate="show"
           variants={imageVariants}
-          className="w-full md:w-1/2 flex justify-center mt-10 md:mt-0 relative"
+          className="w-full md:w-1/2 flex justify-center mt-10 md:mt-0 relative max-md:mt-14"
         >
           {/* Glowing background */}
           <div className="absolute inset-0 flex justify-center items-center">
@@ -117,7 +117,7 @@ export default function Hero() {
             alt="Hero Quran"
             width={500}
             height={500}
-            className="w-[75%] xl:w-full max-w-md object-contain relative z-10"
+            className="w-[75%] xl:w-[80%] max-w-md object-contain relative z-10"
           />
         </motion.div>
       </div>

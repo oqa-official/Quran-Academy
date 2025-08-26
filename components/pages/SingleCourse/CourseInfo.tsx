@@ -93,16 +93,10 @@ function FeeStructureCard() {
         <div className="flex items-center gap-3  text-primary p-2 rounded-md">
           <DollarSign size={18} />
           <span className="font-medium">Price:</span>
-          <span className="ml-auto font-bold text-accent">$90 / Month</span>
+          <span className="ml-auto text-xl font-medium text-accent">$90 / Month</span>
         </div>
 
-        {/* Date Picker */}
-        <div>
-          <input
-            type="date"
-            className="w-full border rounded-md p-2"
-          />
-        </div>
+       
 
         {/* Enroll Button */}
         <Button size={'lg'} className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold">

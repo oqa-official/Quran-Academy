@@ -9,7 +9,7 @@ function page() {
     <>
     <Hero/>
 
-    <div className='container flex flex-col md:flex-row justify-between items-start my-20 gap-10 space-y-5'>
+    <div className='container flex flex-col md:flex-row justify-between items-start mt-20 gap-10 space-y-5'>
         <div className='md:w-2/3 w-full'>
         <CoursePageLayout/>
         </div>

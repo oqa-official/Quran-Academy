@@ -16,7 +16,7 @@ export default function StatsSection() {
     { icon: Users, value: "1,000+", label: "Students" },
     { icon: Clock, value: "Flexible", label: "Timing" },
     { icon: Globe, value: "Available", label: "Worldwide" },
-    { icon: Video, value: "Interactive", label: "Online Classes" },
+    { icon: Video, value: "Interactive", label: "Online Classes" }, // index 3
     { icon: GraduationCap, value: "Certified", label: "Teachers" },
     { icon: BookOpen, value: "Comprehensive", label: "Curriculum" },
   ];
@@ -26,20 +26,37 @@ export default function StatsSection() {
       <div className="container">
         <div className="grid grid-cols-2 md:grid-cols-3 justify-center gap-6">
           {stats.map((item, index) => {
-            const isEven = index % 2 === 0;
             const ref = useRef(null);
             const inView = useInView(ref, { once: true, margin: "-50px" });
+
+            // --- mobile (2 cols, 3 rows) pattern ---
+            const mobileBlue = [0, 3, 4].includes(index);
+
+            // --- desktop (3 cols, 2 rows) pattern ---
+            const desktopBlue = [0, 2, 4].includes(index);
+
+            const baseClass =
+              "flex flex-col items-center p-6 rounded-2xl shadow-md cursor-pointer";
+
+            const bgClass = `
+              ${mobileBlue ? "bg-primary text-white" : "bg-white text-navy"}
+              ${desktopBlue ? "md:bg-primary md:text-white" : "md:bg-white md:text-navy"}
+            `;
+
+            // ✅ Special fix for 4th item (index 3): keep bg, but dark text/icons on desktop
+            const overrideTextColor =
+              index === 3 ? "md:text-primary md:[&_*]:text-navy" : "";
 
             return (
               <motion.div
                 ref={ref}
                 key={index}
-                className={`flex flex-col items-center p-6 rounded-2xl shadow-md cursor-pointer 
-                  basis-full sm:basis-[calc(50%-1.5rem)] lg:basis-[calc(33.333%-1.5rem)]
-                  ${isEven ? "bg-primary text-white" : "bg-white text-navy"}`}
+                className={`${baseClass} ${bgClass} ${overrideTextColor}`}
                 initial={{ opacity: 0, y: 40, scale: 0.9 }}
                 animate={
-                  inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40 }
+                  inView
+                    ? { opacity: 1, y: 0, scale: 1 }
+                    : { opacity: 0, y: 40 }
                 }
                 transition={{
                   duration: 0.5,
@@ -53,24 +70,20 @@ export default function StatsSection() {
                 }}
               >
                 <item.icon
-                  className={`w-8 h-8 mb-3 ${
-                    isEven ? "text-white" : "text-primary"
-                  }`}
+                  className={`w-8 h-8 mb-3 ${index === 3
+                      ? "text-white md:text-primary" // special case for 4th item
+                      : index === 4
+                        ? "text-white md:text-white"   // special case for 5th item → always white on desktop
+                        : mobileBlue
+                          ? "text-white md:text-white"
+                          : "text-primary"
+                    }`}
                 />
-                <h3
-                  className={`md:text-xl text-lg font-extrabold ${
-                    isEven ? "text-white" : "text-navy"
-                  }`}
-                >
+
+                <h3 className="md:text-xl text-lg font-extrabold">
                   {item.value}
                 </h3>
-                <p
-                  className={`text-sm ${
-                    isEven ? "text-white/90" : "text-gray-600"
-                  }`}
-                >
-                  {item.label}
-                </p>
+                <p className="text-sm opacity-90">{item.label}</p>
               </motion.div>
             );
           })}
