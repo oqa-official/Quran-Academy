@@ -37,7 +37,7 @@ export function OfferPopup() {
         {/* Close Button */}
         <button
           onClick={() => setOpen(false)}
-          className="absolute top-3 right-3 z-20 p-1 rounded-full bg-primary text-white"
+          className="absolute z-1000 top-3 right-3 p-1 rounded-full bg-primary text-white"
         >
           <X className="h-5 w-5 text-white" />
         </button>

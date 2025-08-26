@@ -17,12 +17,12 @@ export default function StatsSection() {
     { icon: Clock, value: "Flexible", label: "Timing" },
     { icon: Globe, value: "Available", label: "Worldwide" },
     { icon: Video, value: "Interactive", label: "Online Classes" }, // index 3
-    { icon: GraduationCap, value: "Certified", label: "Teachers" },
-    { icon: BookOpen, value: "Comprehensive", label: "Curriculum" },
+    { icon: GraduationCap, value: "Certified", label: "Teachers"  , className: "hidden md:flex"},
+    { icon: BookOpen, value: "Comprehensive", label: "Curriculum" , className: "hidden md:flex"},
   ];
 
   return (
-    <section className="py-16 mt-10">
+    <section className="py-10 md:py-16 mt-4">
       <div className="container">
         <div className="grid grid-cols-2 md:grid-cols-3 justify-center gap-6">
           {stats.map((item, index) => {
@@ -51,7 +51,7 @@ export default function StatsSection() {
               <motion.div
                 ref={ref}
                 key={index}
-                className={`${baseClass} ${bgClass} ${overrideTextColor}`}
+                className={`${baseClass} ${bgClass} ${overrideTextColor} ${item.className}`}
                 initial={{ opacity: 0, y: 40, scale: 0.9 }}
                 animate={
                   inView

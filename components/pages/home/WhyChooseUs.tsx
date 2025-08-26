@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function WhyChooseUs() {
     return (
-        <section className="py-16 mt-20 bg-white relative">
+        <section className="py-16 bg-white relative">
             {/* Decorative Lamp */}
             <motion.div
                 initial={{ opacity: 0, x: -100 }}

@@ -11,7 +11,7 @@ interface PlanContent {
     ctaLink: string;
     detailsText: string;
     detailsLink: string;
-    
+
 }
 
 interface PlanItem {
@@ -75,32 +75,35 @@ interface PlanTabProps {
 }
 
 const PlanTab: React.FC<PlanTabProps> = ({ plan, isActive, onClick }) => (
-    <div
-        className={`
-      flex flex-col items-center justify-center space-y-1 md:p-6 p-2 rounded-md shadow-lg
-      transition-all duration-300 transform cursor-pointer
+  <div
+    className={`
+      relative z-[2] flex flex-col items-center justify-center space-y-1 md:px-6 p-2 md:p-4 rounded-md shadow-lg
+      transform cursor-pointer
       ${isActive ? 'bg-white' : 'bg-gray-800 hover:bg-gray-700'}
     `}
-        onClick={() => onClick(plan.id)}
-    >
-        <img
-            src={plan.image}
-            alt={plan.title}
-            className={`
+    onClick={() => onClick(plan.id)}
+  >
+    <img
+      src={plan.image}
+      alt={plan.title}
+      className={`
         md:w-16 md:h-16 w-12 h-12 object-cover
         ${isActive ? 'filter-none' : 'filter grayscale'}
         transition-filter duration-500
       `}
-        />
-        <p className={`text-sm md:text-lg font-medium md:font-semibold ${isActive ? 'text-primary' : 'text-gray-300'}`}>
-            {plan.title}
-        </p>
-    </div>
+    />
+    <p className={`text-sm md:text-lg font-medium md:font-semibold ${isActive ? 'text-primary' : 'text-gray-300'}`}>
+      {plan.title}
+    </p>
+    
+    <div className={`absolute ${!isActive && "hidden"} -bottom-3 md:-bottom-5 -z-[1] left-1/2 transform -translate-x-1/2  md:w-10 md:h-10 w-6 h-6 border-b-1 border-gray-200 rotate-45 bg-white border-r-2 `}></div>
+        
+  </div>
 );
 
 // Component to display the dynamic content based on the active tab with types
 interface PlanContentProps {
-    content: PlanContent & { image: string } & {secondary_image :string};
+    content: PlanContent & { image: string } & { secondary_image: string };
 }
 
 const PlanContent: React.FC<PlanContentProps> = ({ content }) => (
@@ -123,7 +126,7 @@ const PlanContent: React.FC<PlanContentProps> = ({ content }) => (
             <img
                 src={content.image}
                 alt={content.heading}
-                className="w-full max-w-[350px] mx-auto py-10 h-auto object-cover transition-transform duration-500 hover:scale-105"
+                className="w-full max-w-[350px] mx-auto py-10 h-auto object-cover transition-transform duration-300 hover:scale-105"
             />
         </div>
     </div>
@@ -137,7 +140,7 @@ const OurPlans: React.FC = () => {
 
     return (
         <section className=" py-20">
-            <div className="bg-primary relative z-[100]">
+            <div className="bg-primary relative z-[10]">
 
                 <div className='absolute inset-0 -z-10 opacity-30'
                     style={{
@@ -149,7 +152,7 @@ const OurPlans: React.FC = () => {
 
                 </div>
                 {/* Top section with title and description */}
-                <div className='py-3 pt-6 w-full container text-center'>
+                <div className=' pt-6 w-full container text-center'>
                     <div className="max-w-3xl mx-auto mb-12">
                         <motion.div
                             initial={{ opacity: 0, y: -50 }}
@@ -189,7 +192,7 @@ const OurPlans: React.FC = () => {
             <div className='container max-md:pt-10'>
                 {/* Dynamic content section */}
                 {activePlan && (
-                    <PlanContent content={{ ...activePlan.content, image: activePlan.content_image, secondary_image : activePlan.image}} />
+                    <PlanContent content={{ ...activePlan.content, image: activePlan.content_image, secondary_image: activePlan.image }} />
                 )}
             </div>
         </section>
