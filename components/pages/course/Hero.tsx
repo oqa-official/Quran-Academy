@@ -67,7 +67,7 @@ export default function Hero() {
 
                     <motion.p
                         variants={textVariants}
-                        className="max-w-xl text-lg md:text-xl italic"
+                        className="max-w-xl text-base md:text-lg"
                     >
                        We warmly welcome all genders to come and understand the Holy Quran under our expertise.
                     </motion.p>

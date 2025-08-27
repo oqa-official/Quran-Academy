@@ -60,7 +60,7 @@ export default function CoursePageLayout() {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`border-[1px] rounded-sm px-6 py-4 text-lg font-thin font-semibold transition-all duration-200 
+                className={`border-[1px] rounded-sm px-4 py-1 text-lg font-thin  transition-all duration-200 
                   ${
                     activeTab === tab.key
                       ? "bg-primary text-white border-primary "

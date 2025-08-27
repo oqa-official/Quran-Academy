@@ -9,7 +9,7 @@ import {
 
 export const menuItems = [
   { label: "Home", href: "/", icon: Home, desc:"Welcome Page" },
-  { label: "About Us", href: "/about", icon: UsersRound, desc:"Who we are" },
+  { label: "About Us", href: "/about-us", icon: UsersRound, desc:"Who we are" },
   { label: "Courses", href: "/courses", icon: BookOpen , desc:"What we offer"},
   { label: "Library", href: "/library", icon: LibraryBig , desc:"books colletions"},
   { label: "Contact", href: "/contact", icon: Phone , desc:"For Quick Queries"},

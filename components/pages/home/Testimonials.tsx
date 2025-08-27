@@ -67,7 +67,7 @@ export default function TestimonialsSection() {
           viewport={{ once: false }}
           src="/assets/home/verse5.png"
           alt="Quran verse"
-          className="mx-auto mb-6 w-[50%]"
+          className="mx-auto mb-6 md:w-[50%]"
         />
 
         {/* Heading */}

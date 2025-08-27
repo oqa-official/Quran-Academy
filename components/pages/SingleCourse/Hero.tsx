@@ -69,7 +69,7 @@ export default function Hero() {
 
                     <motion.p
                         variants={textVariants}
-                        className="max-w-xl text-lg md:text-xl italic"
+                        className="max-w-xl text-base md:text-lg"
                     >
                         Learn the art of Quranic recitation with clarity and confidence.
                     </motion.p>

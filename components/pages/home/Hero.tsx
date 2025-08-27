@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 const images = [
@@ -54,9 +55,8 @@ export default function Hero() {
             unoptimized
             fill
             priority={index === 0}
-            className={`object-cover transition-opacity duration-[3000ms] ease-in-out ${
-              index === current ? "opacity-100" : "opacity-0"
-            }`}
+            className={`object-cover transition-opacity duration-[3000ms] ease-in-out ${index === current ? "opacity-100" : "opacity-0"
+              }`}
           />
         ))}
 
@@ -90,12 +90,14 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={textVariants}>
-            <Button
-              size={"lg"}
-              className="bg-accent hover:bg-accent-hover text-black md:py-6 py-2 md:px-10 px-6 text-lg rounded-full transition"
-            >
-              Enroll Now For Free
-            </Button>
+            <Link href={'/onboarding'}>
+              <Button
+                size={"lg"}
+                className="bg-accent hover:bg-accent-hover text-black md:py-6 py-2 md:px-10 px-6 text-lg rounded-full transition"
+              >
+                Enroll Now For Free
+              </Button>
+            </Link>
           </motion.div>
         </motion.div>
 

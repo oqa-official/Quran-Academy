@@ -77,7 +77,7 @@ interface PlanTabProps {
 const PlanTab: React.FC<PlanTabProps> = ({ plan, isActive, onClick }) => (
   <div
     className={`
-      relative z-[2] flex flex-col items-center justify-center space-y-1 md:px-6 p-2 md:p-4 rounded-md shadow-lg
+      relative z-[2] flex flex-col items-center  justify-center space-y-1 md:px-6 p-2 md:p-4 rounded-md shadow-lg
       transform cursor-pointer
       ${isActive ? 'bg-white' : 'bg-gray-800 hover:bg-gray-700'}
     `}
@@ -117,7 +117,7 @@ const PlanContent: React.FC<PlanContentProps> = ({ content }) => (
                 <button className="bg-primary hover:bg-primary-hover text-white font-medium py-3 px-6 rounded-md transition-colors duration-300">
                     {content.ctaText}
                 </button>
-                <a href={content.detailsLink} className="text-primary font-medium py-3 px-6 transition-colors duration-300 hover:text-blue-800">
+                <a href={content.detailsLink} className="bg-accent hover:bg-accent-hover text-black font-medium py-3 px-6 rounded-md transition-colors duration-300">
                     {content.detailsText}
                 </a>
             </div>

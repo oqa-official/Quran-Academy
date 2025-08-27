@@ -1,13 +1,13 @@
 "use client";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Star, User } from "lucide-react";
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 
 const courses = [
   {
-    title: "Learn Quranic Studies for Beginner<br/> (Level-I)",
+    title: "Learn Quranic Studies for Beginner (Level-I)",
     price: 20,
     reviews: 3,
     rating: 5,
@@ -17,7 +17,7 @@ const courses = [
     img: "/assets/home/course_1.png",
   },
   {
-    title: "Learn Recitation of Quran<br/> (Level-II)",
+    title: "Learn Recitation of Quran (Level-II)",
     price: 25,
     reviews: 5,
     rating: 5,
@@ -27,7 +27,7 @@ const courses = [
     img: "/assets/home/course_2.png",
   },
   {
-    title: "Learn Quran with Tajweed<br/> (Level-III)",
+    title: "Learn Quran with Tajweed (Level-III)",
     price: 35,
     reviews: 1,
     rating: 5,
@@ -52,45 +52,44 @@ function CourseCard({
     <div className="keen-slider__slide p-2 py-6">
       <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg cursor-pointer shadow-md shadow-gray-400 transition-all duration-300 hover:scale-[1.010]">
         {/* Top Image */}
-        <div className="relative">
+        <div className="relative ">
           <img src={img} alt={title} className="w-full h-56 object-cover" />
+
+
+            <div className="absolute right-1 bg-accent p-2 rounded-full bottom-1 flex items-baseline justify-center">
+            <span className="text-sm self-start text-black group-hover:text-white transition-colors">
+              $
+            </span>
+            <h2 className="text-xl font-bold text-gray-800 group-hover:text-white transition-colors">
+              {price}
+            </h2>
+           
+          </div>
 
         </div>
 
         {/* Content */}
         <div className="p-3">
           {/* Rating */}
-       <div className="flex flex-col lg:flex-row items-center justify-between">
-           <div className="flex items-center justify-start text-yellow-500 text-sm mb-2">
-            {[...Array(rating)].map((_, i) => (
-              <span key={i}>⭐</span>
-            ))}
-            <span className="ml-2 text-gray-600">({reviews} Reviews)</span>
-           
-          </div>
-           <div className="text-center">
-              <p className="text-xs text-gray-500 mb-2">{students} students</p>
+          <div className="flex flex-col lg:flex-row items-center justify-between">
+            <div className="flex items-center justify-start text-yellow-500 text-sm mb-2">
+              {[...Array(rating)].map((_, i) => (
+                <span key={i}><Star className="fill-accent" size={15} /></span>
+              ))}
+              <span className="ml-2 text-gray-600">({reviews} Reviews)</span>
+
             </div>
-       </div>
+
+          </div>
 
 
           {/* Title */}
           <h2
-  className="text-lg font-bold text-gray-800 mb-3 text-center"
-  dangerouslySetInnerHTML={{ __html: title }}
-/>
+            className="text-lg font-bold text-gray-800 mb-3 text-center"
+            dangerouslySetInnerHTML={{ __html: title }}
+          />
 
-          <div className="flex items-baseline justify-center space-x-1">
-            <span className="text-xl self-start text-gray-600 group-hover:text-white transition-colors">
-              $
-            </span>
-            <h2 className="text-4xl font-bold text-gray-800 group-hover:text-white transition-colors">
-              {price}
-            </h2>
-            <span className="text-sm text-gray-600 group-hover:text-white transition-colors">
-              /month
-            </span>
-          </div>
+        
 
           {/* Students + Price */}
 
@@ -105,7 +104,7 @@ function CourseCard({
             ].map((item, idx) => (
               <li
                 key={idx}
-                className="flex items-center text-gray-600 text-sm"
+                className="flex items-center text-gray-600 text-xs"
               >
                 <Check className="w-4 h-4 mr-2 text-gray-500" />
                 {item}
@@ -114,11 +113,17 @@ function CourseCard({
           </ul>
 
           {/* Teacher */}
-          <div className="flex items-center space-x-2 mt-4 border-t pt-3">
-            <img src={avatar} alt={teacher} className="w-8 h-8 rounded-full" />
-            <span className="text-sm font-medium text-gray-700">
-              {teacher}
-            </span>
+          <div className="flex items-center justify-between space-x-2 mt-4 border-t pt-3">
+            <div className="flex justify-start items-center gap-1">
+              <img src={avatar} alt={teacher} className="w-8 h-8 rounded-full" />
+              <span className="text-sm font-medium text-gray-700">
+                {teacher}
+              </span>
+            </div>
+            <div className="flex justify-center items-center">
+              <User size={15} fill="gray" className="text-gray-500" />
+              <span className="text-sm">{students}</span>
+            </div>
           </div>
         </div>
       </div>

@@ -32,7 +32,7 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${merriweather.variable} antialiased bg-[#EFF2FA]`}
       >
-        <OfferPopup/>
+        {/* <OfferPopup/> */}
         <Header />
         {children}
         <Footer/>

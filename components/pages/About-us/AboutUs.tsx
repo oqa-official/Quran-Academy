@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { TextAnimate } from '@/components/magicui/text-animate';
 
 
-const WhyGoForUs = () => {
+const AboutUs = () => {
     return (
         // Main container with a light background and padding
         <section className="bg-gray-100 py-16 container">
@@ -25,37 +25,39 @@ const WhyGoForUs = () => {
                             viewport={{ once: true }} // run only first time in view
                         >
                             <h3 className="font-arabic text-2xl md:text-3xl font-thin mb-4 text-accent">
-                                خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ
+                                اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ
                             </h3>
                         </motion.div>
 
 
                         <TextAnimate animation="blurIn" by="word" duration={0.6} as="h2" className="text-3xl lg:text-4xl font-bold text-primary mb-2">
-                            Why Go With Us?
+                            About Quran Academy
                         </TextAnimate>
 
                         {/* Decorative arrow/line image */}
                         <img src="/assets/home/arrow.png" alt="Quran verse" className="w-[200px] text-start mb-2" />
 
                         {/* Description paragraph */}
-                        <p className="text-gray-600 mb-6">
-                            Quran Academy  has found a fantastic way to teach its client base through online Quran teaching classes. We are experienced, trustworthy and have been spreading the light of the Quran by educating millions of students and people worldwide via professional Quran tutors.
+                        <p className="text-gray-600 mb-6 text-sm md:text-base">
+                            The Online Quran Academy is providing the best learning platform on the Internet by offering one-to-one dedicated online Quran courses for everyone in any age group. Professional and certified male or female teachers lead the courses in Arabic and English medium. <br/> <br/>
+
+Advance use of technology with reliable software selection is utilized to interpret the lecture in most convenient format. Main intend is to provide effective and interactive sessions with respect to each student’s pace to offer customized experience.
                         </p>
 
                         {/* Call-to-action button */}
                         <button className="bg-primary hover:bg-primary-hover text-white font-medium py-3 px-6 rounded-md transition-colors duration-300">
-                            Get Enrolled Now
+                            Start Your Journey With Us
                         </button>
                     </div>
 
                     {/* Right Column: Image Grid (hidden on small screens) */}
-                    <div className="hidden md:flex flex-1 md:max-w-[50%] gap-4">
+                    <div className="hidden md:flex flex-1 md:max-w-[50%] gap-4 p-1">
                         {/* Top-left image */}
                         <div className="col-span-1 rounded-lg overflow-hidden  transition-transform duration-500 hover:scale-105">
                             <img
-                                src="/assets/home/quran4.png"
+                                src="/assets/about/quran.png"
                                 alt="Instructor teaching"
-                                className="w-[80%] h-auto object-cover mx-auto"
+                                className="w-[90%] h-auto object-cover mx-auto rounded-md m-1 shadow-md shadow-gray-900"
                             />
                         </div>
                     </div>
@@ -65,4 +67,4 @@ const WhyGoForUs = () => {
     );
 };
 
-export default WhyGoForUs;
+export default AboutUs;
