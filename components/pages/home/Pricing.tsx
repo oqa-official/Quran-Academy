@@ -5,6 +5,7 @@ import { Check } from "lucide-react";
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const courses = [
   {
@@ -16,7 +17,7 @@ const courses = [
       "30 min lessons",
       "8 Classes/Month",
       "4 hours/Month",
-      "For Arab Teacher 20% Extra will be charged.",
+      "24/7 Support",
     ],
   },
   {
@@ -28,7 +29,7 @@ const courses = [
       "30 min lessons",
       "12 Classes/Month",
       "6 hours/Month",
-      "For Arab Teacher 20% Extra will be charged.",
+      "24/7 Support",
     ],
   },
   {
@@ -40,7 +41,7 @@ const courses = [
       "30 min lessons",
       "16 Classes/Month",
       "8 hours/Month",
-      "For Arab Teacher 20% Extra will be charged.",
+      "24/7 Support",
     ],
   },
   {
@@ -52,7 +53,7 @@ const courses = [
       "30 min lessons",
       "20 Classes/Month",
       "10 hours/Month",
-      "For Arab Teacher 20% Extra will be charged.",
+      "24/7 Support",
     ],
   },
 ];
@@ -108,9 +109,9 @@ function CourseCard({ src, price, days_week, features }: any) {
             {features.map((item: string, idx: number) => (
               <li
                 key={idx}
-                className="flex items-center text-gray-600 group-hover:text-white transition-colors text-sm"
+                className="flex items-start  text-gray-600 group-hover:text-white transition-colors text-sm"
               >
-                <Check className="w-4 h-4 mr-2 text-gray-600 group-hover:text-white transition-colors" />
+                <Check className="w-4 h-4 mr-2 mt-1 text-gray-600 group-hover:text-white transition-colors" />
                 {item}
               </li>
             ))}
@@ -140,8 +141,9 @@ type Pricing_Props = {
 export default function Pricing_Section({
   heading = "Our Economical Pricing",
 }: Pricing_Props) {
-
-  const [sliderRef] = useKeenSlider<HTMLDivElement>({
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
     mode: "snap",
     slides: {
@@ -153,8 +155,13 @@ export default function Pricing_Section({
         slides: { perView: 4, spacing: 20 },
       },
     },
+    slideChanged(slider) {
+      setCurrentSlide(slider.track.details.rel);
+    },
+    created() {
+      setLoaded(true);
+    },
   });
-
 
   return (
     <section className={`py-16 relative bg-transparent`}>
@@ -165,7 +172,7 @@ export default function Pricing_Section({
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          opacity: 0.3, //  control opacity here
+          opacity: 0.3,
         }}
       ></div>
       <div className="max-w-6xl mx-auto px-6">
@@ -199,6 +206,23 @@ export default function Pricing_Section({
             <CourseCard key={idx} {...course} />
           ))}
         </div>
+
+        {/* Dots */}
+        {loaded && instanceRef.current && (
+          <div className="flex justify-center md:hidden gap-2">
+            {[
+              ...Array(instanceRef.current.track.details.slides.length).keys(),
+            ].map((idx) => (
+              <button
+                key={idx}
+                onClick={() => instanceRef.current?.moveToIdx(idx)}
+                className={`w-2 h-2 rounded-full ${
+                  currentSlide === idx ? "bg-primary" : "bg-gray-300"
+                }`}
+              ></button>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

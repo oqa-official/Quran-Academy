@@ -56,7 +56,7 @@ export default function TestimonialsSection() {
       }}
     >
       {/* Overlay */}
-      <div className="absolute inset-0 bg-white/70"></div>
+      <div className="absolute inset-0 bg-white opacity-60"></div>
 
       <div className="relative text-center">
         {/* Verse */}

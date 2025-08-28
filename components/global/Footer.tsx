@@ -8,7 +8,7 @@ export default function Footer() {
   return (
     <footer className="flex flex-col">
 
-      <div className="bg-primary relative   text-white max-sm:py-10 overflow-hidden">
+      <div className="bg-primary relative   text-white md:pt-14 py-10 overflow-hidden">
         <div className="absolute top-0 right-0">
           <motion.img
             initial={{ opacity: 0, x: -100 }}

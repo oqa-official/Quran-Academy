@@ -83,7 +83,7 @@ export default function Header() {
         {/* Desktop Nav */}
         <motion.nav
           variants={container}
-          className="hidden md:flex gap-6 text-gray-600"
+          className="hidden md:flex gap-6 text-gray-600 "
         >
           {menuItems.map((itemData) => {
             const Icon = itemData.icon;
@@ -93,7 +93,7 @@ export default function Header() {
                 <Link
                   href={itemData.href}
                   className={`flex flex-col items-center gap-1 transition ${
-                    isActive ? "text-accent" : "text-gray-500 hover:text-primary"
+                    isActive ? "text-accent" : "text-gray-500 hover:text-primary hover:scale-[1.02]"
                   }`}
                 >
                   <Icon

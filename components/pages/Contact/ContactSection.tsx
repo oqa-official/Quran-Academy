@@ -37,7 +37,7 @@ const ContactSection: React.FC = () => {
 
                 <div className="flex flex-col md:flex-row items-start justify-between gap-12">
                     {/* Left Column: Form */}
-                    <div className="w-full md:w-1/2 flex flex-col items-center md:items-start space-y-4 bg-white p-5 rounded-lg md:shadow-2xl">
+                    <div className="w-full md:w-1/2 flex flex-col items-center md:items-start space-y-4 bg-white p-5 py-7 rounded-lg md:shadow-2xl">
                         <form className="w-full max-w-lg space-y-6 text-left">
                             {/* Full Name and Email */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

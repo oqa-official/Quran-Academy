@@ -5,15 +5,15 @@ import { motion } from "framer-motion";
 
 export default function WhyChooseUs() {
     return (
-        <section className="py-16 bg-white relative">
+        <section className="py-16 bg-white relative overflow-hidden">
             {/* Decorative Lamp */}
             <motion.div
-                initial={{ opacity: 0, x: -100 }}
+                initial={{ opacity: 0, x: 100 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
                 viewport={{ once: false }}
-                className="absolute top-0 md:left-10 -left-2">
-                <img src="/assets/home/lamp.png" alt="lamp" className="md:w-[250px] w-[80px]" />
+                className="absolute md:-top-2 -top-4 md:right-10 right-2">
+                <img src="/assets/home/lamp.png" alt="lamp" className=" max-w-[70px] md:max-w-[200px]" />
             </motion.div>
 
             <div className="container mx-auto px-6 lg:px-12 relative z-10">

@@ -44,7 +44,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative w-full md:min-h-[100vh] flex flex-col justify-center max-md:py-20 max-md:pb-24 md:pb-10 overflow-hidden">
+    <section className="relative w-full md:min-h-[100vh]  flex flex-col justify-center max-md:py-20 max-md:pb-24 md:pb-10 overflow-hidden">
       {/* Background Carousel */}
       <div className="absolute inset-0">
         {images.map((src, index) => (
@@ -119,7 +119,7 @@ export default function Hero() {
             alt="Hero Quran"
             width={500}
             height={500}
-            className="w-[75%] xl:w-[80%] max-w-md object-contain relative z-10"
+            className="w-[75%] max-w-md object-contain relative z-10"
           />
         </motion.div>
       </div>
@@ -132,7 +132,7 @@ export default function Hero() {
           preserveAspectRatio="none"
           className="w-full h-[100px] rotate-180"
         >
-          <g fill="#EFF2FA">
+          <g fill="white">
             <path
               d="M500 80.7C358 68 0 4 0 4V0h1000v84.7c-216 23.3-358 8.6-500-4Z"
               opacity=".3"

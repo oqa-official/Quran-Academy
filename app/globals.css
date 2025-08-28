@@ -221,6 +221,14 @@
 }
 
 
+/* React date picker */
+/* in your globals.css */
+.rdp-day_selected {
+  border: none !important;
+}
+
+
+
 
 
 

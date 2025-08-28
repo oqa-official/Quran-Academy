@@ -1,17 +1,6 @@
-import Image from "next/image";
+import { Check, Star, User } from "lucide-react";
 
-type Props = {
-  title: string;
-  price: number;
-  reviews: number;
-  rating: number;
-  teacher: string;
-  students: number;
-  avatar: string;
-  img: string;
-};
-
-export default function CourseCard({
+function CourseCard({
   title,
   price,
   reviews,
@@ -20,63 +9,80 @@ export default function CourseCard({
   students,
   avatar,
   img,
-}: Props) {
+}: any) {
   return (
-    <div className="relative overflow-hidden bg-white rounded-t-full shadow-xl w-88 h-auto transition hover:shadow-2xl hover:cursor-pointer hover:scale-[1.005]">
-      {/* Minaret Dome */}
-      <div className="absolute top-0 left-0 right-0 h-44">
-        <div className="absolute inset-0 bg-white [clip-path:polygon(0_100%,_100%_100%,_100%_25%,_50%_0%,_0%_25%)] shadow-md"></div>
-      </div>
+    <div className="keen-slider__slide p-2 md:py-6 py-2">
+      <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg cursor-pointer shadow-md shadow-gray-400 transition-all duration-300 hover:scale-[1.030]">
+        {/* Top Image */}
+        <div className="relative ">
+          <img src={img} alt={title} className="w-full h-56 object-cover" />
 
-      {/* Image */}
-      <div className="relative z-10 -mt-2">
-        <Image
-          src={img}
-          alt={title}
-          width={384}
-          height={224}
-          className="w-full h-56 object-cover rounded-t-full transition-transform duration-300 hover:scale-105"
-        />
-        {/* Price Badge */}
-        <div className="absolute bottom-3 right-4 bg-yellow-400 text-black font-bold px-3 py-1 rounded-full shadow">
-          ${price}
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 p-6 flex flex-col justify-between h-80">
-        {/* Reviews */}
-        <div className="flex justify-center items-center mb-3 text-yellow-500">
-          {"★".repeat(rating)}{"☆".repeat(5 - rating)}
-          <span className="ml-2 text-gray-600 text-sm">({reviews} Reviews)</span>
-        </div>
-
-        {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-800 mb-3 text-center">{title}</h3>
-
-        {/* Feature points */}
-        <ul className="text-sm text-gray-600 space-y-1 mb-4">
-          <li>✔️ Interactive Lessons</li>
-          <li>✔️ Step-by-step Guidance</li>
-          <li>✔️ Practical Assignments</li>
-          <li>✔️ Certificate upon Completion</li>
-        </ul>
-
-        {/* Teacher Info (aligned row) */}
-        <div className="flex items-center justify-between border-t pt-4">
-          <div className="flex items-center gap-3">
-            <Image
-              src={avatar}
-              alt={teacher}
-              width={36}
-              height={36}
-              className="rounded-full"
-            />
-            <span className="text-sm text-gray-700 font-medium">{teacher}</span>
+          <div className="absolute right-1 bg-accent p-2 rounded-full -bottom-5 flex items-baseline justify-center">
+            <span className="text-sm self-start text-black group-hover:text-white transition-colors">
+              $
+            </span>
+            <h2 className="text-2xl font-bold text-gray-800 group-hover:text-white transition-colors">
+              {price}
+            </h2>
           </div>
-          <span className="text-sm text-gray-500">👥 {students}</span>
+        </div>
+
+        {/* Content */}
+        <div className="p-3">
+          {/* Rating */}
+          <div className="flex flex-col lg:flex-row items-center justify-between">
+            <div className="flex items-center justify-start text-yellow-500 text-sm mb-2">
+              {[...Array(rating)].map((_, i) => (
+                <span key={i}>
+                  <Star className="fill-accent" size={15} />
+                </span>
+              ))}
+              <span className="ml-2 text-gray-600">({reviews} Reviews)</span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h2
+            className="text-lg font-bold text-gray-800 mb-3 text-start max-w-[280px]"
+            dangerouslySetInnerHTML={{ __html: title }}
+          />
+
+          {/* Features */}
+          <ul className="space-y-2 mt-4">
+            {[
+              "Interactive Lessons",
+              "Step-by-step Guidance",
+              "Practical Assignments",
+              "Certificate upon Completion",
+            ].map((item, idx) => (
+              <li
+                key={idx}
+                className="flex items-center text-gray-600 text-xs hover:text-primary"
+              >
+                <Check className="w-4 h-4 mr-2 text-accent" strokeWidth={3} />
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          {/* Teacher */}
+          <div className="flex items-center justify-between space-x-2 mt-4 border-t pt-3">
+            <div className="flex justify-start items-center gap-1">
+              <img src={avatar} alt={teacher} className="w-8 h-8 rounded-full" />
+              <span className="text-sm font-medium text-gray-700">
+                {teacher}
+              </span>
+            </div>
+            <div className="flex justify-center items-center">
+              <User size={15} fill="gray" className="text-gray-500" />
+              <span className="text-sm">{students}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+
+export default CourseCard

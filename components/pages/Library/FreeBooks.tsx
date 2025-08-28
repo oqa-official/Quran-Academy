@@ -42,7 +42,7 @@ const FreeBooks: React.FC = () => {
     const displayedBooks = filteredBooks.slice(startIndex, startIndex + booksPerPage);
 
     return (
-        <section className="py-16 bg-gray-50 container">
+        <section className="py-16  container">
             <div className="">
 
                <div className="flex flex-col justify-between items-center">

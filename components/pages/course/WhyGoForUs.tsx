@@ -55,7 +55,7 @@ const WhyGoForUs = () => {
                             <img
                                 src="/assets/home/quran4.png"
                                 alt="Instructor teaching"
-                                className="w-[80%] h-auto object-cover mx-auto"
+                                className="w-[90%] h-auto object-cover mx-auto"
                             />
                         </div>
                     </div>

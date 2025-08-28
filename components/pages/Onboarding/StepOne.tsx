@@ -37,6 +37,10 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
     <FormWrapper
       title="Let’s Get Started"
       verse="Choose who this program is for and select the level."
+      aayat="بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+      step={0}
+      totalSteps={3}
+
     >
       {/* User type selection (checkboxes) */}
       <div className="flex gap-6 justify-center">
@@ -61,19 +65,17 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
           <div
             key={lvl.key}
             onClick={() => setSelectedLevel(lvl.key)}
-            className={`cursor-pointer border rounded-xl overflow-hidden shadow-sm transition-all ${
-              selectedLevel === lvl.key
+            className={`cursor-pointer border rounded-xl overflow-hidden shadow-sm transition-all ${selectedLevel === lvl.key
                 ? "bg-primary text-white border-primary"
                 : "bg-white text-gray-800 hover:shadow-md"
-            }`}
+              }`}
           >
             {/* Image */}
             <img
               src={lvl.img}
               alt={lvl.name}
-              className={`mx-auto h-32 p-3 object-cover transition-all ${
-                selectedLevel === lvl.key ? "grayscale-0" : "grayscale"
-              }`}
+              className={`mx-auto h-32 p-3 object-cover transition-all ${selectedLevel === lvl.key ? "grayscale-0" : "grayscale"
+                }`}
             />
 
             {/* Content */}
@@ -87,11 +89,10 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
 
       {/* Next button */}
       <button
-        className={`mt-6 w-full py-2 rounded-lg font-semibold ${
-          isDisabled
+        className={`mt-6 w-full py-2 rounded-lg font-semibold ${isDisabled
             ? "bg-gray-300 cursor-not-allowed"
             : "bg-primary text-white hover:bg-accent"
-        }`}
+          }`}
         disabled={isDisabled}
         onClick={handleNext}
       >

@@ -1,45 +1,45 @@
-"use client";
-import React from "react";
 
-import { TextAnimate } from "@/components/magicui/text-animate";
-import { motion } from "framer-motion";
+import { ReactNode } from "react";
+
+interface FormWrapperProps {
+  title?: string;
+  verse?: string;
+  aayat?: string;
+  step: number;
+  totalSteps: number;
+  children: ReactNode;
+  progress?: number; // ✅ added
+}
 
 export default function FormWrapper({
-    title,
-    verse = "“Indeed, this Qur’an guides to that which is most suitable...” (17:9)", // default verse
-    aayat = "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
-    children,
-}: {
-    title: string;
-    verse?: string;
-    aayat? : string
-    children: React.ReactNode;
-}) {
-    return (
-        <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl">
+  title,
+  verse,
+  aayat,
+  step,
+  totalSteps,
+  children,
+  progress,
+}: FormWrapperProps) {
+  return (
+    <div className="w-full max-w-2xl bg-white text-center  rounded-2xl p-2">
+      {/* Header Section */}
+      {title && <h2 className="text-xl font-semibold mb-2">{title}</h2>}
+      {verse && <p className="text-base text-gray-500">{verse}</p>}
+      {aayat && <p className="text-2xl my-2 text-accent">{aayat}</p>}
 
-            <motion.h2
-                initial={{ opacity: 0, y: -50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                viewport={{ once: false }}
-                className="text-2xl md:text-3xl mt-3 font-thin  mb-6 text-center text-accent"
-            >
-                {aayat}
-            </motion.h2>
-
-
-            <TextAnimate
-                animation="blurIn"
-                by="word"
-                duration={0.6}
-                as="h2"
-                className="text-2xl md:text-3xl -mt-3 font-bold mb-2 text-center text-primary"
-            >
-                {title}
-            </TextAnimate>
-            {verse && <p className="text-center text-gray-500 mt-2">{verse}</p>}
-            <div className="mt-6">{children}</div>
+      {/* ✅ Progress Bar */}
+      {progress !== undefined && (
+        <div className="w-full bg-gray-200 rounded-full h-2 m-1">
+          <div
+            className="bg-accent h-2 rounded-full transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
         </div>
-    );
+      )}
+
+
+      {/* Actual Content */}
+      <div>{children}</div>
+    </div>
+  );
 }

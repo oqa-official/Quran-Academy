@@ -1,4 +1,5 @@
 
+import { StatisticsSection } from '@/components/pages/About-us/Statistics'
 import CTASection from '@/components/pages/home/CTAsection'
 import FeaturedSectionCarousel from '@/components/pages/home/FeaturedSectionCarousel'
 import FloatingButtons from '@/components/pages/home/FloatingButtons'
@@ -14,11 +15,12 @@ export default function page() {
   return (
     <>
      <Hero/>
-     <StatsSection/>
+     {/* <StatsSection/> */}
      <WhyChooseUs/>
-     <FeaturedSectionCarousel/>
+     <FeaturedSectionCarousel lamp={true}/>
      <VisionMission/>
      <Pricing_Section/>
+     <StatisticsSection/>
      <HowItWorks/>
      <TestimonialsSection/>
      <CTASection/>
