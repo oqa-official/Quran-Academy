@@ -2,7 +2,6 @@
 import { useState, useMemo } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-
 import {
   Select,
   SelectContent,
@@ -20,7 +19,7 @@ const normalizeDate = (date: Date) => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-export default function StepThree({ formData, setFormData, goNext, goBack, onSubmit }: any) {
+export default function StepThree({ formData, setFormData, goNext, goBack }: any) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     formData.startDate ? normalizeDate(new Date(formData.startDate)) : undefined
   );
@@ -60,8 +59,10 @@ export default function StepThree({ formData, setFormData, goNext, goBack, onSub
       title="Schedule Your Classes"
       verse="Pick a date and time for your free trial lesson"
       aayat="خَيْرُکُم مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"
-      step={2}
-      totalSteps={3}
+      step={3}
+      totalSteps={5}
+            hideProgress={true}
+
     >
       <div className="flex flex-col md:flex-row gap-2">
         {/* Calendar */}
@@ -91,9 +92,10 @@ export default function StepThree({ formData, setFormData, goNext, goBack, onSub
               }
             }}
             disabled={disabledDates}
-            className="mx-auto"
             classNames={{
-              day_selected: "bg-blue-800 text-white hover:bg-blue-800 rounded-full",
+              day_disabled: "rdp-day_disabled",
+              day_selected: "rdp-day_selected",
+              day_today: "rdp-day_today",
             }}
           />
 
@@ -175,10 +177,13 @@ export default function StepThree({ formData, setFormData, goNext, goBack, onSub
 
         <button
           type="button"
-          onClick={onSubmit} // 👈 triggers parent handler
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          disabled={!selectedDate && !time && !timezone}
+          onClick={goNext}
+          className={`${isDisabled
+            ? "bg-gray-300 cursor-not-allowed"
+            : "bg-primary text-white hover:bg-accent"} px-4 py-2  rounded-md`}
         >
-          Submit
+          Next
         </button>
       </div>
     </FormWrapper>

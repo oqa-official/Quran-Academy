@@ -2,7 +2,7 @@
 
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Card } from "@/components/ui/card"
-import { FileText, Clock, ChevronDown } from "lucide-react"
+import { FileText, Clock } from "lucide-react"
 
 const lessons = [
   { id: 1, title: "Importance of Quran", duration: "2 Days" },
@@ -19,6 +19,14 @@ const lessons = [
   { id: 12, title: "The Sakoon and Jazm", duration: "14 Days" },
 ]
 
+// helper for truncating only in mobile
+const truncateForMobile = (text: string, length: number) => {
+  if (typeof window !== "undefined" && window.innerWidth < 768) {
+    return text.length > length ? text.slice(0, length) + "…" : text
+  }
+  return text
+}
+
 export default function CurriculumTab() {
   return (
     <Card className="p-4 lg:px-10">
@@ -29,14 +37,16 @@ export default function CurriculumTab() {
             <AccordionTrigger className="flex justify-between items-center py-3">
               <div className="flex items-center space-x-3">
                 <FileText className="w-5 h-5 text-yellow-500" />
-                <span className="text-sm font-medium">
-                  Lesson {lesson.id} <span className="ml-2 font-semibold">{lesson.title}</span>
+                <span className="text-xs md:text-sm font-medium">
+                  Lesson {lesson.id}{" "}
+                  <span className="ml-2 font-semibold">
+                    {truncateForMobile(lesson.title, 15)}
+                  </span>
                 </span>
               </div>
-              <div className="hidden md:flex items-center space-x-2 ms-auto">
-                <Clock className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-600">{lesson.duration}</span>
-                <ChevronDown className="w-4 h-4 text-gray-500" />
+              <div className="flex items-center space-x-2 ms-auto">
+                <Clock className="w-4 h-4 text-gray-500 hidden md:flex" />
+                <span className="text-xs md:text-sm text-gray-600 whitespace-nowrap">{lesson.duration}</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>

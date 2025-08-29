@@ -17,7 +17,7 @@ function CourseCard({
         <div className="relative ">
           <img src={img} alt={title} className="w-full h-56 object-cover" />
 
-          <div className="absolute right-1 bg-accent p-2 rounded-full -bottom-5 flex items-baseline justify-center">
+          <div className="absolute right-2 bg-accent p-2 rounded-full -bottom-5 flex items-baseline justify-center">
             <span className="text-sm self-start text-black group-hover:text-white transition-colors">
               $
             </span>

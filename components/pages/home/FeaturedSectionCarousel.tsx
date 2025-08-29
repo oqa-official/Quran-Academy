@@ -142,7 +142,7 @@ export default function FeaturedSectionCarousel({
 
         {/* Dots for Mobile */}
         {loaded && instanceRef.current && (
-          <div className="flex justify-center md:hidden">
+          <div className="flex justify-center md:hidden mt-2">
             {[
               ...Array(instanceRef.current.track.details.slides.length).keys(),
             ].map((idx) => (

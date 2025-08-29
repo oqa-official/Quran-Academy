@@ -223,15 +223,52 @@
 
 /* React date picker */
 /* in your globals.css */
-.rdp-day_selected {
-  border: none !important;
+/* global.css */
+
+
+/* Root variables for DayPicker */
+.rdp-root {
+  --rdp-accent-color: #F4B400 !important;          
+  --rdp-accent-background-color: #F4B400 !important; 
+    --rdp-disabled-opacity: 0.6 !important;
 }
 
+/* Disabled days: strike-through */
+.rdp-day_disabled {
+  text-decoration: line-through !important;
+  color: #9ca3af !important; /* gray-400 */
+}
 
+/* Current day (today) */
+.rdp-day_today {
+  color: #F4B400 !important; /* yellow text */
+  font-weight: bold;
+}
 
+/* Selected day */
+.rdp-day_selected {
+  color: #0D285C !important;        /* text blue */
+  background-color: #F4B400 !important; /* bg yellow */
+  border-radius: 9999px;             /* fully rounded */
+}
 
+/* Add this to your globals.css or a separate stylesheet */
+.PhoneInput {
+  width: 100%;
+  border: 1px solid #e5e7eb; /* match other inputs */
+  border-radius: 0.125rem;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  padding-inline: 4px;
+}
 
-
+.PhoneInput .PhoneInputInput {
+  width: 100%;
+  padding: 0.5rem; /* match your other inputs */
+  border: none;
+  outline: none;
+}
 
 
 

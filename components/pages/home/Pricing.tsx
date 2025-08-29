@@ -67,18 +67,18 @@ function CourseCard({ src, price, days_week, features }: any) {
           <img
             src="/assets/home/card_top.png"
             alt="card top"
-            className="w-full h-full group-hover:hidden"
+            className="w-full h-full group-hover:hidden group-focus:hidden group-active:hidden"
           />
           <img
             src="/assets/home/hover_card_top.png"
             alt="card top hover"
-            className="w-full h-full hidden group-hover:block"
+            className="w-full h-full hidden group-hover:block group-focus:block group-active:block"
           />
         </div>
 
         {/* Card content */}
-        <div className="p-3 bg-white group-hover:bg-primary -mt-1 shadow-2xl shadow-black">
-          <div className="text-primary bg-[#bababa33] scale-x-110 py-2 flex justify-center group-hover:text-white">
+        <div className="p-3 bg-white group-hover:bg-primary group-focus:bg-primary group-active:bg-primary group-focus::bg-primary hover:bg-primary -mt-1 shadow-2xl shadow-black">
+          <div className="text-primary bg-[#bababa33] scale-x-110 py-2 flex justify-center group-hover:text-white group-focus:text-white group-active:text-white">
             <span>{days_week}</span>
           </div>
 
@@ -91,13 +91,13 @@ function CourseCard({ src, price, days_week, features }: any) {
           {/* Price */}
           <div className="text-center mb-10 mt-5">
             <div className="flex items-baseline justify-center space-x-1">
-              <span className="text-xl self-start text-gray-600 group-hover:text-white transition-colors">
+              <span className="text-xl self-start text-gray-600 group-hover:text-white group-focus:text-white group-active:text-white transition-colors">
                 $
               </span>
-              <h2 className="text-6xl font-bold text-gray-800 group-hover:text-white transition-colors">
+              <h2 className="text-6xl font-bold text-gray-800 group-hover:text-white group-focus:text-white group-active:text-white transition-colors">
                 {price}
               </h2>
-              <span className="text-sm text-gray-600 group-hover:text-white transition-colors">
+              <span className="text-sm text-gray-600 group-hover:text-white group-focus:text-white group-active:text-white transition-colors">
                 /month
               </span>
             </div>
@@ -109,9 +109,9 @@ function CourseCard({ src, price, days_week, features }: any) {
             {features.map((item: string, idx: number) => (
               <li
                 key={idx}
-                className="flex items-start  text-gray-600 group-hover:text-white transition-colors text-sm"
+                className="flex items-start  text-gray-600 group-hover:text-white group-active:text-white group-focus:text-white transition-colors text-sm"
               >
-                <Check className="w-4 h-4 mr-2 mt-1 text-gray-600 group-hover:text-white transition-colors" />
+                <Check className="w-4 h-4 mr-2 mt-1 text-gray-600 group-hover:text-white transition-colors group-active:text-white group-focus:text-white"  />
                 {item}
               </li>
             ))}
@@ -120,7 +120,7 @@ function CourseCard({ src, price, days_week, features }: any) {
           {/* CTA */}
           <div className="flex justify-center items-center space-x-2 mt-4 pt-2">
             <Button
-              className="bg-transparent text-primary border-primary group-hover:text-white group-hover:border-white hover:bg-transparent rounded-[2px] mb-10"
+              className="bg-transparent text-primary border-primary group-hover:text-white group-active:text-white group-focus:text-white group-hover:border-white group-active:border-white group-focus:border-white hover:bg-transparent rounded-[2px] mb-10"
               size={"lg"}
               variant={"outline"}
             >
@@ -209,7 +209,7 @@ export default function Pricing_Section({
 
         {/* Dots */}
         {loaded && instanceRef.current && (
-          <div className="flex justify-center md:hidden gap-2">
+          <div className="flex justify-center md:hidden gap-2 mt-2">
             {[
               ...Array(instanceRef.current.track.details.slides.length).keys(),
             ].map((idx) => (

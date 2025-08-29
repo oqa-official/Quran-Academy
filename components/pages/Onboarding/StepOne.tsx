@@ -34,12 +34,15 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
   const isDisabled = !selectedUser || !selectedLevel;
 
   return (
+    <div>
     <FormWrapper
       title="Let’s Get Started"
       verse="Choose who this program is for and select the level."
       aayat="بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
-      step={0}
-      totalSteps={3}
+      step={1}
+      totalSteps={5}
+      hideProgress={true}
+
 
     >
       {/* User type selection (checkboxes) */}
@@ -99,5 +102,6 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
         Next
       </button>
     </FormWrapper>
+    </div>
   );
 }
