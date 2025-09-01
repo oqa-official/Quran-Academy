@@ -14,7 +14,7 @@ import FormWrapper from "./FormWrapper";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
-export default function StepFour({ formData, setFormData, goNext, goBack }: any) {
+export default function StepFour({ formData, setFormData, goNext, goBack, handleSubmit }: any) {
   const [inputs, setInputs] = useState({
     name: formData.name || "",
     email: formData.email || "",
@@ -86,7 +86,7 @@ export default function StepFour({ formData, setFormData, goNext, goBack }: any)
               : "bg-primary text-white hover:bg-accent"
           }`}
           disabled={isDisabled}
-          onClick={handleNext}
+          onClick={handleSubmit}
         >
           Next
         </button>

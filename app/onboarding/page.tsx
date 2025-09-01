@@ -77,6 +77,7 @@ export default function OnboardingPage() {
 
           {step === 4 && (
             <StepFour
+            handleSubmit={handleSubmit}
               formData={formData}
               setFormData={setFormData}
               goBack={goBack}

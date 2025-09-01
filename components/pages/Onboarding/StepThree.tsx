@@ -61,7 +61,7 @@ export default function StepThree({ formData, setFormData, goNext, goBack }: any
       aayat="خَيْرُکُم مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"
       step={3}
       totalSteps={5}
-            hideProgress={true}
+      hideProgress={true}
 
     >
       <div className="flex flex-col md:flex-row gap-2">
@@ -72,25 +72,21 @@ export default function StepThree({ formData, setFormData, goNext, goBack }: any
             selected={selectedDate}
             onSelect={(date) => {
               if (date) {
-                const normalized = normalizeDate(date);
-                setSelectedDate(normalized);
+                setSelectedDate(date);
 
-                // 👇 update formData
+                // Store exactly what user selected (local to them)
                 setFormData((prev: any) => ({
                   ...prev,
-                  startDate: normalized.toISOString().split("T")[0], // YYYY-MM-DD
-                }));
-
-                // reset time + timezone on new date
-                setTime("");
-                setTimezone("");
-                setFormData((prev: any) => ({
-                  ...prev,
+                  startDate: date,  // keep raw Date object
                   startTime: "",
                   timezone: "",
                 }));
+
+                setTime("");
+                setTimezone("");
               }
             }}
+
             disabled={disabledDates}
             classNames={{
               day_disabled: "rdp-day_disabled",

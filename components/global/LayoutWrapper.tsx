@@ -10,7 +10,7 @@ interface LayoutWrapperProps {
 }
 
 // ✅ routes where header/footer should NOT appear
-const excludedRoutes = ["/onboarding/*", "/auth/*"];
+const excludedRoutes = ["/onboarding/*", "/auth/*", "/admin-dashboard/*"];
 
 export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     const pathname = usePathname();
