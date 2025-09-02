@@ -1,8 +1,11 @@
+import CoursesPage from '@/components/pages/Admin-Dashboard/courses/CoursesPage'
 import React from 'react'
 
 function page() {
   return (
-    <div>page</div>
+    <div>
+      <CoursesPage/>
+    </div>
   )
 }
 

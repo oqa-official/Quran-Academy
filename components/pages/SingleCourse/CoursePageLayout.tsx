@@ -1,3 +1,4 @@
+
 "use client";
 import { useState } from "react";
 import { Star } from "lucide-react";
@@ -6,8 +7,7 @@ import CurriculumTab from "./CurriculumTab";
 import ReviewComponent from "./Reviews";
 import InstructorInfo from "./InstructorInfo";
 
-export default function CoursePageLayout() {
-  const [rating] = useState(4.5);
+export default function CoursePageLayout({ course }: { course: any }) {
   const [activeTab, setActiveTab] = useState("overview");
 
   return (
@@ -15,25 +15,27 @@ export default function CoursePageLayout() {
       <div className="lg:col-span-3 space-y-6 w-full">
         {/* Course Info */}
         <div className="w-full">
-          <h1 className="text-4xl font-bold mb-2">
-            Learn Quranic Studies for Beginner
-          </h1>
+          <h1 className="text-4xl font-bold mb-2">{course.title ? course.title : "Quran Learning For Beginners"}</h1>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col md:flex-row">
             <div className="flex items-center gap-2 text-yellow-500">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
                   size={18}
-                  className={i < Math.round(rating) ? "fill-yellow-500" : ""}
+                  // className={i < Math.round(course.rating) ? "fill-yellow-500" : ""}
+                  className={i < Math.round(5) ? "fill-yellow-500" : ""}
                 />
               ))}
-              <span className="text-gray-600 ml-2">{rating} (32 Reviews)</span>
+              <span className="text-gray-600 ml-2">
+                {/* {course.rating} ({course.reviewsCount} Reviews) */}
+                 {27} Reviews
+              </span>
             </div>
             <div>
               <p className="font-medium">
-                Category :{" "}
-                <span className="font-semibold text-primary">Level 1</span>
+                Duration:{" "}
+                <span className="font-semibold text-primary">{course.duration ? course.duration : "1 Year"}</span>
               </p>
             </div>
           </div>
@@ -42,13 +44,13 @@ export default function CoursePageLayout() {
         {/* Image */}
         <div className="rounded-lg overflow-hidden shadow-md">
           <img
-            src="/assets/courses/course_img.png"
-            alt="Course Image"
+            src={course.image}
+            alt={course.title}
             className="w-full object-cover"
           />
         </div>
 
-        {/* Custom Tabs */}
+        {/* Tabs */}
         <div className="w-full">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
@@ -60,10 +62,10 @@ export default function CoursePageLayout() {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`border-[1px] rounded-sm px-4 py-1 text-lg font-thin  transition-all duration-200 
+                className={`border-[1px] rounded-sm px-4 py-1 text-lg font-thin transition-all duration-200 
                   ${
                     activeTab === tab.key
-                      ? "bg-primary text-white border-primary "
+                      ? "bg-primary text-white border-primary"
                       : "text-primary border-primary hover:bg-primary/10"
                   }`}
               >
@@ -73,9 +75,9 @@ export default function CoursePageLayout() {
           </div>
 
           <div className="mt-6">
-            {activeTab === "overview" && <Overview />}
-            {activeTab === "curriculum" && <CurriculumTab />}
-            {activeTab === "instructor" && <InstructorInfo />}
+            {activeTab === "overview" && <Overview overview={course.overview} />}
+            {activeTab === "curriculum" && <CurriculumTab curriculum={course.curriculum} />}
+            {activeTab === "instructor" && <InstructorInfo instructor={course.instructor} />}
             {activeTab === "reviews" && <ReviewComponent />}
           </div>
         </div>

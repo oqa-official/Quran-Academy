@@ -8,7 +8,7 @@ export async function GET() {
     await connectToDB();
     const courses = await Course.find()
       .populate("instructor") // include instructor details
-      .populate("reviews");   // include reviews
+      // .populate("reviews");   // include reviews
 
     return NextResponse.json(courses, { status: 200 });
   } catch (error: any) {

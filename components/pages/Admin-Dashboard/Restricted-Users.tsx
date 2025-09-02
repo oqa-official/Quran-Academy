@@ -7,12 +7,7 @@ interface RestrictedUsersProps {
   children: ReactNode;
 }
 
-const allowedEmails = [
-  'muhammad@beyondhut.com',
-  'fahad.aslam4500@gmail.com',
-  'mohammad142870@gmail.com',
-  'saitthahmedmaqsood@gmail.com',
-];
+
 
 function RestrictedUsers({ children }: RestrictedUsersProps) {
   const router = useRouter();

@@ -54,7 +54,7 @@ export default function TeachersPage() {
   }, []);
 
   return (
-    <div className="md:p-6 space-y-6">
+    <div className="container">
       <h1 className="text-2xl font-bold mb-6">Manage Instructors</h1>
 
       {/* Add New Instructor */}

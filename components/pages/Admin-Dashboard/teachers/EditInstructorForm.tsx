@@ -162,7 +162,7 @@ export default function EditInstructorForm({
 
       if (!res.ok) throw new Error("Failed to update instructor.");
 
-      toast.success("✅ Instructor updated successfully!");
+      toast.success("Instructor updated successfully!");
       onSuccess();
     } catch (err: unknown) {
       console.error("🔥 Error updating instructor:", err);

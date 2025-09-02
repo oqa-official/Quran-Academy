@@ -2,10 +2,10 @@ import React from 'react'
 import CourseInfo from './CourseInfo'
 import FeaturedBooks from './FeaturedBooks'
 
-function CourseSidebar() {
+function CourseSidebar({ course }: { course: any }) {
   return (
     <div className='flex flex-col gap-4'>
-        <CourseInfo/>
+        <CourseInfo course={course}/>
         <FeaturedBooks/>
     </div>
   )

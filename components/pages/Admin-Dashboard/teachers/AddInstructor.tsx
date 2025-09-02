@@ -106,7 +106,7 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
 
             if (!res.ok) throw new Error("Failed to add instructor.");
 
-            toast.success("✅ Instructor added successfully!");
+            toast.success("Instructor added successfully!");
             console.log("🎉 Instructor saved in DB");
 
             setForm({ name: "", designation: "", about: "", qualifications: "" });

@@ -4,7 +4,7 @@
 export default function AdminHeader() {
 
   return (
-    <header className="container px-10 bg-gray-300 shadow-md shadow-black p-4 flex items-center justify-between">
+    <header className="container px-10 bg-gray-300 shadow-md  p-4 flex items-center justify-between">
       <h1 className="text-xl font-semibold">
         Hi Admin
       </h1>

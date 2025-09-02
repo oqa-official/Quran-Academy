@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { OfferPopup } from "./OfferPopup";
 
 interface LayoutWrapperProps {
     children: ReactNode;

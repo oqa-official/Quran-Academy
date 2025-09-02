@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Clock, CalendarDays, BookOpen, DollarSign } from "lucide-react"
 
-function FeeStructureCard() {
+function FeeStructureCard({ course }: { course: any }) {
   const [days, setDays] = useState(3) // default
   const [duration, setDuration] = useState(60) // default 60 mins
 
@@ -31,7 +31,7 @@ function FeeStructureCard() {
         <div className="flex items-center gap-3  text-primary p-2 rounded-md">
           <Clock size={18} />
           <span className="font-medium">Course Duration:</span>
-          <span className="ml-auto">1 Year</span>
+          <span className="ml-auto">{course.duration ? course.duration : "2 Years"}</span>
         </div>
 
         {/* Days/Week */}
@@ -93,7 +93,7 @@ function FeeStructureCard() {
         <div className="flex items-center gap-3  text-primary p-2 rounded-md">
           <DollarSign size={18} />
           <span className="font-medium">Price:</span>
-          <span className="ml-auto text-xl font-medium text-accent">$90 / Month</span>
+          <span className="ml-auto text-xl font-medium text-accent">${course.price ? course.price : "80"} / Month</span>
         </div>
 
        

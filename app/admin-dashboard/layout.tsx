@@ -8,13 +8,13 @@ export default function AdminLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <RestrictedUsers>
-    <div className={` flex h-screen `}>
+    <div className={`flex  bg-white`}>
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-white">
         <AdminHeader />
-        <main className="flex-1 bg-white p-6 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto">
           {children}
         </main>
       </div>

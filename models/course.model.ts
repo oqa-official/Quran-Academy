@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const CourseSchema = new mongoose.Schema(
   {
-    image: { type: String, required: true }, // Cloudinary URL
+     image: {
+      type: String,
+      default:
+        "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cXVyYW58ZW58MHx8MHx8fDA%3D",
+    },
     cloudinaryImageId: {type : String, required : true}, // ✅ for cleanup
     title: { type: String, required: true },
     rating: { type: Number, default: 0 }, // avg rating e.g. 4.5
