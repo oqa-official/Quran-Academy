@@ -48,7 +48,7 @@ export default function BooksInfo({ books, onUpdate }: { books: Book[], onUpdate
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mt-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mt-4">
       {books.map((book) => (
         <div
           key={book._id}

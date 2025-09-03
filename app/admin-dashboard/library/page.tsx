@@ -53,7 +53,7 @@ export default function BooksPage() {
 
       {/* Loading Skeleton */}
       {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="space-y-3 max-w-[350px]">
               <Skeleton className="h-48 w-full rounded-md bg-primary"/>
