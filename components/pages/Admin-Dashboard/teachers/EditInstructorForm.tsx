@@ -176,10 +176,11 @@ export default function EditInstructorForm({
     <div className="fixed px-6 inset-0 bg-[#020000af]  flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-3"
+        className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-3 max-h-[95vh] overflow-y-scroll"
       >
         <h2 className="text-lg font-semibold mb-4">Edit Instructor</h2>
 
+        <label className="text-xs text-gray-500">Instructor Name</label>
         <input
           type="text"
           placeholder="Name"
@@ -189,6 +190,7 @@ export default function EditInstructorForm({
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
 
+        <label className="text-xs text-gray-500">Instructor Designation</label>
         <input
           type="text"
           placeholder="Designation"
@@ -198,14 +200,16 @@ export default function EditInstructorForm({
           onChange={(e) => setForm({ ...form, designation: e.target.value })}
         />
 
+        <label className="text-xs text-gray-500">Instructor Details</label>
         <textarea
           placeholder="About"
           required
-          className="w-full p-2 border rounded min-h-[80px]"
+          className="w-full p-2 border rounded min-h-[100px]"
           value={form.about}
           onChange={(e) => setForm({ ...form, about: e.target.value })}
         />
 
+        <label className="text-xs text-gray-500">Instructor Qualifications (One Per Line)</label>
         <textarea
           placeholder="Qualifications (one per line)"
           className="w-full p-2 border rounded min-h-[80px]"
@@ -213,6 +217,8 @@ export default function EditInstructorForm({
           onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
         />
 
+
+        <label className="text-xs text-gray-500">Change Instructor Image</label>
         <input
           type="file"
           accept="image/*"

@@ -16,11 +16,14 @@ export default function CoursesGrid({ courses }: { courses: Course[] }) {
           />
           <h3 className="text-lg font-bold mt-2">{course.title}</h3>
           <p className="text-sm">{course.duration}</p>
-          <p className="font-medium text-xl">${course.price}</p>
-          <p className="text-xs mt-1">{course.overview?.summary}</p>
+          <h2 className="font-medium text-2xl">${course.price}</h2>
+          <p className="text-xs mt-1"> {course.overview.summary
+            ? course.overview.summary.split(" ").slice(0, 15).join(" ") +
+            (course.overview.summary.split(" ").length > 15 ? "..." : "")
+            : "No description available"}</p>
 
           <Link
-            href={`/admin-dashboard/edit-course/${course._id}`}
+            href={`/admin-dashboard/courses/edit-course/${course._id}`}
             className="mt-3 px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-center"
           >
             Edit Course

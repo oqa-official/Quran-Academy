@@ -1,3 +1,4 @@
+
 'use client'
 
 import React, { useState } from "react"
@@ -6,8 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Clock, CalendarDays, BookOpen, DollarSign } from "lucide-react"
 
 function FeeStructureCard({ course }: { course: any }) {
-  const [days, setDays] = useState(3) // default
-  const [duration, setDuration] = useState(60) // default 60 mins
+  const [days, setDays] = useState(2) // default
+  const [duration, setDuration] = useState(30) // default
 
   // handle days (min 2, max 5)
   const handleDaysChange = (value: number) => {
@@ -21,6 +22,24 @@ function FeeStructureCard({ course }: { course: any }) {
     setDuration(duration === 60 ? 30 : 60)
   }
 
+  // ✅ calculate price dynamically
+  const calculatePrice = () => {
+    let basePrice = course.price ? course.price : 80 // default fallback
+    let adjustment = 0
+
+    if (days === 3) adjustment = 10
+    else if (days === 4) adjustment = 20
+    else if (days === 5) adjustment = 25
+
+    let finalPrice = basePrice + adjustment
+
+    if (duration === 60) {
+      finalPrice = finalPrice * 2
+    }
+
+    return finalPrice
+  }
+
   return (
     <Card>
       <CardContent className="p-4 space-y-5">
@@ -28,14 +47,14 @@ function FeeStructureCard({ course }: { course: any }) {
         <h3 className="text-xl font-semibold text-gray-800">Fee Structure</h3>
 
         {/* Course Duration */}
-        <div className="flex items-center gap-3  text-primary p-2 rounded-md">
+        <div className="flex items-center gap-3 text-primary p-2 rounded-md">
           <Clock size={18} />
           <span className="font-medium">Course Duration:</span>
           <span className="ml-auto">{course.duration ? course.duration : "2 Years"}</span>
         </div>
 
         {/* Days/Week */}
-        <div className="flex items-center gap-3  text-primary p-2 rounded-md">
+        <div className="flex items-center gap-3 text-primary p-2 rounded-md">
           <CalendarDays size={18} />
           <span className="font-medium">Days/Week:</span>
           <div className="flex items-center gap-2 ml-auto">
@@ -60,46 +79,40 @@ function FeeStructureCard({ course }: { course: any }) {
         </div>
 
         {/* Duration per class */}
-        <div className="flex items-center gap-3  text-primary p-2 rounded-md">
+        <div className="flex items-center gap-3 text-primary p-2 rounded-md">
           <BookOpen size={18} />
           <span className="font-medium">Duration/Class:</span>
           <div className="flex items-center gap-2 ml-auto">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleDuration}
-            >
+            <Button variant="outline" size="sm" onClick={toggleDuration}>
               {duration === 60 ? "-" : "+"}
             </Button>
             <span>{duration} Mins</span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleDuration}
-            >
+            <Button variant="outline" size="sm" onClick={toggleDuration}>
               {duration === 30 ? "+" : "-"}
             </Button>
           </div>
         </div>
 
         {/* Classes/Month */}
-        <div className="flex items-center gap-3  text-primary p-2 rounded-md">
+        <div className="flex items-center gap-3 text-primary p-2 rounded-md">
           <CalendarDays size={18} />
           <span className="font-medium">Classes/Month:</span>
           <span className="ml-auto">20 Classes</span>
         </div>
 
         {/* Price */}
-        <div className="flex items-center gap-3  text-primary p-2 rounded-md">
-          <DollarSign size={18} />
+        <div className="flex items-center gap-3 text-primary p-2 rounded-md">
           <span className="font-medium">Price:</span>
-          <span className="ml-auto text-xl font-medium text-accent">${course.price ? course.price : "80"} / Month</span>
+          <h2 className="ml-auto text-xl font-semibold text-accent">
+            ${calculatePrice()} / Month
+          </h2>
         </div>
 
-       
-
         {/* Enroll Button */}
-        <Button size={'lg'} className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold">
+        <Button
+          size={"lg"}
+          className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold"
+        >
           Enroll Now
         </Button>
       </CardContent>

@@ -1,4 +1,10 @@
 "use client";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Course } from "@/lib/types/courses";
 import { Instructor } from "@/lib/types/instructor";
 import { Loader, UploadCloud } from "lucide-react";
@@ -147,125 +153,131 @@ export default function AddCourseForm({ onSuccess }: AddCourseFormProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4 w-full bg-white p-6 shadow rounded-md"
-    >
-      <h2 className="text-xl font-bold">Add New Course</h2>
+    <Accordion type="single" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger className="w-full text-lg bg-gray-100 my-2 p-3 shadow-md">Add New Course</AccordionTrigger>
+        <AccordionContent>
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 w-full bg-gray-100 p-4 shadow rounded-md"
+          >
 
-      <input
-        type="text"
-        name="title"
-        placeholder="Course Title"
-        className="border p-2 w-full"
-        value={form.title || ""}
-        onChange={handleInput}
-        required
-      />
+            <input
+              type="text"
+              name="title"
+              placeholder="Course Title"
+              className="border p-2 w-full"
+              value={form.title || ""}
+              onChange={handleInput}
+              required
+            />
 
-      <input
-        type="text"
-        name="duration"
-        placeholder="Duration (e.g. 6 weeks)"
-        className="border p-2 w-full"
-        value={form.duration || ""}
-        onChange={handleInput}
-        required
-      />
+            <input
+              type="text"
+              name="duration"
+              placeholder="Duration (e.g. 6 weeks)"
+              className="border p-2 w-full"
+              value={form.duration || ""}
+              onChange={handleInput}
+              required
+            />
 
-      <input
-        type="number"
-        name="price"
-        placeholder="Price"
-        className="border p-2 w-full"
-        value={form.price || ""}
-        onChange={handleInput}
-        required
-      />
+            <input
+              type="number"
+              name="price"
+              placeholder="Price"
+              className="border p-2 w-full"
+              value={form.price || ""}
+              onChange={handleInput}
+              required
+            />
 
-      <select
-        name="instructor"
-        value={form.instructor || ""}
-        onChange={handleInput}
-        className="border p-2 w-full"
-        required
-      >
-        <option value="">Select Instructor</option>
-        {instructors.map((inst) => (
-          <option key={inst._id} value={inst._id}>
-            {inst.name}
-          </option>
-        ))}
-      </select>
+            <select
+              name="instructor"
+              value={form.instructor || ""}
+              onChange={handleInput}
+              className="border p-2 w-full"
+              required
+            >
+              <option value="">Select Instructor</option>
+              {instructors.map((inst) => (
+                <option key={inst._id} value={inst._id}>
+                  {inst.name}
+                </option>
+              ))}
+            </select>
 
-      <label className="ms-1 text-gray-400">Choose Course Banner Image</label>
-      <div className="flex justify-start items-center gap-2 w-full p-2 border rounded ">
-        <UploadCloud />
-        <input
-          type="file"
-          placeholder="Upload Image"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
-      </div>
-      {previewUrl && (
-        <img src={previewUrl} alt="Preview" className="h-32 mt-2 rounded" />
-      )}
+            <label className="ms-1 text-gray-400">Choose Course Banner Image</label>
+            <div className="flex justify-start items-center gap-2 w-full p-2 border rounded ">
+              <UploadCloud />
+              <input
+                type="file"
+                placeholder="Upload Image"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </div>
+            {previewUrl && (
+              <img src={previewUrl} alt="Preview" className="h-32 mt-2 rounded" />
+            )}
 
-      <div className="bg-gray-100 rounded-md p-5">
-        <p className="ms-1 my-1">Course Overview</p>
-        <textarea
-          name="summary"
-          placeholder="Course Summary"
-          className="border p-2 w-full"
-          value={form.overview?.summary || ""}
-          onChange={handleInput}
-        />
+            <div className="bg-white rounded-md p-5">
+              <p className="ms-1 my-1">Course Overview</p>
+              <textarea
+                name="summary"
+                placeholder="Course Summary"
+                className="border p-2 w-full"
+                value={form.overview?.summary || ""}
+                onChange={handleInput}
+              />
 
-        <textarea
-          name="whatYouLearn"
-          placeholder="What You'll Learn"
-          className="border p-2 w-full"
-          value={form.overview?.whatYouLearn || ""}
-          onChange={handleInput}
-        />
+              <textarea
+                name="whatYouLearn"
+                placeholder="What You'll Learn"
+                className="border p-2 w-full"
+                value={form.overview?.whatYouLearn || ""}
+                onChange={handleInput}
+              />
 
-        <textarea
-          name="whoFor"
-          placeholder="Who is this course for?"
-          className="border p-2 w-full"
-          value={form.overview?.whoFor || ""}
-          onChange={handleInput}
-        />
+              <textarea
+                name="whoFor"
+                placeholder="Who is this course for?"
+                className="border p-2 w-full"
+                value={form.overview?.whoFor || ""}
+                onChange={handleInput}
+              />
 
-        <textarea
-          name="requirements"
-          placeholder="Requirements"
-          className="border p-2 w-full"
-          value={form.overview?.requirements || ""}
-          onChange={handleInput}
-        />
+              <textarea
+                name="requirements"
+                placeholder="Requirements"
+                className="border p-2 w-full"
+                value={form.overview?.requirements || ""}
+                onChange={handleInput}
+              />
 
-        <textarea
-          name="certification"
-          placeholder="Certification Details"
-          className="border p-2 w-full"
-          value={form.overview?.certification || ""}
-          onChange={handleInput}
-        />
-      </div>
+              <textarea
+                name="certification"
+                placeholder="Certification Details"
+                className="border p-2 w-full"
+                value={form.overview?.certification || ""}
+                onChange={handleInput}
+              />
+            </div>
 
-      {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-red-500">{error}</p>}
 
 
 
-      <button
-        type="submit"
-        disabled={loading}
-        className={`disabled:bg-gray-200 disabled:cursor-not-allowed bg-accent w-full hover:bg-accent-hover flex justify-center text-white px-4 py-2 rounded-md`}
-      >
-        {loading ? <Loader className="animate-spin text-black text-center flex justify-center" /> : "Add Course"}
-      </button>
-    </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`disabled:bg-gray-200 disabled:cursor-not-allowed bg-accent w-full hover:bg-accent-hover flex justify-center text-white px-4 py-2 rounded-md`}
+            >
+              {loading ? <Loader className="animate-spin text-black text-center flex justify-center" /> : "Add Course"}
+            </button>
+          </form>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

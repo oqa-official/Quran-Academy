@@ -2,6 +2,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { UploadCloud, Loader } from "lucide-react";
+import { UploadCloud, Loader, ArrowBigLeft } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -28,6 +35,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Course, CurriculumItem } from "@/lib/types/courses";
 import { Instructor } from "@/lib/types/instructor";
+import ReviewList from "@/components/pages/SingleCourse/ReviewList";
+import ReviewListAdmin from "@/components/pages/Admin-Dashboard/courses/ReviewListAdmin";
+import Link from "next/link";
 
 // ✅ Local override type (only for this file)
 interface CourseWithPopulatedInstructor extends Omit<Course, "instructor"> {
@@ -135,35 +145,52 @@ function CurriculumEditor({
       <div className="mt-4 p-3 border rounded">
         <h4 className="font-medium mb-2">Add Curriculum Item</h4>
         <div className="grid grid-cols-2 gap-2">
-          <Input
-            type="number"
-            value={newItem.lessonNumber}
-            onChange={(e) =>
-              setNewItem({ ...newItem, lessonNumber: Number(e.target.value) })
-            }
-            placeholder="Lesson Number"
-          />
-          <Input
-            value={newItem.lessonName}
-            onChange={(e) =>
-              setNewItem({ ...newItem, lessonName: e.target.value })
-            }
-            placeholder="Lesson Name"
-          />
-          <Input
-            value={newItem.lessonDuration}
-            onChange={(e) =>
-              setNewItem({ ...newItem, lessonDuration: e.target.value })
-            }
-            placeholder="Duration (e.g. 45m)"
-          />
-          <Input
-            value={newItem.lessonDescription}
-            onChange={(e) =>
-              setNewItem({ ...newItem, lessonDescription: e.target.value })
-            }
-            placeholder="Description"
-          />
+          <div>
+            <label className="text-xs text-gray-500">Lesson Number</label>
+            <Input
+              type="number"
+              value={newItem.lessonNumber}
+              onChange={(e) =>
+                setNewItem({ ...newItem, lessonNumber: Number(e.target.value) })
+              }
+              placeholder="Lesson Number"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-500">Lesson Name</label>
+
+            <Input
+              value={newItem.lessonName}
+              onChange={(e) =>
+                setNewItem({ ...newItem, lessonName: e.target.value })
+              }
+              placeholder="Lesson Name"
+            />
+
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-500">Lesson Duration</label>
+            <Input
+              value={newItem.lessonDuration}
+              onChange={(e) =>
+                setNewItem({ ...newItem, lessonDuration: e.target.value })
+              }
+              placeholder="Duration (e.g. 45m)"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-500">Lesson Description</label>
+            <Input
+              value={newItem.lessonDescription}
+              onChange={(e) =>
+                setNewItem({ ...newItem, lessonDescription: e.target.value })
+              }
+              placeholder="Description"
+            />
+          </div>
         </div>
         <Button className="mt-3" onClick={handleAdd}>
           Add Lesson
@@ -245,7 +272,7 @@ export default function EditCourseForm() {
 
       await axios.put(`/api/db/courses/${id}`, payload);
       toast.success("Course Updated successfully")
-      router.push("/admin-dashboard");
+      router.push("/admin-dashboard/courses");
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong")
@@ -290,9 +317,18 @@ export default function EditCourseForm() {
 
   return (
     <div className="container p-6">
-      <h2 className="text-2xl font-bold mb-4">Edit Course</h2>
+      <div className="flex flex-row justify-between mb-4">
+        <h2 className="text-2xl font-bold">Edit Course</h2>
+
+        <Link href="/admin-dashboard/courses" className="flex gap-2 items-center justify-start">
+          <ArrowBigLeft />
+          <p className="text-lg">Go Back</p>
+        </Link>
+
+      </div>
 
       {/* Title / Duration / Price */}
+      <label className="text-xs text-gray-500">Course Title</label>
       <Input
         value={course.title}
         onChange={(e) => setCourse({ ...course, title: e.target.value })}
@@ -300,6 +336,7 @@ export default function EditCourseForm() {
         className="mb-3"
       />
 
+      <label className="text-xs text-gray-500">Course duration</label>
       <Input
         value={course.duration}
         onChange={(e) => setCourse({ ...course, duration: e.target.value })}
@@ -307,6 +344,8 @@ export default function EditCourseForm() {
         className="mb-3"
       />
 
+
+      <label className="text-xs text-gray-500">Course Price for 2 Days/week</label>
       <Input
         type="number"
         value={course.price}
@@ -347,7 +386,7 @@ export default function EditCourseForm() {
       </div>
 
       {/* Image Upload */}
-      <label className="ms-1 text-gray-400">Course Banner Image</label>
+      <label className="text-xs text-gray-500">Change Course Banner Image</label>
       <div className="flex items-center gap-2 w-full p-2 border rounded mb-3">
         <UploadCloud />
         <input
@@ -366,75 +405,112 @@ export default function EditCourseForm() {
       )}
 
       {/* Overview Fields */}
-      <div className="bg-gray-100 rounded-md p-5 mt-4">
-        <p className="ms-1 my-1">Course Overview</p>
-        <textarea
-          name="summary"
-          placeholder="Course Summary"
-          className="border p-2 w-full mb-2"
-          value={course.overview?.summary || ""}
-          onChange={(e) =>
-            setCourse({
-              ...course,
-              overview: { ...course.overview, summary: e.target.value },
-            })
-          }
-        />
-        <textarea
-          name="whatYouLearn"
-          placeholder="What You'll Learn"
-          className="border p-2 w-full mb-2"
-          value={course.overview?.whatYouLearn || ""}
-          onChange={(e) =>
-            setCourse({
-              ...course,
-              overview: { ...course.overview, whatYouLearn: e.target.value },
-            })
-          }
-        />
-        <textarea
-          name="whoFor"
-          placeholder="Who is this course for?"
-          className="border p-2 w-full mb-2"
-          value={course.overview?.whoFor || ""}
-          onChange={(e) =>
-            setCourse({
-              ...course,
-              overview: { ...course.overview, whoFor: e.target.value },
-            })
-          }
-        />
-        <textarea
-          name="requirements"
-          placeholder="Requirements"
-          className="border p-2 w-full mb-2"
-          value={course.overview?.requirements || ""}
-          onChange={(e) =>
-            setCourse({
-              ...course,
-              overview: { ...course.overview, requirements: e.target.value },
-            })
-          }
-        />
-        <textarea
-          name="certification"
-          placeholder="Certification Details"
-          className="border p-2 w-full mb-2"
-          value={course.overview?.certification || ""}
-          onChange={(e) =>
-            setCourse({
-              ...course,
-              overview: { ...course.overview, certification: e.target.value },
-            })
-          }
-        />
-      </div>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger className="w-full text-base bg-gray-100 my-3 p-3 shadow-md">Course Overview</AccordionTrigger>
+          <AccordionContent>
+            <div className="bg-gray-100 rounded-md p-5 mt-4">
+              <label className="text-xs text-gray-500">Course Summary</label>
+              <textarea
+                name="summary"
+                placeholder="Course Summary"
+                className="border p-2 w-full mb-2"
+                value={course.overview?.summary || ""}
+                onChange={(e) =>
+                  setCourse({
+                    ...course,
+                    overview: { ...course.overview, summary: e.target.value },
+                  })
+                }
+              />
 
+              <label className="text-xs text-gray-500">What You Learn</label>
+              <textarea
+                name="whatYouLearn"
+                placeholder="What You'll Learn"
+                className="border p-2 w-full mb-2"
+                value={course.overview?.whatYouLearn || ""}
+                onChange={(e) =>
+                  setCourse({
+                    ...course,
+                    overview: { ...course.overview, whatYouLearn: e.target.value },
+                  })
+                }
+              />
+
+              <label className="text-xs text-gray-500">Who For</label>
+              <textarea
+                name="whoFor"
+                placeholder="Who is this course for?"
+                className="border p-2 w-full mb-2"
+                value={course.overview?.whoFor || ""}
+                onChange={(e) =>
+                  setCourse({
+                    ...course,
+                    overview: { ...course.overview, whoFor: e.target.value },
+                  })
+                }
+              />
+
+              <label className="text-xs text-gray-500">Course Requirements</label>
+              <textarea
+                name="requirements"
+                placeholder="Requirements"
+                className="border p-2 w-full mb-2"
+                value={course.overview?.requirements || ""}
+                onChange={(e) =>
+                  setCourse({
+                    ...course,
+                    overview: { ...course.overview, requirements: e.target.value },
+                  })
+                }
+              />
+
+              <label className="text-xs text-gray-500">Certification</label>
+              <textarea
+                name="certification"
+                placeholder="Certification Details"
+                className="border p-2 w-full mb-2"
+                value={course.overview?.certification || ""}
+                onChange={(e) =>
+                  setCourse({
+                    ...course,
+                    overview: { ...course.overview, certification: e.target.value },
+                  })
+                }
+              />
+            </div>
+
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+
+
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger className="w-full text-base bg-gray-100 my-3 p-3 shadow-md">Course Cariculum</AccordionTrigger>
+          <AccordionContent>
+            <CurriculumEditor
+              curriculum={course.curriculum}
+              setCurriculum={(c) => setCourse({ ...course, curriculum: c })}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
       {/* Curriculum */}
-      <CurriculumEditor
-        curriculum={course.curriculum}
-        setCurriculum={(c) => setCourse({ ...course, curriculum: c })}
-      />
+
+
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger className="w-full text-base bg-gray-100 my-3 p-3 shadow-md">Course Reviews</AccordionTrigger>
+          <AccordionContent>
+            <ReviewListAdmin />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+
 
       {/* Actions */}
       <div className="flex flex-col gap-3 mt-6">

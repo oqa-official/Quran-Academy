@@ -1,5 +1,10 @@
 'use client';
-
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 import { useState } from "react";
 import { Loader2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
@@ -123,70 +128,77 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="bg-gray-100 p-6 rounded-lg shadow space-y-2"
-        >
-            <h2 className="text-lg font-semibold mb-4">Add Instructor</h2>
 
-            <input
-                type="text"
-                placeholder="Name"
-                required
-                className="w-full p-2 border rounded"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
+        <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+                <AccordionTrigger className="w-full text-lg bg-gray-100 my-2 p-3 shadow-md">Add Instructor</AccordionTrigger>
+                <AccordionContent>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="bg-gray-100 p-6 rounded-lg shadow space-y-2"
+                    >
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            required
+                            className="w-full p-2 border rounded"
+                            value={form.name}
+                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        />
 
-            <input
-                type="text"
-                placeholder="Designation"
-                required
-                className="w-full p-2 border rounded"
-                value={form.designation}
-                onChange={(e) => setForm({ ...form, designation: e.target.value })}
-            />
+                        <input
+                            type="text"
+                            placeholder="Designation"
+                            required
+                            className="w-full p-2 border rounded"
+                            value={form.designation}
+                            onChange={(e) => setForm({ ...form, designation: e.target.value })}
+                        />
 
-            <textarea
-                placeholder="About"
-                required
-                className="w-full p-2 border rounded min-h-[100px]"
-                value={form.about}
-                onChange={(e) => setForm({ ...form, about: e.target.value })}
-            />
+                        <textarea
+                            placeholder="About"
+                            required
+                            className="w-full p-2 border rounded min-h-[100px]"
+                            value={form.about}
+                            onChange={(e) => setForm({ ...form, about: e.target.value })}
+                        />
 
-            <textarea
-                placeholder="Qualifications (one per line)"
-                className="w-full p-2 border rounded min-h-[100px]"
-                value={form.qualifications}
-                onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
-            />
-           <div className="flex flex-col justify-start gao-2">
-             <label className="ms-1">Choose Instructor Image</label>
-            <div className="flex justify-start items-center gap-2 w-full p-2 border rounded ">
-                <UploadCloud />
-                <input type="file" placeholder="Upload Image" className="" accept="image/*" onChange={handleFileChange} />
-            </div>
-           </div>
+                        <textarea
+                            placeholder="Qualifications (one per line)"
+                            className="w-full p-2 border rounded min-h-[100px]"
+                            value={form.qualifications}
+                            onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
+                        />
+                        <div className="flex flex-col justify-start gao-2">
+                            <label className="ms-1">Choose Instructor Image</label>
+                            <div className="flex justify-start items-center gap-2 w-full p-2 border rounded ">
+                                <UploadCloud />
+                                <input type="file" placeholder="Upload Image" className="" accept="image/*" onChange={handleFileChange} />
+                            </div>
+                        </div>
 
-            {preview && (
-                <div className="mt-2">
-                    <img
-                        src={preview}
-                        alt="Preview"
-                        className="w-32 h-32 object-cover rounded-md border"
-                    />
-                </div>
-            )}
+                        {preview && (
+                            <div className="mt-2">
+                                <img
+                                    src={preview}
+                                    alt="Preview"
+                                    className="w-32 h-32 object-cover rounded-md border"
+                                />
+                            </div>
+                        )}
 
-            <button
-                type="submit"
-                disabled={loading}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-black w-full rounded disabled:opacity-60"
-            >
-                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                {loading ? "Adding..." : "Add"}
-            </button>
-        </form>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-black w-full rounded disabled:opacity-60"
+                        >
+                            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                            {loading ? "Adding..." : "Add"}
+                        </button>
+                    </form>
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
+
     );
 }

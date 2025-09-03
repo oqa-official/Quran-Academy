@@ -2,24 +2,23 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { useParams } from 'next/navigation'
-import ReviewList from './ReviewList'
-import PostReview from './PostReview'
+import ReviewList from '../../SingleCourse/ReviewList'
 
-export default function CourseReviews() {
+export default function ReviewListAdmin() {
   const params = useParams()
-  const slug = params?.slug as string | undefined
+  const id = params?.id as string | undefined
 
   const [reviews, setReviews] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const fetchReviews = async () => {
-    if (!slug) return
+    if (!id) return
     setLoading(true)
     setError(null)
 
     try {
-      const res = await fetch(`/api/db/courses/${slug}`, { cache: 'no-store' })
+      const res = await fetch(`/api/db/courses/${id}`, { cache: 'no-store' })
 
       if (!res.ok) throw new Error(`Failed to fetch course (${res.status})`)
 
@@ -35,12 +34,12 @@ export default function CourseReviews() {
 
   useEffect(() => {
     fetchReviews()
-  }, [slug])
+  }, [id])
 
   return (
-    <Card className="mt-10">
-      <CardContent className="p-5 lg:px-10">
-        <h2 className="text-xl sm:text-2xl font-semibold mb-6">Student Reviews</h2>
+    <Card className="mt-2 rounded-sm max-h-[200px]  overflow-y-scroll">
+      <CardContent className="p-3">
+        <h2 className="text-xl sm:text-xl font-semibold mb-2">This Course Reviews</h2>
 
         {error && (
           <p className="text-red-500 mb-4">
@@ -65,13 +64,7 @@ export default function CourseReviews() {
           <ReviewList reviews={reviews} loading={loading}  onReviewDeleted={fetchReviews}/>
         )}
 
-        {/* Post Review Form */}
-        <div className="mt-12">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-6">
-            {reviews?.length === 0 ? 'Be the first to review' : 'Leave A Comment'}
-          </h2>
-          {slug && <PostReview courseSlug={slug} onReviewAdded={fetchReviews} />}
-        </div>
+       
       </CardContent>
     </Card>
   )
