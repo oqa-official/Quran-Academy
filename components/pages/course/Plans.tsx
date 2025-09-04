@@ -1,136 +1,62 @@
+
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CourseCard from "../home/CourseCard";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// ------------------ DATA ------------------
+// ------------------ TYPES ------------------
 interface Course {
+  _id: string;
   title: string;
   price: number;
-  reviews: number;
-  rating: number;
-  teacher: string;
-  students: number;
-  avatar: string;
-  img: string;
+  overview?: { summary?: string };
+  reviews?: number;
+  rating?: number;
+  reviewsCount? : number
+  instructor?: {
+    image? : string,
+    name? : string
+  };
+  students?: number;
+  avatar?: string;
+  image?: string;
 }
 
-interface PlanContent {
-  heading: string;
-  description: string;
-  ctaText: string;
-  ctaLink: string;
-  detailsText: string;
-  detailsLink: string;
-}
-
-interface PlanItem {
-  id: string;
-  title: string;
-  image: string; // icon
-  content_image: string; // old img (replaced by courseCard)
-  content: PlanContent;
-  course: Course;
-}
-
-const plans: PlanItem[] = [
-  {
-    id: "reading",
-    title: "Quran Reading",
-    image: "/assets/home/pricing2.png",
-    content_image: "/assets/courses/plan2.png",
-    content: {
-      heading: "Learn Quran Reading",
-      description:
-        "This course is designed for those who want to start their journey of reading the Holy Quran from scratch. We cover all the basics of the Arabic alphabet, pronunciation, and reading with proper phonetics to ensure a solid foundation.",
-      ctaText: "Start Reading",
-      ctaLink: "/courses/1",
-      detailsText: "More Details →",
-      detailsLink: "#",
-    },
-    course: {
-      title: "Learn Quranic Studies for Beginner (Level-I)",
-      price: 20,
-      reviews: 3,
-      rating: 5,
-      teacher: "Hafiz Muhammad Usman",
-      students: 58,
-      avatar: "/assets/home/teacher1.png",
-      img: "/assets/home/course_1.png",
-    },
-  },
-  {
-    id: "recitation",
-    title: "Quran Recitation",
-    image: "/assets/home/pricing3.png",
-    content_image: "/assets/courses/plan1.png",
-    content: {
-      heading: "Reciting the Quran",
-      description:
-        "Our recitation program helps students to commit the entire Holy Quran to memory. Our qualified tutors provide personalized guidance, techniques, and revision sessions to ensure the student achieves their goal of becoming a Hafiz.",
-      ctaText: "Memorize Now",
-      ctaLink: "/courses/1",
-      detailsText: "More Details →",
-      detailsLink: "#",
-    },
-    course: {
-      title: "Learn Recitation of Quran (Level-II)",
-      price: 25,
-      reviews: 5,
-      rating: 5,
-      teacher: "Abdur Rehman",
-      students: 72,
-      avatar: "/assets/home/teacher2.png",
-      img: "/assets/home/course_2.png",
-    },
-  },
-  {
-    id: "tajweed",
-    title: "Quran Tajweed",
-    image: "/assets/home/pricing1.png",
-    content_image: "/assets/courses/plan3.png",
-    content: {
-      heading: "Learn Tajweed",
-      description:
-        "Quran Online Master offers the Quran Tajweed learning through its professional tajweed teachers. If you know how to read the Quran and intend to augment your tajweed skills, you are at the right place as we would drive your interest towards the expertise in the Holy Quran.",
-      ctaText: "Get Enrolled Now",
-      ctaLink: "/courses/1",
-      detailsText: "More Details →",
-      detailsLink: "#",
-    },
-    course: {
-      title: "Learn Quran with Tajweed (Level-III)",
-      price: 35,
-      reviews: 1,
-      rating: 5,
-      teacher: "Muhammad Junaid",
-      students: 50,
-      avatar: "/assets/home/teacher3.png",
-      img: "/assets/home/course1.png",
-    },
-  },
+// ------------------ STATIC IMAGES ------------------
+const tabImages = [
+  "/assets/home/pricing1.png",
+  "/assets/home/pricing2.png",
+  "/assets/home/pricing3.png",
 ];
 
-// ------------------ COMPONENTS ------------------
+// ------------------ PLAN TAB ------------------
 interface PlanTabProps {
-  plan: PlanItem;
+  id: string;
+  title: string;
+  image: string;
   isActive: boolean;
   onClick: (id: string) => void;
 }
-
-const PlanTab: React.FC<PlanTabProps> = ({ plan, isActive, onClick }) => (
+const PlanTab: React.FC<PlanTabProps> = ({
+  id,
+  title,
+  image,
+  isActive,
+  onClick,
+}) => (
   <div
     className={`
       relative z-[2] flex flex-col items-center justify-center space-y-1 md:px-6 p-2 md:p-4 rounded-md shadow-lg
       transform cursor-pointer
       ${isActive ? "bg-white" : "bg-gray-800 hover:bg-gray-700"}
     `}
-    onClick={() => onClick(plan.id)}
+    onClick={() => onClick(id)}
   >
     <img
-      src={plan.image}
-      alt={plan.title}
+      src={image}
+      alt={title}
       className={`
         md:w-16 md:h-16 w-12 h-12 object-cover
         ${isActive ? "filter-none" : "filter grayscale"}
@@ -138,11 +64,11 @@ const PlanTab: React.FC<PlanTabProps> = ({ plan, isActive, onClick }) => (
       `}
     />
     <p
-      className={`text-sm md:text-lg font-medium md:font-semibold ${
+      className={`text-sm md:text-lg font-medium md:font-semibold  ${
         isActive ? "text-primary" : "text-gray-300"
       }`}
     >
-      {plan.title}
+      {title}
     </p>
 
     <div
@@ -151,49 +77,88 @@ const PlanTab: React.FC<PlanTabProps> = ({ plan, isActive, onClick }) => (
   </div>
 );
 
+// ------------------ PLAN CONTENT ------------------
 interface PlanContentProps {
-  content: PlanContent & { image: string; secondary_image: string };
   course: Course;
+  image: string;
 }
-
-const PlanContent: React.FC<PlanContentProps> = ({ content, course }) => (
+const PlanContent: React.FC<PlanContentProps> = ({ course, image }) => (
   <div className="flex flex-col md:flex-row justify-center items-center gap-10">
     {/* Left side */}
-    <div className="flex-1 md:max-w-[50%] flex flex-col items-center md:items-start text-center md:text-left">
-      <img src={content.secondary_image} alt={content.heading} className="w-16" />
-      <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-2">{content.heading}</h2>
+    <div className="flex-1 md:max-w-[50%] flex flex-col items-start md:items-start text-center md:text-left">
+      <img src={image} alt="plan icon" className="w-16" />
+      <h2 className="text-3xl text-start lg:text-4xl font-bold text-primary mb-2 max-w-[550px]">
+        {course.title}
+      </h2>
       <img
         src="/assets/home/arrow.png"
         alt="Quran verse"
         className="w-[120px] text-start -ms-2"
       />
-      <p className="text-gray-600 max-w-[500px] mb-6">{content.description}</p>
-      <div className="flex flex-col sm:flex-row gap-4">
-        <Link href={content.ctaLink}>
-        <button className="bg-primary hover:bg-primary-hover text-white py-3 px-6 rounded-md transition-colors duration-300">
-          {content.ctaText}
-        </button>
+      <p className="text-gray-600 max-w-[500px] mb-6 text-start">
+        {course.overview?.summary || "No description available."}
+      </p>
+      <div className="flex flex-row gap-2">
+        <Link href={`/courses/${course._id}`}>
+          <button className="bg-primary hover:bg-primary-hover text-white py-3 px-6 rounded-md transition-colors duration-300">
+            Get Started
+          </button>
         </Link>
         <a
-          href={content.detailsLink}
+          href={`/courses/${course._id}`}
           className="bg-accent hover:bg-accent-hover text-black font-medium py-3 px-6 rounded-md transition-colors duration-300"
         >
-          {content.detailsText}
+          More Details →
         </a>
       </div>
     </div>
 
-    {/* Right side → CourseCard instead of static image */}
+    {/* Right side → CourseCard */}
     <div className="flex-1 md:max-w-[40%] hidden md:flex">
-      <CourseCard {...course} />
+      <CourseCard title={course.title} price={course.price} list={true}
+      reviews={course.reviewsCount} avatar={course?.instructor?.image ? course.instructor.image : "/assets/home/teacher1.png"} teacher={course.instructor?.name ? course.instructor?.name : "The Instructor"}
+      rating={5} students={53} img={course.image || "/assets/home/course1.png"} 
+      />
     </div>
   </div>
 );
 
 // ------------------ MAIN ------------------
 const OurPlans: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(plans[0].id);
-  const activePlan = plans.find((plan) => plan.id === activeTab);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [startIndex, setStartIndex] = useState(0);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const res = await fetch("/api/db/courses");
+        if (!res.ok) throw new Error("Failed to fetch courses");
+        const data: Course[] = await res.json();
+
+        setCourses(data);
+        if (data.length > 0) setActiveId(data[0]._id);
+      } catch (err) {
+        console.error("Error fetching courses:", err);
+      }
+    }
+    fetchCourses();
+  }, []);
+
+  const visibleCourses = courses.slice(startIndex, startIndex + 3);
+  const activeCourse = courses.find((c) => c._id === activeId);
+
+  const handlePrev = () => {
+    if (startIndex > 0) setStartIndex(startIndex - 1);
+  };
+  const handleNext = () => {
+    if (startIndex + 3 < courses.length) setStartIndex(startIndex + 1);
+  };
+
+  // Find the image for the active course
+  const activeIndex = courses.findIndex((c) => c._id === activeId);
+  const activeImage =
+    activeIndex !== -1 ? tabImages[activeIndex % tabImages.length] : "";
 
   return (
     <section className="py-20">
@@ -225,35 +190,53 @@ const OurPlans: React.FC = () => {
               Our Plan for Individual Courses
             </h2>
             <p className="text-gray-300">
-              We undergo the versatile modules of the Quran's tajweed learning to make you perfect anyhow. Our professional learning programs divided the learning Tajweed into three several stages to make you comfortable while learning Tajweed.
+              We undergo the versatile modules of the Quran's tajweed learning
+              to make you perfect anyhow. Our professional learning programs
+              divided the learning Tajweed into three several stages to make you
+              comfortable while learning Tajweed.
             </p>
           </div>
 
-          {/* Tabs */}
-          <div className="flex flex-row justify-center gap-6 mb-12">
-            {plans.map((plan) => (
-              <PlanTab
-                key={plan.id}
-                plan={plan}
-                isActive={plan.id === activeTab}
-                onClick={setActiveTab}
-              />
-            ))}
+          {/* Tabs with carousel */}
+          <div className="flex justify-center items-center gap-4 mb-12">
+            {startIndex > 0 && (
+              <button
+                onClick={handlePrev}
+                className="p-2 bg-white rounded-full shadow hover:bg-gray-100"
+              >
+                <ChevronLeft className="w-5 h-5 text-primary" />
+              </button>
+            )}
+
+            <div className="flex flex-row justify-center gap-6">
+              {visibleCourses.map((course, idx) => (
+                <PlanTab
+                  key={course._id}
+                  id={course._id}
+                  title={course.title.split(" ").slice(0, 2).join(" ")}
+                  image={tabImages[(startIndex + idx) % tabImages.length]}
+                  isActive={course._id === activeId}
+                  onClick={setActiveId}
+                />
+              ))}
+            </div>
+
+            {startIndex + 3 < courses.length && (
+              <button
+                onClick={handleNext}
+                className="p-2 bg-white rounded-full shadow hover:bg-gray-100"
+              >
+                <ChevronRight className="w-5 h-5 text-primary" />
+              </button>
+            )}
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="container max-md:pt-10">
-        {activePlan && (
-          <PlanContent
-            content={{
-              ...activePlan.content,
-              image: activePlan.content_image,
-              secondary_image: activePlan.image,
-            }}
-            course={activePlan.course}
-          />
+        {activeCourse && (
+          <PlanContent course={activeCourse} image={activeImage} />
         )}
       </div>
     </section>

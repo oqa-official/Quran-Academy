@@ -53,7 +53,7 @@ export default function InstructorsInfo({ instructors, onUpdate }: InstructorsIn
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mt-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
       {instructors.map((ins) => (
         <div
           key={ins._id}
@@ -64,7 +64,7 @@ export default function InstructorsInfo({ instructors, onUpdate }: InstructorsIn
             <img
               src={ins.image}
               alt={ins.name}
-              className="w-28 h-28 rounded-full object-cover shadow-md shadow-gray-500"
+              className="w-28 h-28 max-h-28 max-w-28 rounded-full object-cover shadow-md shadow-gray-500"
             />
 
             <div className="mt-4">
@@ -76,26 +76,19 @@ export default function InstructorsInfo({ instructors, onUpdate }: InstructorsIn
           {/* About */}
           <p className="text-sm text-start text-gray-600 mt-2">
             {ins.about
-              ? ins.about.split(" ").slice(0, 25).join(" ") +
-              (ins.about.split(" ").length > 10 ? "..." : "")
+              ? ins.about.split(" ").slice(0, 5).join(" ") +
+              (ins.about.split(" ").length > 5 ? "..." : "")
               : "No description available"}
           </p>
 
-          {/* Qualifications */}
-          <div className="mt-2 space-y-1">
-            {ins.qualifications?.map((qualification, key) => (
-              <p key={key} className="text-sm text-start text-gray-500">
-                🎓 {qualification}
-              </p>
-            ))}
-          </div>
+
 
           {/* Optional Fields */}
           {ins.email && <p className="text-xs text-gray-400 mt-2">📧 {ins.email}</p>}
           {ins.phone && <p className="text-xs text-gray-400">📞 {ins.phone}</p>}
 
           {/* Action Buttons */}
-          <div className="flex justify-end w-full mt-8 space-x-2 ">
+          <div className="flex justify-end w-full mt-2 space-x-2 ">
             <button
               onClick={() => setEditingInstructor(ins)}
               className="px-3 py-1 bg-accent hover:bg-accent-hover text-black rounded"

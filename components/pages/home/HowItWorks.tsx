@@ -50,7 +50,7 @@ export default function HowItWorks() {
                     viewport={{ once: false }}
                     src="/assets/home/verse2.png"
                     alt="Quran verse"
-                    className="mx-auto mb-6 w-[50%]"
+                    className="mx-auto mb-6 md:w-[50%]"
                 />
 
                 {/* Heading */}

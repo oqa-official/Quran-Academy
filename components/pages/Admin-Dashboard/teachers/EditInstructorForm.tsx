@@ -66,7 +66,7 @@
 'use client';
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { CircleX, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Instructor } from "@/lib/types/instructor"; // full instructor with _id, image, etc.
 import { validateImageFile } from "@/lib/validation";
@@ -174,87 +174,90 @@ export default function EditInstructorForm({
 
   return (
     <div className="fixed px-6 inset-0 bg-[#020000af]  flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-3 max-h-[95vh] overflow-y-scroll"
-      >
-        <h2 className="text-lg font-semibold mb-4">Edit Instructor</h2>
+      <div className="rounded-lg overflow-hidden relative">
+        <CircleX className="absolute top-2 right-5 bg-gray-500 hover:scale-110 text-white rounded-full w-[28px] h-[28px]" onClick={onClose} />
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white p-6 rounded-lg shadow-lg w-4xl space-y-3 max-h-[95vh] overflow-y-scroll"
+        >
+          <h2 className="text-lg font-semibold mb-4">Edit Instructor</h2>
 
-        <label className="text-xs text-gray-500">Instructor Name</label>
-        <input
-          type="text"
-          placeholder="Name"
-          required
-          className="w-full p-2 border rounded"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
+          <label className="text-xs text-gray-500">Instructor Name</label>
+          <input
+            type="text"
+            placeholder="Name"
+            required
+            className="w-full p-2 border rounded"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
 
-        <label className="text-xs text-gray-500">Instructor Designation</label>
-        <input
-          type="text"
-          placeholder="Designation"
-          required
-          className="w-full p-2 border rounded"
-          value={form.designation}
-          onChange={(e) => setForm({ ...form, designation: e.target.value })}
-        />
+          <label className="text-xs text-gray-500">Instructor Designation</label>
+          <input
+            type="text"
+            placeholder="Designation"
+            required
+            className="w-full p-2 border rounded"
+            value={form.designation}
+            onChange={(e) => setForm({ ...form, designation: e.target.value })}
+          />
 
-        <label className="text-xs text-gray-500">Instructor Details</label>
-        <textarea
-          placeholder="About"
-          required
-          className="w-full p-2 border rounded min-h-[100px]"
-          value={form.about}
-          onChange={(e) => setForm({ ...form, about: e.target.value })}
-        />
+          <label className="text-xs text-gray-500">Instructor Details</label>
+          <textarea
+            placeholder="About"
+            required
+            className="w-full p-2 border rounded min-h-[100px]"
+            value={form.about}
+            onChange={(e) => setForm({ ...form, about: e.target.value })}
+          />
 
-        <label className="text-xs text-gray-500">Instructor Qualifications (One Per Line)</label>
-        <textarea
-          placeholder="Qualifications (one per line)"
-          className="w-full p-2 border rounded min-h-[80px]"
-          value={form.qualifications}
-          onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
-        />
+          <label className="text-xs text-gray-500">Instructor Qualifications (One Per Line)</label>
+          <textarea
+            placeholder="Qualifications (one per line)"
+            className="w-full p-2 border rounded min-h-[80px]"
+            value={form.qualifications}
+            onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
+          />
 
 
-        <label className="text-xs text-gray-500">Change Instructor Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="w-full p-2 border rounded"
-        />
+          <label className="text-xs text-gray-500">Change Instructor Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full p-2 border rounded"
+          />
 
-        {preview && (
-          <div className="mt-2">
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-32 h-32 object-cover rounded-md border"
-            />
+          {preview && (
+            <div className="mt-2">
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-32 h-32 object-cover rounded-md border"
+              />
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 pt-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-accent text-black rounded hover:bg-accent-hover disabled:opacity-60"
+            >
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {loading ? "Updating..." : "Update"}
+            </button>
           </div>
-        )}
-
-        <div className="flex justify-end gap-2 pt-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
-            disabled={loading}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-accent text-black rounded hover:bg-accent-hover disabled:opacity-60"
-          >
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {loading ? "Updating..." : "Update"}
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

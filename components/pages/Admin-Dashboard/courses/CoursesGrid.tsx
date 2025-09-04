@@ -7,7 +7,7 @@ export default function CoursesGrid({ courses }: { courses: Course[] }) {
       {courses.map((course) => (
         <div
           key={course._id}
-          className="border rounded-md shadow p-4 flex flex-col"
+          className="border rounded-md shadow p-4 flex flex-col justify-between"
         >
           <img
             src={course.image}

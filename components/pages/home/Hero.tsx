@@ -90,7 +90,7 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={textVariants}>
-            <Link href={'/onboarding'}>
+            <Link href={'/inquire'}>
               <Button
                 size={"lg"}
                 className="bg-accent hover:bg-accent-hover text-black md:py-6 py-2 md:px-10 px-6 text-lg rounded-full transition"

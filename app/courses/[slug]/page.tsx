@@ -62,7 +62,7 @@ export default function CoursePage() {
   return (
     <>
       {/* Hero Section */}
-      {/* <Hero course={course} /> */}
+      <Hero course={course} />
 
       <div className="container flex flex-col md:flex-row justify-between items-start mt-20 gap-10 space-y-5">
         {/* Left Content */}

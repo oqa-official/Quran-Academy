@@ -5,7 +5,7 @@ import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 
 
-export default function Hero() {
+export default function Hero({ course }: { course: any }) {
 
 
     const textVariants: Variants = {
@@ -59,9 +59,9 @@ export default function Hero() {
                 >
                     <motion.h2
                         variants={textVariants}
-                        className="text-3xl sm:text-4xl xl:text-5xl font-bold leading-tight"
+                        className="text-2xl sm:text-3xl xl:text-4xl font-bold leading-tight"
                     >
-                        Learn Quranic Studies for beginner
+                        {course.title ? course.title : "Quran Learning For Beginners"}
 
                         {" "}
                         <span className="text-accent"></span>

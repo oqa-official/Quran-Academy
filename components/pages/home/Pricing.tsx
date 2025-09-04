@@ -6,6 +6,7 @@ import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import Link from "next/link";
 
 const courses = [
   {
@@ -111,7 +112,7 @@ function CourseCard({ src, price, days_week, features }: any) {
                 key={idx}
                 className="flex items-start  text-gray-600 group-hover:text-white group-active:text-white group-focus:text-white transition-colors text-sm"
               >
-                <Check className="w-4 h-4 mr-2 mt-1 text-gray-600 group-hover:text-white transition-colors group-active:text-white group-focus:text-white"  />
+                <Check className="w-4 h-4 mr-2 mt-1 text-gray-600 group-hover:text-white transition-colors group-active:text-white group-focus:text-white" />
                 {item}
               </li>
             ))}
@@ -216,13 +217,19 @@ export default function Pricing_Section({
               <button
                 key={idx}
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
-                className={`w-2 h-2 rounded-full ${
-                  currentSlide === idx ? "bg-primary" : "bg-gray-300"
-                }`}
+                className={`w-2 h-2 rounded-full ${currentSlide === idx ? "bg-primary" : "bg-gray-300"
+                  }`}
               ></button>
             ))}
           </div>
         )}
+
+
+        <div className="w-full flex justify-center mt-6 relative z-10">
+          <Link href={'/pricing'}>
+          <Button size={'lg'} className="cursor-pointer rounded-sm hover:bg-accent bg-primary mx-auto hover:scale-105 transition-transform duration-300">Explore Our Pricing Plans</Button>
+          </Link>
+        </div>
       </div>
     </section>
   );

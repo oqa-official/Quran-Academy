@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2, TriangleAlert } from 'lucide-react';
+import { Delete, Edit, Loader2, Trash, TriangleAlert } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,39 +48,30 @@ export default function BooksInfo({ books, onUpdate }: { books: Book[], onUpdate
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mt-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-6 mt-4">
       {books.map((book) => (
         <div
           key={book._id}
-          className="bg-gray-100 shadow-lg rounded-lg p-4 flex flex-col items-start"
+          className="bg-gray-100 shadow-lg rounded-lg p-3 flex flex-col items-start"
         >
-          <img
+        <div className='flex justify-between w-full '>
+            <img
             src={book.coverImage}
             alt={book.name}
-            className="w-full max-h-[250px] object-cover rounded-md"
+            className="w-full max-w-36  max-h-36 object-cover rounded-md"
           />
-
-          <h2 className="text-xl font-semibold mt-2">{book.name}</h2>
-          <p className="text-sm text-gray-600">by {book.author}</p>
-          <p className="text-sm text-gray-600 my-1">by  {book.description
-            ? book.description.split(" ").slice(0, 10).join(" ") +
-            (book.description.split(" ").length > 10 ? "..." : "")
-            : "No description available"}</p>
-          <p className="text-xs text-gray-500 font-semibold my-1"> {book.category || "Uncategorized"}</p>
-          <a href={book.pdfUrl} className='text-xs text-accent underline'>PDF URL</a>
-
-          <div className="flex justify-end w-full mt-6 space-x-2">
-            <button
+          <div className="flex justify-center items-start  w-full space-x-2">
+            <Edit 
               onClick={() => setEditingBook(book)}
-              className="px-3 py-1 bg-accent hover:bg-accent-hover text-black rounded"
+              className="bg-accent text-white p-1 rounded-[2px] hover:scale-110 transition-transform cursor-pointer"
             >
               Edit
-            </button>
+            </Edit>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <button
-                  className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded disabled:opacity-50 flex items-center"
+                  className=" rounded disabled:opacity-50 flex items-center"
                   disabled={deletingId === book._id}
                 >
                   {deletingId === book._id ? (
@@ -88,7 +79,7 @@ export default function BooksInfo({ books, onUpdate }: { books: Book[], onUpdate
                       <Loader2 className="h-4 w-4 animate-spin mr-1" /> Deleting...
                     </>
                   ) : (
-                    'Delete'
+                    <Trash className='bg-red-500 text-white p-1 rounded-[2px] hover:scale-110 transition-transform cursor-pointer'/>
                   )}
                 </button>
               </AlertDialogTrigger>
@@ -114,6 +105,15 @@ export default function BooksInfo({ books, onUpdate }: { books: Book[], onUpdate
               </AlertDialogContent>
             </AlertDialog>
           </div>
+        </div>
+
+          <h2 className="text-lg font-semibold mt-2">{book.name}</h2>
+          <p className="text-sm text-accent font-medium">By {book.author}</p>
+         
+          <p className="text-xs text-gray-500 font-semibold my-1">Category:  {book.category || "Uncategorized"}</p>
+          <a href={book.pdfUrl} className='text-xs text-accent underline font-semibold'>PDF URL</a>
+
+          
 
           {editingBook && (
             <EditBookForm

@@ -1,14 +1,15 @@
 "use client";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { motion } from "framer-motion";
-import { Check, Star, User } from "lucide-react";
-import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
-import { useState } from "react";
+import "keen-slider/keen-slider.min.css";
+import { useState, useEffect } from "react";
 import CourseCard from "./CourseCard";
+import { useRouter } from "next/navigation";
 
-const courses = [
+const fallbackCourses = [
   {
+    _id: "fallback1", // ✅ give id for safe mapping
     title: "Learn Quranic Studies for Beginner (Level-I)",
     price: 20,
     reviews: 3,
@@ -17,8 +18,10 @@ const courses = [
     students: 58,
     avatar: "/assets/home/teacher1.png",
     img: "/assets/home/course_1.png",
+    fromApi: false,
   },
   {
+    _id: "fallback2",
     title: "Learn Recitation of Quran (Level-II)",
     price: 25,
     reviews: 5,
@@ -27,8 +30,10 @@ const courses = [
     students: 72,
     avatar: "/assets/home/teacher2.png",
     img: "/assets/home/course_2.png",
+    fromApi: false,
   },
   {
+    _id: "fallback3",
     title: "Learn Quran with Tajweed (Level-III)",
     price: 35,
     reviews: 1,
@@ -37,20 +42,65 @@ const courses = [
     students: 50,
     avatar: "/assets/home/teacher3.png",
     img: "/assets/home/course1.png",
+    fromApi: false,
   },
 ];
 
+// ✅ Define 12 features
+const allFeatures = [
+  "Interactive Lessons",
+  "Step-by-step Guidance",
+  "Practical Assignments",
+  "Certificate upon Completion",
+  "Live Classes",
+  "1-on-1 Mentorship",
+  "Recorded Sessions",
+  "Weekly Quizzes",
+  "Progress Tracking",
+  "Mobile Friendly",
+  "Support Community",
+  "Flexible Schedule",
+];
 
+export default function FeaturedSectionCarousel({ heading = "Featured Courses", lamp }: { heading?: string; lamp?: boolean }) {
+  const [courses, setCourses] = useState(fallbackCourses);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-type FeaturedSectionCarouselProps = {
-  heading?: string;
-  lamp?: boolean;
-};
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch("/api/db/courses");
+        if (!res.ok) throw new Error("Failed to fetch courses.");
+        const data = await res.json();
 
-export default function FeaturedSectionCarousel({
-  heading = "Featured Courses",
-  lamp,
-}: FeaturedSectionCarouselProps) {
+        const mapped = data.map((c: any) => ({
+          _id: c._id,
+          title: c.title,
+          price: c.price,
+          reviews: c.reviewsCount ?? 0,
+          rating: 5,
+          teacher: c.instructor?.name ?? "Instructor",
+          students: 50 + Math.floor(Math.random() * 20), // Random for demo
+          avatar: c.instructor?.image ?? "/assets/home/teacher1.png",
+          img: c.image ?? "/assets/home/course_1.png",
+          fromApi: true,
+        }));
+
+        setCourses(mapped);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
@@ -76,7 +126,7 @@ export default function FeaturedSectionCarousel({
 
   return (
     <section className="py-16 relative bg-transparent">
-      {/* Lamp */}
+
       {lamp && (
         <motion.div
           className="absolute top-0 left-0"
@@ -93,54 +143,72 @@ export default function FeaturedSectionCarousel({
         </motion.div>
       )}
 
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Heading Section */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            viewport={{ once: true }}
-          >
-            <img
-              src="/assets/home/verse4.png"
-              alt="Quran verse"
-              className="mx-auto mb-6"
-            />
-          </motion.div>
 
-          <TextAnimate
-            animation="blurIn"
-            by="word"
-            duration={0.6}
-            as="h2"
-            className="text-2xl md:text-3xl -mt-3 font-bold mb-2 text-primary"
-          >
-            {heading}
-          </TextAnimate>
-
+      <div className="text-center max-w-3xl mx-auto mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          viewport={{ once: true }}
+        >
           <img
-            src="/assets/home/arrow.png"
-            alt="decorative arrow"
-            className="w-[200px] text-center mx-auto mb-2"
+            src="/assets/home/verse4.png"
+            alt="Quran verse"
+            className="mx-auto mb-6"
           />
+        </motion.div>
 
-          <p className="text-gray-600">
-            Explore our range of Quran courses tailored for all ages and levels.
-            Whether you’re beginning your journey or seeking to perfect your
-            Tajweed, our experienced teachers are here to guide you step by
-            step.
-          </p>
-        </div>
+        <TextAnimate
+          animation="blurIn"
+          by="word"
+          duration={0.6}
+          as="h2"
+          className="text-2xl md:text-3xl -mt-3 font-bold mb-2 text-primary"
+        >
+          {heading}
+        </TextAnimate>
 
-        {/* Carousel */}
-        <div ref={sliderRef} className="keen-slider">
-          {courses.map((course, idx) => (
-            <CourseCard key={idx} {...course} />
-          ))}
-        </div>
+        <img
+          src="/assets/home/arrow.png"
+          alt="decorative arrow"
+          className="w-[200px] text-center mx-auto mb-2"
+        />
 
-        {/* Dots for Mobile */}
+        <p className="text-gray-600">
+          Explore our range of Quran courses tailored for all ages and levels.
+          Whether you’re beginning your journey or seeking to perfect your
+          Tajweed, our experienced teachers are here to guide you step by
+          step.
+        </p>
+      </div>
+
+
+
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Loader / Error */}
+        {loading && <p className="text-center">Loading courses...</p>}
+        {/* {error && <p className="text-center text-red-500">⚠ {error}</p>} */}
+
+        {!loading && (
+          <div ref={sliderRef} className="keen-slider">
+            {courses.map((course, idx) => {
+              // ✅ pick 4 unique features for each card
+              const featureSet = allFeatures.slice((idx % 3) * 4, (idx % 3) * 4 + 4);
+
+              return (
+                <CourseCard
+                  key={course._id}
+                  {...course}
+                  features={featureSet}
+                  onClick={() => {
+                    if (course.fromApi) router.push(`/courses/${course._id}`);
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
+
         {loaded && instanceRef.current && (
           <div className="flex justify-center md:hidden mt-2">
             {[
@@ -149,9 +217,8 @@ export default function FeaturedSectionCarousel({
               <button
                 key={idx}
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
-                className={`w-2 h-2 mx-1 rounded-full ${
-                  currentSlide === idx ? "bg-primary" : "bg-gray-300"
-                }`}
+                className={`w-2 h-2 mx-1 rounded-full ${currentSlide === idx ? "bg-primary" : "bg-gray-300"
+                  }`}
               />
             ))}
           </div>

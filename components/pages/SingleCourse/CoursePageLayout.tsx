@@ -46,7 +46,7 @@ export default function CoursePageLayout({ course }: { course: any }) {
           <img
             src={course.image}
             alt={course.title}
-            className="w-full object-cover"
+            className="w-full object-cover max-h-[350px] object-center"
           />
         </div>
 

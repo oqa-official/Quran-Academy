@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, UploadCloud } from "lucide-react";
+import { CircleX, Loader2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
@@ -108,10 +108,12 @@ export default function EditBookForm({
 
     return (
         <div className="fixed inset-0 bg-[#00000097] flex items-center justify-center z-50">
-            <form
+           <div className="rounded-lg overflow-hidden relative">
+             <form
                 onSubmit={handleSubmit}
-                className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-3 overflow-y-scroll max-h-[95vh]"
+                className="bg-white  p-6 rounded-lg shadow-lg w-4xl space-y-3 overflow-x-hidden max-h-[95vh]"
             >
+                <CircleX className="absolute top-2 right-5 bg-gray-500 hover:scale-110 text-white rounded-full w-[28px] h-[28px]" onClick={onClose}/>
                 <h2 className="text-lg font-semibold mb-2">Edit Book</h2>
 
                 <label className="text-xs text-gray-500">Book Name</label>
@@ -217,6 +219,7 @@ export default function EditBookForm({
                     </button>
                 </div>
             </form>
+           </div>
         </div>
     );
 }
