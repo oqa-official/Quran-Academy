@@ -2,32 +2,34 @@ import { connectToDB } from "@/lib/db/db";
 import { NextResponse } from "next/server";
 import Inquire from "@/models/inquire.model";
 
-
+// ✅ GET by ID
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  _: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDB();
-    const inquire = await Inquire.findById(params.id);
-    if (!inquire)
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const { id } = await context.params;
+    const inquire = await Inquire.findById(id);
 
-    return NextResponse.json(inquire);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch inquire" },
-      { status: 500 }
-    );
+    if (!inquire) {
+      return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(inquire, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
+// ✅ PUT (update by ID)
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDB();
+    const { id } = await context.params;
     const body = await req.json();
     const { name, email, phone } = body;
 
@@ -39,38 +41,40 @@ export async function PUT(
     }
 
     const inquire = await Inquire.findByIdAndUpdate(
-      params.id,
+      id,
       { name, email, phone },
       { new: true, runValidators: true }
     );
 
-    if (!inquire)
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!inquire) {
+      return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
+    }
 
-    return NextResponse.json(inquire);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to update inquire" },
-      { status: 500 }
-    );
+    return NextResponse.json(inquire, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
+// ✅ DELETE (remove by ID)
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  _: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDB();
-    const inquire = await Inquire.findByIdAndDelete(params.id);
-    if (!inquire)
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const { id } = await context.params;
 
-    return NextResponse.json({ message: "Inquire deleted successfully" });
-  } catch (error) {
+    const inquire = await Inquire.findByIdAndDelete(id);
+    if (!inquire) {
+      return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
+    }
+
     return NextResponse.json(
-      { error: "Failed to delete inquire" },
-      { status: 500 }
+      { message: "Inquiry deleted successfully" },
+      { status: 200 }
     );
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
