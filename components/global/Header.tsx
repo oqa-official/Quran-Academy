@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePopup } from "@/context/PopupContext";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -16,6 +17,7 @@ import {
 import { motion, Variants } from "framer-motion";
 
 export default function Header() {
+      const { setOpen } = usePopup();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -118,6 +120,7 @@ export default function Header() {
         <motion.div variants={item}>
           <Button
             size={"lg"}
+            onClick={() => setOpen(true)}
             className="hidden md:block rounded-full px-10 bg-primary hover:bg-primary-hover"
           >
             Free Trial
@@ -179,7 +182,7 @@ export default function Header() {
                 </nav>
 
                 {/* CTA */}
-                <Button className="w-full rounded-full bg-primary hover:bg-primary-hover">
+                <Button onClick={() => setOpen(true)} className="w-full rounded-full bg-primary hover:bg-primary-hover">
                   Free Trial
                 </Button>
                 <Button className="w-full rounded-full bg-accent hover:bg-accent-hover text-primary">

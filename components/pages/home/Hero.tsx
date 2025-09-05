@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { usePopup } from "@/context/PopupContext";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +15,7 @@ const images = [
 ];
 
 export default function Hero() {
+    const { setOpen } = usePopup();
   const [current, setCurrent] = useState(0);
 
   // Auto-slide every 5s
@@ -90,14 +92,13 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={textVariants}>
-            <Link href={'/inquire'}>
               <Button
                 size={"lg"}
+                onClick={() => setOpen(true)}
                 className="bg-accent hover:bg-accent-hover text-black md:py-6 py-2 md:px-10 px-6 text-lg rounded-full transition"
               >
                 Enroll Now For Free
               </Button>
-            </Link>
           </motion.div>
         </motion.div>
 

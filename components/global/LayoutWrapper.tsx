@@ -5,13 +5,15 @@ import { ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { OfferPopup } from "./OfferPopup";
+import { PopupProvider } from "@/context/PopupContext";
+import { CurrencyProvider } from "@/context/CurrencyContext";
 
 interface LayoutWrapperProps {
     children: ReactNode;
 }
 
 // ✅ routes where header/footer should NOT appear
-const excludedRoutes = ["/onboarding/*", "/auth/*", "/admin-dashboard/*", "/inquire"];
+const excludedRoutes = ["/onboarding/*", "/auth/*", "/admin-dashboard/*", "/inquire/*"];
 
 export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     const pathname = usePathname();
@@ -26,11 +28,12 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     });
 
     return (
-        <>
+         <CurrencyProvider>
+        <PopupProvider>
             {!isExcluded && <Header />}
-            {/* {!isExcluded && <OfferPopup />} */}
             {children}
             {!isExcluded && <Footer />}
-        </>
+        </PopupProvider>
+        </CurrencyProvider>
     );
 }

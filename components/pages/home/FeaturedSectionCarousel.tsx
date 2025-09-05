@@ -74,6 +74,7 @@ export default function FeaturedSectionCarousel({ heading = "Featured Courses", 
         setLoading(true);
         setError(null);
         const res = await fetch("/api/db/courses");
+        console.log("courses res:", res);
         if (!res.ok) throw new Error("Failed to fetch courses.");
         const data = await res.json();
 
@@ -210,7 +211,7 @@ export default function FeaturedSectionCarousel({ heading = "Featured Courses", 
         )}
 
         {loaded && instanceRef.current && (
-          <div className="flex justify-center md:hidden mt-2">
+          <div className="flex justify-center  mt-2">
             {[
               ...Array(instanceRef.current.track.details.slides.length).keys(),
             ].map((idx) => (
@@ -227,3 +228,5 @@ export default function FeaturedSectionCarousel({ heading = "Featured Courses", 
     </section>
   );
 }
+
+

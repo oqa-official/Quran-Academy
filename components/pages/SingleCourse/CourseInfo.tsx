@@ -5,8 +5,10 @@ import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Clock, CalendarDays, BookOpen, DollarSign } from "lucide-react"
+import { useCurrency } from "@/hooks/useCurrency"
 
 function FeeStructureCard({ course }: { course: any }) {
+          const { symbol, rate } = useCurrency();
   const [days, setDays] = useState(2) // default
   const [duration, setDuration] = useState(30) // default
 
@@ -104,7 +106,7 @@ function FeeStructureCard({ course }: { course: any }) {
         <div className="flex items-center gap-3 text-primary p-2 rounded-md">
           <span className="font-medium">Price:</span>
           <h2 className="ml-auto text-xl font-semibold text-accent">
-            ${calculatePrice()} / Month
+            {symbol}{(calculatePrice()* rate).toFixed(1)} / Month
           </h2>
         </div>
 

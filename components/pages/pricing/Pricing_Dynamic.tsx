@@ -7,8 +7,10 @@ import { useKeenSlider } from "keen-slider/react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Link from "next/link";
+import { useCurrency } from "@/hooks/useCurrency";
 
 function PricingCard({ src, plan, courseId }: any) {
+        const { symbol, rate } = useCurrency();
     return (
         <div className="keen-slider__slide p-2 py-4">
             <div className="bg-transparent relative overflow-hidden group cursor-pointer hover:scale-105 transition-transform duration-300">
@@ -41,11 +43,12 @@ function PricingCard({ src, plan, courseId }: any) {
                     {/* Price */}
                     <div className="text-center mb-10 mt-5">
                         <div className="flex items-baseline justify-center space-x-1">
-                            <span className="text-xl text-gray-600 group-hover:text-white">
-                                $
-                            </span>
+                            <h6 className="text-xl text-gray-600 group-hover:text-white">
+                                {symbol}
+                            </h6>
                             <h2 className="text-6xl font-bold text-gray-800 group-hover:text-white">
-                                {plan.price}
+                                
+                                {(plan.price * rate).toFixed(1)}
                             </h2>
                             <span className="text-sm text-gray-600 group-hover:text-white">
                                 /month
@@ -112,10 +115,6 @@ export default function Pricing_Section_Dynamic({
             setLoaded(true);
         },
     });
-
-    if (loading) {
-        return <p className="text-center py-10">Loading pricing...</p>;
-    }
 
     return (
         <section className="py-16 relative bg-transparent">

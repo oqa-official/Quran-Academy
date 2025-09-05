@@ -32,10 +32,10 @@ export default function CTASection() {
         {/* Right Image */}
         <div className="flex justify-center">
           <Image
-            src="/assets/home/quran5.png" 
+            src="/assets/home/quran8.png" 
             alt="Quran Learning"
             width={400}
-            height={600}
+            height={500}
             className="rounded-xl object-contain"
           />
         </div>

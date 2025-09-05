@@ -14,11 +14,8 @@ interface Course {
   overview?: { summary?: string };
   reviews?: number;
   rating?: number;
-  reviewsCount? : number
-  instructor?: {
-    image? : string,
-    name? : string
-  };
+  reviewsCount?: number;
+  instructor?: { image?: string; name?: string };
   students?: number;
   avatar?: string;
   image?: string;
@@ -31,21 +28,35 @@ const tabImages = [
   "/assets/home/pricing3.png",
 ];
 
-// ------------------ PLAN TAB ------------------
-interface PlanTabProps {
-  id: string;
-  title: string;
-  image: string;
-  isActive: boolean;
-  onClick: (id: string) => void;
-}
-const PlanTab: React.FC<PlanTabProps> = ({
-  id,
-  title,
-  image,
-  isActive,
-  onClick,
-}) => (
+// ------------------ FALLBACK COURSES ------------------
+const fallbackCourses: Course[] = [
+  {
+    _id: "fallback1",
+    title: "Quran Basics",
+    price: 25,
+    overview: { summary: "Learn the essentials of Quran reading and tajweed." },
+    instructor: { name: "Ustadh Ahmad", image: "/assets/home/teacher1.png" },
+    image: "/assets/home/course1.png",
+  },
+  {
+    _id: "fallback2",
+    title: "Intermediate Tajweed",
+    price: 40,
+    overview: { summary: "Enhance your tajweed and fluency in recitation." },
+    instructor: { name: "Ustadhah Fatima", image: "/assets/home/teacher2.png" },
+    image: "/assets/home/course2.png",
+  },
+  {
+    _id: "fallback3",
+    title: "Advanced Quran Studies",
+    price: 55,
+    overview: { summary: "Deep dive into tafseer and advanced tajweed rules." },
+    instructor: { name: "Sheikh Musa", image: "/assets/home/teacher3.png" },
+    image: "/assets/home/course3.png",
+  },
+];
+
+const PlanTab = ({ id, title, image, isActive, onClick }: any) => (
   <div
     className={`
       relative z-[2] flex flex-col items-center justify-center space-y-1 md:px-6 p-2 md:p-4 rounded-md shadow-lg
@@ -64,38 +75,34 @@ const PlanTab: React.FC<PlanTabProps> = ({
       `}
     />
     <p
-      className={`text-sm md:text-lg font-medium md:font-semibold  ${
+      className={`text-sm md:text-lg font-medium md:font-semibold ${
         isActive ? "text-primary" : "text-gray-300"
       }`}
     >
       {title}
     </p>
-
     <div
-      className={`absolute ${!isActive && "hidden"} -bottom-3 md:-bottom-5 -z-[1] left-1/2 transform -translate-x-1/2  md:w-10 md:h-10 w-6 h-6 border-b-1 border-gray-200 rotate-45 bg-white border-r-2`}
+      className={`absolute ${
+        !isActive && "hidden"
+      } -bottom-3 md:-bottom-5 -z-[1] left-1/2 transform -translate-x-1/2  md:w-10 md:h-10 w-6 h-6 border-b-1 border-gray-200 rotate-45 bg-white border-r-2`}
     ></div>
   </div>
 );
 
-// ------------------ PLAN CONTENT ------------------
-interface PlanContentProps {
-  course: Course;
-  image: string;
-}
-const PlanContent: React.FC<PlanContentProps> = ({ course, image }) => (
+const PlanContent = ({ course, image }: any) => (
   <div className="flex flex-col md:flex-row justify-center items-center gap-10">
     {/* Left side */}
-    <div className="flex-1 md:max-w-[50%] flex flex-col items-start md:items-start text-center md:text-left">
+    <div className="flex-1 md:max-w-[50%] flex flex-col items-start text-center md:text-left">
       <img src={image} alt="plan icon" className="w-16" />
-      <h2 className="text-3xl text-start lg:text-4xl font-bold text-primary mb-2 max-w-[550px]">
+      <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-2 max-w-[500px] leading-relaxed">
         {course.title}
       </h2>
       <img
         src="/assets/home/arrow.png"
         alt="Quran verse"
-        className="w-[120px] text-start -ms-2"
+        className="w-[120px] -ms-2"
       />
-      <p className="text-gray-600 max-w-[500px] mb-6 text-start">
+      <p className="text-gray-600 max-w-[500px] mb-6">
         {course.overview?.summary || "No description available."}
       </p>
       <div className="flex flex-row gap-2">
@@ -113,20 +120,28 @@ const PlanContent: React.FC<PlanContentProps> = ({ course, image }) => (
       </div>
     </div>
 
-    {/* Right side → CourseCard */}
+    {/* Right side */}
     <div className="flex-1 md:max-w-[40%] hidden md:flex">
-      <CourseCard title={course.title} price={course.price} list={true}
-      reviews={course.reviewsCount} avatar={course?.instructor?.image ? course.instructor.image : "/assets/home/teacher1.png"} teacher={course.instructor?.name ? course.instructor?.name : "The Instructor"}
-      rating={5} students={53} img={course.image || "/assets/home/course1.png"} 
+      <CourseCard
+        title={course.title}
+        price={course.price}
+        list={true}
+        reviews={course.reviewsCount}
+        avatar={
+          course?.instructor?.image || "/assets/home/teacher1.png"
+        }
+        teacher={course.instructor?.name || "The Instructor"}
+        rating={course.rating || 5}
+        students={course.students || 53}
+        img={course.image || "/assets/home/course1.png"}
       />
     </div>
   </div>
 );
 
-// ------------------ MAIN ------------------
 const OurPlans: React.FC = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [courses, setCourses] = useState<Course[]>(fallbackCourses); // ✅ start with fallback
+  const [activeId, setActiveId] = useState<string>(fallbackCourses[0]._id);
   const [startIndex, setStartIndex] = useState(0);
 
   useEffect(() => {
@@ -140,6 +155,7 @@ const OurPlans: React.FC = () => {
         if (data.length > 0) setActiveId(data[0]._id);
       } catch (err) {
         console.error("Error fetching courses:", err);
+        // do nothing → fallback stays
       }
     }
     fetchCourses();
@@ -155,13 +171,12 @@ const OurPlans: React.FC = () => {
     if (startIndex + 3 < courses.length) setStartIndex(startIndex + 1);
   };
 
-  // Find the image for the active course
   const activeIndex = courses.findIndex((c) => c._id === activeId);
   const activeImage =
     activeIndex !== -1 ? tabImages[activeIndex % tabImages.length] : "";
 
   return (
-    <section className="py-20">
+    <section className="pb-20">
       <div className="bg-primary relative z-[10]">
         <div
           className="absolute inset-0 -z-10 opacity-30"
@@ -191,9 +206,8 @@ const OurPlans: React.FC = () => {
             </h2>
             <p className="text-gray-300">
               We undergo the versatile modules of the Quran's tajweed learning
-              to make you perfect anyhow. Our professional learning programs
-              divided the learning Tajweed into three several stages to make you
-              comfortable while learning Tajweed.
+              to make you perfect anyhow. Our professional programs divide the
+              learning into three stages to make you comfortable while learning.
             </p>
           </div>
 

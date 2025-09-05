@@ -1,3 +1,4 @@
+import { useCurrency } from "@/hooks/useCurrency";
 import { Check, Star, User } from "lucide-react";
 
 const listpoints=[
@@ -8,16 +9,16 @@ const listpoints=[
 ]
 
 function CourseCard({ title, price, reviews, list, rating, teacher, students, avatar, img, features = [], onClick }: any) {
+  const { symbol, rate } = useCurrency();
   return (
-    <div className="keen-slider__slide p-2 md:py-6 py-2" onClick={onClick}>
+    <div className="keen-slider__slide p-2 min-w-[300px] max-w-[330px] md:py-6 py-2" onClick={onClick}>
       <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg cursor-pointer shadow-md shadow-gray-400 transition-all duration-300 hover:scale-[1.030]">
         {/* Top Image */}
         <div className="relative">
-          <img src={img} alt={title} className="w-full h-56 object-cover max-w-[320px]" />
-
+          <img src={img} alt={title} className="w-full  h-56 object-cover max-h-[220px]" />
           <div className="absolute right-2 bg-accent p-2 rounded-full -bottom-5 flex items-baseline justify-center">
-            <span className="text-sm self-start text-black"> $ </span>
-            <h2 className="text-2xl font-bold text-gray-800">{price}</h2>
+            <span className="text-sm self-start text-black"> {symbol} </span>
+            <h2 className="text-2xl font-bold text-gray-800">{(price * rate).toFixed(1)}</h2>
           </div>
         </div>
 

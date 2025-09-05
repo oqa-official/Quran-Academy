@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import "@/models/instructor.model"; // 👈 force register Instructor first
+
 
 const CourseSchema = new mongoose.Schema(
   {
