@@ -187,7 +187,27 @@ export default function FeaturedSectionCarousel({ heading = "Featured Courses", 
 
       <div className="max-w-6xl mx-auto px-6">
         {/* Loader / Error */}
-        {loading && <p className="text-center">Loading courses...</p>}
+
+          {loading && (
+          <div ref={sliderRef} className="keen-slider gap-4">
+            {courses.map((course, idx) => {
+              // ✅ pick 4 unique features for each card
+              const featureSet = allFeatures.slice((idx % 3) * 4, (idx % 3) * 4 + 4);
+
+              return (
+                <CourseCard
+                  key={course._id}
+                  {...course}
+                  features={featureSet}
+                  onClick={() => {
+                    if (course.fromApi) router.push(`/courses/${course._id}`);
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
+
         {/* {error && <p className="text-center text-red-500">⚠ {error}</p>} */}
 
         {!loading && (

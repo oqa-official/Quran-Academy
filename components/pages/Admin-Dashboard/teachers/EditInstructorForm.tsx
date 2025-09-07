@@ -1,64 +1,3 @@
-// 'use client';
-// import { useState } from 'react';
-
-// export default function EditInstructorForm({ instructor, onClose, onSuccess }:any) {
-//   const [form, setForm] = useState({ ...instructor });
-//   const [file, setFile] = useState<File | null>(null);
-
-//   const handleSubmit = async (e:any) => {
-//     e.preventDefault();
-
-//     let imageUrl = form.image;
-//     let cloudId = form.cloudinaryImageId;
-
-//     if (file) {
-//       const formData = new FormData();
-//       formData.append("file", file as Blob);
-//       formData.append("upload_preset", "your_preset");
-
-//       const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/<cloud_name>/image/upload`, {
-//         method: "POST",
-//         body: formData,
-//       });
-//       const imgData = await uploadRes.json();
-
-//       imageUrl = imgData.secure_url;
-//       cloudId = imgData.public_id;
-//     }
-
-//     const res = await fetch(`/api/db/instructors/${instructor._id}`, {
-//       method: 'PUT',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ ...form, image: imageUrl, cloudinaryImageId: cloudId }),
-//     });
-
-//     if (res.ok) {
-//       alert("Instructor updated");
-//       onSuccess();
-//     }
-//   };
-
-//   return (
-//     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-//       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-96">
-//         <h2 className="text-lg font-semibold mb-4">Edit Instructor</h2>
-//         <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full p-2 mb-2 border rounded" />
-//         <input type="text" value={form.designation} onChange={(e) => setForm({ ...form, designation: e.target.value })} className="w-full p-2 mb-2 border rounded" />
-//         <textarea value={form.about} onChange={(e) => setForm({ ...form, about: e.target.value })} className="w-full p-2 mb-2 border rounded" />
-//         <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} className="mb-2" />
-//         <div className="flex justify-end gap-2">
-//           <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-400 rounded">Cancel</button>
-//           <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// }
-
-
-
-
-
 
 
 
@@ -178,7 +117,7 @@ export default function EditInstructorForm({
         <CircleX className="absolute top-2 right-5 bg-gray-500 hover:scale-110 text-white rounded-full w-[28px] h-[28px]" onClick={onClose} />
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow-lg w-4xl space-y-3 max-h-[95vh] overflow-y-scroll"
+          className="bg-white  p-6 rounded-lg shadow-lg md:w-4xl max-sm:max-w-[300px] space-y-3 overflow-x-hidden md:max-h-[95vh] max-h-[90vh]"
         >
           <h2 className="text-lg font-semibold mb-4">Edit Instructor</h2>
 

@@ -107,11 +107,11 @@ export default function EditBookForm({
     };
 
     return (
-        <div className="fixed inset-0 bg-[#00000097] flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-[#00000069] flex items-center justify-center z-50">
            <div className="rounded-lg overflow-hidden relative">
              <form
                 onSubmit={handleSubmit}
-                className="bg-white  p-6 rounded-lg shadow-lg w-4xl space-y-3 overflow-x-hidden max-h-[95vh]"
+                className="bg-white  p-6 rounded-lg shadow-lg md:w-4xl max-sm:max-w-[300px] space-y-3 overflow-x-hidden md:max-h-[95vh] max-h-[90vh]"
             >
                 <CircleX className="absolute top-2 right-5 bg-gray-500 hover:scale-110 text-white rounded-full w-[28px] h-[28px]" onClick={onClose}/>
                 <h2 className="text-lg font-semibold mb-2">Edit Book</h2>

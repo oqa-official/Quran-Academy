@@ -15,7 +15,7 @@ function CourseCard({ title, price, reviews, list, rating, teacher, students, av
       <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg cursor-pointer shadow-md shadow-gray-400 transition-all duration-300 hover:scale-[1.030]">
         {/* Top Image */}
         <div className="relative">
-          <img src={img} alt={title} className="w-full  h-56 object-cover max-h-[220px]" />
+          <img src={img} alt={title} className="w-full min-w-[300px]  h-56 object-cover max-h-[210px]" />
           <div className="absolute right-2 bg-accent p-2 rounded-full -bottom-5 flex items-baseline justify-center">
             <span className="text-sm self-start text-black"> {symbol} </span>
             <h2 className="text-2xl font-bold text-gray-800">{(price * rate).toFixed(1)}</h2>
