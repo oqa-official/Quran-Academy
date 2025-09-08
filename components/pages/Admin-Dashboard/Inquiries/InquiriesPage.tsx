@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Trash2, Search } from "lucide-react";
+import { Trash2, Search, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -86,13 +86,46 @@ export default function InquiriesPage() {
     }
   };
 
+  // CSV export
+  const exportCSV = () => {
+    const headers = ["Name", "Email", "Phone", "Date"];
+    const rows = filtered.map((inq) => [
+      inq.name,
+      inq.email,
+      inq.phone,
+      new Date(inq.createdAt).toLocaleDateString(),
+    ]);
+    const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "inquiries.csv";
+    a.click();
+  };
+
   const startIndex = (page - 1) * itemsPerPage;
   const paginated = filtered.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const totalCount = filtered.length;
+
+  const showingFrom = totalCount === 0 ? 0 : startIndex + 1;
+  const showingTo = Math.min(startIndex + itemsPerPage, totalCount);
 
   return (
-    <div className=" bg-white rounded-xl shadow-md md:p-4">
-      <h1 className="text-2xl font-semibold mb-4">Inquiries</h1>
+    <div className="bg-white rounded-xl shadow-md md:p-4">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold">Inquiries</h1>
+        <Button onClick={exportCSV}>
+          <Download className="w-4 h-4 mr-2" /> Export CSV
+        </Button>
+      </div>
+
+      {/* Total Count */}
+      <p className="text-sm text-gray-600 mb-2">
+        Total Inquiries: <span className="font-semibold">{totalCount}</span>
+      </p>
 
       {/* Search */}
       <div className="flex items-center gap-2 mb-4">
@@ -148,9 +181,7 @@ export default function InquiriesPage() {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle className="">
-                                Delete Inquiry
-                              </AlertDialogTitle>
+                              <AlertDialogTitle>Delete Inquiry</AlertDialogTitle>
                               <AlertDialogDescription>
                                 This action cannot be undone. Are you sure you
                                 want to delete this inquiry?
@@ -158,7 +189,7 @@ export default function InquiriesPage() {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
+                              <AlertDialogAction className="bg-red-600 hover:bg-red-700"
                                 onClick={() => handleDelete(inq._id)}
                               >
                                 Delete
@@ -171,10 +202,7 @@ export default function InquiriesPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell
-                      colSpan={5}
-                      className="text-center text-gray-500"
-                    >
+                    <TableCell colSpan={5} className="text-center text-gray-500">
                       No inquiries found
                     </TableCell>
                   </TableRow>
@@ -212,7 +240,8 @@ export default function InquiriesPage() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-600 hover:bg-red-700"
+                          <AlertDialogAction
+                            className="bg-red-600 hover:bg-red-700"
                             onClick={() => handleDelete(inq._id)}
                           >
                             Delete
@@ -223,7 +252,9 @@ export default function InquiriesPage() {
                   </div>
                   <div className="flex flex-wrap justify-between text-sm text-gray-600 mt-2">
                     <span>{inq.phone}</span>
-                    <span className="text-accent">{new Date(inq.createdAt).toLocaleDateString()}</span>
+                    <span className="text-accent">
+                      {new Date(inq.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               ))
@@ -233,24 +264,29 @@ export default function InquiriesPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between mt-4">
-            <Button
-              variant="outline"
-              disabled={page === 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              Previous
-            </Button>
-            <p>
-              Page {page} of {totalPages || 1}
-            </p>
-            <Button
-              variant="outline"
-              disabled={page === totalPages || totalPages === 0}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </Button>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-4 gap-2">
+            <div className="text-sm text-gray-600">
+              Showing {showingFrom}-{showingTo} out of {totalCount}
+            </div>
+            <div className="flex items-center justify-between md:justify-end gap-4">
+              <Button
+                variant="outline"
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                Previous
+              </Button>
+              <p>
+                Page {page} of {totalPages || 1}
+              </p>
+              <Button
+                variant="outline"
+                disabled={page === totalPages || totalPages === 0}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Next
+              </Button>
+            </div>
           </div>
         </>
       )}
