@@ -1,18 +1,5 @@
-"use client";
 
-import { useEffect, useState } from "react";
-import { Trash2, Search, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
+"use client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,12 +12,29 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+
+import { useEffect, useState } from "react";
+import { Trash2, Search, Download, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+
 interface Inquire {
   _id: string;
   name: string;
   email: string;
   phone: string;
   createdAt: string;
+  studentCount?: number; // new
 }
 
 export default function InquiriesPage() {
@@ -47,7 +51,8 @@ export default function InquiriesPage() {
     const fetchInquiries = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/api/db/inquire");
+        // 🔹 Backend endpoint should aggregate student counts
+        const res = await fetch("/api/db/inquire/with-students");
         if (!res.ok) throw new Error("Failed to fetch inquiries");
         const data = await res.json();
         setInquiries(data);
@@ -88,12 +93,13 @@ export default function InquiriesPage() {
 
   // CSV export
   const exportCSV = () => {
-    const headers = ["Name", "Email", "Phone", "Date"];
+    const headers = ["Name", "Email", "Phone", "Date", "Student Count"];
     const rows = filtered.map((inq) => [
       inq.name,
       inq.email,
       inq.phone,
       new Date(inq.createdAt).toLocaleDateString(),
+      inq.studentCount || 0,
     ]);
     const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
 
@@ -159,6 +165,8 @@ export default function InquiriesPage() {
                   <TableHead>Email</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Date</TableHead>
+                  <TableHead>Students</TableHead>
+                  <TableHead>Details</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -172,6 +180,15 @@ export default function InquiriesPage() {
                       <TableCell>
                         {new Date(inq.createdAt).toLocaleDateString()}
                       </TableCell>
+                      <TableCell>{inq.studentCount || 0}</TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/admin-dashboard/students?inquire=${inq._id}`}
+                          className="text-primary hover:underline flex items-center gap-1"
+                        >
+                          <Eye className="w-4 h-4" /> View
+                        </Link>
+                      </TableCell>
                       <TableCell className="text-right">
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
@@ -181,16 +198,17 @@ export default function InquiriesPage() {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Inquiry</AlertDialogTitle>
+                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                               <AlertDialogDescription>
-                                This action cannot be undone. Are you sure you
-                                want to delete this inquiry?
+                                This action cannot be undone. This will permanently delete the
+                                inquiry and remove it from our records.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction className="bg-red-600 hover:bg-red-700"
+                              <AlertDialogAction
                                 onClick={() => handleDelete(inq._id)}
+                                className="bg-red-600 hover:bg-red-700"
                               >
                                 Delete
                               </AlertDialogAction>
@@ -198,95 +216,18 @@ export default function InquiriesPage() {
                           </AlertDialogContent>
                         </AlertDialog>
                       </TableCell>
+
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-gray-500">
+                    <TableCell colSpan={7} className="text-center text-gray-500">
                       No inquiries found
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Mobile Card Layout */}
-          <div className="md:hidden space-y-3">
-            {paginated.length > 0 ? (
-              paginated.map((inq) => (
-                <div
-                  key={inq._id}
-                  className="border rounded-lg p-2 shadow-sm bg-gray-50"
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold">{inq.name}</p>
-                      <p className="text-sm text-gray-500">{inq.email}</p>
-                    </div>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="icon">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Inquiry</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. Are you sure you want
-                            to delete this inquiry?
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            className="bg-red-600 hover:bg-red-700"
-                            onClick={() => handleDelete(inq._id)}
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                  <div className="flex flex-wrap justify-between text-sm text-gray-600 mt-2">
-                    <span>{inq.phone}</span>
-                    <span className="text-accent">
-                      {new Date(inq.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-gray-500">No inquiries found</p>
-            )}
-          </div>
-
-          {/* Pagination */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-4 gap-2">
-            <div className="text-sm text-gray-600">
-              Showing {showingFrom}-{showingTo} out of {totalCount}
-            </div>
-            <div className="flex items-center justify-between md:justify-end gap-4">
-              <Button
-                variant="outline"
-                disabled={page === 1}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                Previous
-              </Button>
-              <p>
-                Page {page} of {totalPages || 1}
-              </p>
-              <Button
-                variant="outline"
-                disabled={page === totalPages || totalPages === 0}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                Next
-              </Button>
-            </div>
           </div>
         </>
       )}

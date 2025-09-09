@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 
 interface FormWrapperProps {
   title?: string;
+  classname ?: string;
   verse?: string;
   aayat?: string;
   step: number;
@@ -19,6 +20,7 @@ interface FormWrapperProps {
 
 
 export default function FormWrapper({
+  classname="max-w-3xl",
   title,
   verse,
   aayat,
@@ -29,7 +31,7 @@ export default function FormWrapper({
   showProgress = true,
 }: FormWrapperProps) {
   return (
-    <div className="w-full max-w-2xl bg-white text-center rounded-2xl p-4">
+    <div className={`w-full ${classname} bg-white text-center rounded-2xl p-4 `}>
       {/* Header */}
       {aayat && <p className="text-2xl md:text-3xl my-2 text-accent">{aayat}</p>}
       {title && <p className="text-2xl md:text-3xl my-2 text-primary font-merriweather font-semibold">{title}</p>}

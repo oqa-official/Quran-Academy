@@ -30,3 +30,39 @@ export const TIMEZONES = [
   { value: 'Asia/Karachi', label: 'Karachi (PKT)' },
   { value: 'Asia/Jerusalem', label: 'Jerusalem (IST)' },
 ];
+
+
+
+
+
+
+
+
+
+
+export function generateTimeSlots(): string[] {
+  const slots: string[] = [];
+  for (let h = 0; h < 24; h++) {
+    slots.push(`${h.toString().padStart(2, "0")}:00`);
+    slots.push(`${h.toString().padStart(2, "0")}:30`);
+  }
+  return slots;
+}
+
+
+export function generateAvailableDates(): string[] {
+  const today = new Date();
+  const dates: string[] = [];
+
+  for (let i = 5; i <= 19; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+
+    const day = d.getDate().toString().padStart(2, "0");
+    const month = d.toLocaleString("en-US", { month: "short" });
+    const formatted = `${day} ${month} ${d.getFullYear()}`;
+    dates.push(formatted);
+  }
+
+  return dates;
+}
