@@ -184,17 +184,17 @@ export default function StudentsTable({
       <Table>
         <TableHeader className="text-center " >
           <TableRow className="bg-gray-200 text-white hover:bg-gray-300 cursor-pointer">
-            <TableHead className="bg-blue-100">Name</TableHead>
+            <TableHead className="bg-[#d1dafa7b]">Name</TableHead>
             <TableHead className="bg-gray-100">Email</TableHead>
-            <TableHead className="bg-blue-100">Phone</TableHead>
+            <TableHead className="bg-[#d1dafa7b]">Phone</TableHead>
             <TableHead className="bg-gray-100">Age</TableHead>
-            <TableHead className="bg-blue-100">Timezone</TableHead>
+            <TableHead className="bg-[#d1dafa7b]">Timezone</TableHead>
             <TableHead className="bg-gray-100">Preferred Time</TableHead>
-            <TableHead className="bg-blue-100">Class Days</TableHead>
+            <TableHead className="bg-[#d1dafa7b]">Class Days</TableHead>
             <TableHead className="bg-gray-100">Course</TableHead>
-            <TableHead className="bg-blue-100">Price</TableHead>
+            <TableHead className="bg-[#d1dafa7b]">Price</TableHead>
             <TableHead className="bg-gray-100">Status</TableHead>
-            <TableHead className="bg-blue-100">Fee Paid</TableHead>
+            <TableHead className="bg-[#d1dafa7b]">Fee Paid</TableHead>
             <TableHead className="text-right bg-gray-100">Actions</TableHead>
           </TableRow>
         </TableHeader>

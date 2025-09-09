@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Menu, BookOpen, Users, Library, ArrowBigLeft, ArrowBigRight, MailOpen } from 'lucide-react';
+import { Menu, BookOpen, Users, Library, ArrowBigLeft, ArrowBigRight, MailOpen, User } from 'lucide-react';
 import { useState } from 'react';
 
 // ✅ Links array with icons
@@ -12,6 +12,7 @@ const sidebarLinks = [
   { href: '/admin-dashboard/courses', label: 'Courses', icon: BookOpen },
   { href: '/admin-dashboard/library', label: 'Library', icon: Library },
   { href: '/admin-dashboard/inquire', label: 'Inquire', icon: MailOpen },
+  { href: '/admin-dashboard/students', label: 'Students', icon: User },
 ];
 
 export default function Sidebar() {

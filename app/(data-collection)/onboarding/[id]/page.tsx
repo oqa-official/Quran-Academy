@@ -35,10 +35,12 @@ export default function OnboardingPage() {
 
     const goNext = () => setStep((prev) => Math.min(prev + 1, 2));
     const goBack = () => setStep((prev) => Math.max(prev - 1, 1));
+    const [loading, setLoading] = useState(false);
 
     // 🟢 Final submission
     // 🟢 Final submission
     const handleSubmit = async (finalData: typeof formData) => {
+        setLoading(true);
         console.log("Submitting with:", finalData);
 
         try {
@@ -52,9 +54,11 @@ export default function OnboardingPage() {
              toast.success("Submission Successful. Thank you!");
 
             router.push("/onboarding/success");
+            setLoading(false);
         } catch (err) {
             console.error("Error submitting onboarding:", err);
             toast.error("Submission failed. Please try again.");
+            setLoading(false);
         }
     };
 
@@ -82,6 +86,7 @@ export default function OnboardingPage() {
                     {step === 2 && (
                         <StepTwo
                             formData={formData}
+                            loading={loading}
                             setFormData={setFormData}
                             goBack={goBack}
                             handleSubmit={handleSubmit}

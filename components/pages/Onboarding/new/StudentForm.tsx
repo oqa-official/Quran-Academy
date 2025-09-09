@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { generateAvailableDates, generateTimeSlots, TIMEZONES } from "@/lib/constants/timezones";
+import { PhoneInput } from "react-international-phone";
 import { toast } from "sonner";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -51,8 +52,8 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
 
   return (
     <div className="p-4 border rounded-xl shadow-sm">
-     
-     
+
+
 
       {/* Responsive grid: 1 col on mobile, 2 cols on md+ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -90,6 +91,7 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
             onChange={(e) => handle("phone", e.target.value)}
             className="border rounded-md h-10 px-3 w-full"
           />
+         
         </div>
 
         {/* Age */}
@@ -99,6 +101,7 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
             name="age"
             type="number"
             min={3}
+            max={100}
             value={data.age || ""}
             placeholder="Enter correct age"
             onChange={(e) => handle("age", e.target.value)}
@@ -148,11 +151,10 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
                 type="button"
                 key={day}
                 onClick={() => toggleDay(day)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm border transition ${
-                  data.classDays?.includes(day)
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm border transition ${data.classDays?.includes(day)
                     ? "bg-primary text-white border-primary"
                     : "bg-white text-gray-700 border-gray-300"
-                }`}
+                  }`}
               >
                 {day[0]}
               </button>
