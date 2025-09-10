@@ -23,7 +23,7 @@ export default function OnboardingPage() {
         students: [] as {
             name: string;
             email: string;
-            phone: string;
+            phone: number;
             age: string;
             level: string;
             classDays: string[];

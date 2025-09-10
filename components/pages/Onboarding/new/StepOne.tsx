@@ -29,8 +29,8 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
                     <label
                         key={type}
                         className={`flex items-center text-xs justify-center px-4 py-2 rounded-full cursor-pointer border transition ${forWhom === type
-                                ? "bg-primary text-white border-primary"
-                                : "bg-white text-gray-700 border-gray-300"
+                            ? "bg-primary text-white border-primary"
+                            : "bg-white text-gray-700 border-gray-300"
                             }`}
                     >
                         <input
@@ -55,7 +55,7 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
                     <label className="block mb-2 text-start">
                         How many children will you add?
                     </label>
-                    <div className="flex gap-3 justify-start">
+                    <div className="flex gap-3 justify-start flex-wrap">
                         {[1, 2, 3, 4, 5].map((num) => (
                             <label
                                 key={num}
@@ -75,17 +75,38 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
                                 {num}
                             </label>
                         ))}
+
+                        {/* ✅ 5+ option → sets value = 6 in state */}
+                        <label
+                            key="5plus"
+                            className={`flex items-center text-xs justify-center w-12 h-10 px-3 rounded-full cursor-pointer border transition ${studentCount === 6
+                                    ? "bg-primary text-white border-primary"
+                                    : "bg-white text-gray-700 border-gray-300"
+                                }`}
+                        >
+                            <input
+                                type="radio"
+                                name="studentCount"
+                                value={6}
+                                checked={studentCount === 6}
+                                onChange={() => setStudentCount(6)}
+                                className="hidden"
+                            />
+                            5+
+                        </label>
                     </div>
                 </div>
             )}
+
+
 
             {/* Next button */}
             <button
                 disabled={!forWhom}
                 onClick={handleNext}
                 className={`w-full py-2 rounded-lg font-semibold ${!forWhom
-                        ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-primary text-white hover:bg-accent"
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-primary text-white hover:bg-accent"
                     }`}
             >
                 Next

@@ -1,6 +1,7 @@
 import AdminHeader from "@/components/pages/Admin-Dashboard/AdminHeader";
 import Sidebar from "@/components/pages/Admin-Dashboard/AdminSidebar";
 import RestrictedUsers from "@/components/pages/Admin-Dashboard/Restricted-Users";
+import { adminLinks } from "@/lib/constants/data";
 
 
 export default function AdminLayout({
@@ -9,7 +10,7 @@ export default function AdminLayout({
   return (
     <RestrictedUsers>
     <div className={`flex  bg-white`}>
-      <Sidebar />
+       <Sidebar links={adminLinks} dashboardName="Admin Dashboard" />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white">

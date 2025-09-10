@@ -1,3 +1,5 @@
+import { BookOpen, Library, MailOpen, User, Users } from "lucide-react";
+
 export const fallbackCourses = [
   {
     _id: "fallback1", // ✅ give id for safe mapping
@@ -54,4 +56,43 @@ export const allFeatures = [
   "Mobile Friendly",
   "Support Community",
   "Flexible Schedule",
+];
+
+
+
+
+
+
+
+
+
+
+
+
+export const adminLinks = [
+  { href: '/admin-dashboard/teachers', label: 'Teachers', icon: 'users' },
+  { href: '/admin-dashboard/courses', label: 'Courses', icon: 'bookOpen' },
+  { href: '/admin-dashboard/library', label: 'Library', icon: 'library' },
+  { href: '/admin-dashboard/inquire', label: 'Inquire', icon: 'mailOpen' },
+  { href: '/admin-dashboard/onboardings', label: 'Onboardings', icon: 'mailOpen' },
+  { href: '/admin-dashboard/students', label: 'Students', icon: 'user' },
+];
+
+
+
+export const studentLinks = [
+  { href: '/student-dashboard/profile', label: 'Profile', icon: 'users' },
+  { href: '/student-dashboard/forms', label: 'Forms', icon: 'mailOpen' },
+  { href: '/policies', label: 'Policies', icon: 'library' },
+  { href: '/library', label: 'Library', icon: 'bookOpen' },
+  { href: '/contact', label: 'Contact Us', icon: 'phone' },
+];
+
+
+export const teacherLinks = [
+  { href: '/teacher-dashboard/profile', label: 'Profile', icon: 'users' },
+  { href: '/teacher-dashboard/forms', label: 'Forms', icon: 'mailOpen' },
+  { href: '/policies', label: 'Policies', icon: 'library' },
+  { href: '/library', label: 'Library', icon: 'bookOpen' },
+  { href: '/contact', label: 'Contact Us', icon: 'phone' },
 ];

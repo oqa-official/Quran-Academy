@@ -62,7 +62,7 @@ export default function EditStudentDialog({ student, open, onClose, onSaved }: a
           <DialogTitle>Edit Student</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-3">
+        <div className="space-y-3 grid grid-cols-1 md:grid-cols-2 gap-1">
           <Input value={form.name || ""} onChange={(e) => handleChange("name", e.target.value)} placeholder="Name" />
           <Input value={form.email || ""} onChange={(e) => handleChange("email", e.target.value)} placeholder="Email" />
           <Input value={form.phone || ""} onChange={(e) => handleChange("phone", e.target.value)} placeholder="Phone" />
@@ -70,16 +70,26 @@ export default function EditStudentDialog({ student, open, onClose, onSaved }: a
           <Input type="number" value={form.price || ""} onChange={(e) => handleChange("price", Number(e.target.value))} placeholder="Price" />
 
           {/* Status */}
-          <Select value={form.status} onValueChange={(val) => handleChange("status", val)}>
-            <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
-            <SelectContent>
+          <Select  value={form.status} onValueChange={(val) => handleChange("status", val)} >
+            <SelectTrigger  className="w-full"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent className="w-full">
               <SelectItem value="trial">Trial</SelectItem>
               <SelectItem value="regular">Regular</SelectItem>
             </SelectContent>
           </Select>
 
+            {/* Course */}
+          <Select value={form.course?._id || ""} onValueChange={(val) => handleChange("course", val)}>
+            <SelectTrigger className="w-full"><SelectValue placeholder="Select course" /></SelectTrigger>
+            <SelectContent>
+              {courses.map((c) => (
+                <SelectItem key={c._id} value={c._id ? c._id : ""} >{c.title}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           {/* ClassDays */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 col-span-2">
             {days.map((d) => (
               <label key={d} className="flex items-center gap-1">
                 <Checkbox
@@ -94,15 +104,7 @@ export default function EditStudentDialog({ student, open, onClose, onSaved }: a
             ))}
           </div>
 
-          {/* Course */}
-          <Select value={form.course?._id || ""} onValueChange={(val) => handleChange("course", val)}>
-            <SelectTrigger><SelectValue placeholder="Select course" /></SelectTrigger>
-            <SelectContent>
-              {courses.map((c) => (
-                <SelectItem key={c._id} value={c._id ? c._id : ""} >{c.title}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        
         </div>
 
         <DialogFooter>

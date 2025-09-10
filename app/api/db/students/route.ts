@@ -8,17 +8,53 @@
 
 
 
+// // app/api/db/students/route.ts
+// import { connectToDB } from "@/lib/db/db";
+// import Student from "@/models/student.model";
+// import { NextResponse } from "next/server";
+
+// // ✅ GET all students
+// export async function GET() {
+//   try {
+//     await connectToDB();
+//     const students = await Student.find()
+//       // .populate("parentInquiry")
+//       .populate("course", "title")
+//       .sort({ createdAt: -1 });
+
+//     return NextResponse.json(students, { status: 200 });
+//   } catch (error: any) {
+//     return NextResponse.json({ error: error.message }, { status: 500 });
+//   }
+// }
+
+
+
+
+
+
+
+
 // app/api/db/students/route.ts
 import { connectToDB } from "@/lib/db/db";
 import Student from "@/models/student.model";
 import { NextResponse } from "next/server";
 
-// ✅ GET all students
-export async function GET() {
+// ✅ GET students (all or filtered by parentInquiry)
+export async function GET(request: Request) {
   try {
     await connectToDB();
-    const students = await Student.find()
-      // .populate("parentInquiry")
+
+    // extract query param
+    const { searchParams } = new URL(request.url);
+    const inquireId = searchParams.get("inquire");
+
+    let query = {};
+    if (inquireId) {
+      query = { parentInquiry: inquireId }; // filter by parentInquiry
+    }
+
+    const students = await Student.find(query)
       .populate("course", "title")
       .sort({ createdAt: -1 });
 

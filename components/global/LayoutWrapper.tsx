@@ -7,13 +7,14 @@ import Footer from "./Footer";
 import { OfferPopup } from "./OfferPopup";
 import { PopupProvider } from "@/context/PopupContext";
 import { CurrencyProvider } from "@/context/CurrencyContext";
+import { UserProvider } from "@/context/UserContext";
 
 interface LayoutWrapperProps {
     children: ReactNode;
 }
 
 // ✅ routes where header/footer should NOT appear
-const excludedRoutes = ["/onboarding/*", "/auth/*", "/admin-dashboard/*", "/inquire/*"];
+const excludedRoutes = ["/onboarding/*", "/auth/*", "/admin-dashboard/*", "/inquire/*", "/student-dashboard/*", "/teacher-dashboard/*"];
 
 export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     const pathname = usePathname();
@@ -28,12 +29,15 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     });
 
     return (
-         <CurrencyProvider>
-        <PopupProvider>
-            {!isExcluded && <Header />}
-            {children}
-            {!isExcluded && <Footer />}
-        </PopupProvider>
-        </CurrencyProvider>
+        <UserProvider>
+
+            <CurrencyProvider>
+                <PopupProvider>
+                    {!isExcluded && <Header />}
+                    {children}
+                    {!isExcluded && <Footer />}
+                </PopupProvider>
+            </CurrencyProvider>
+        </UserProvider>
     );
 }

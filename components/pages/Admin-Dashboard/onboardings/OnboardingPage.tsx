@@ -28,7 +28,7 @@ interface Inquire {
   studentCount?: number;
 }
 
-export default function InquiriesPage() {
+export default function Onbaordings() {
   const [inquiries, setInquiries] = useState<Inquire[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -42,7 +42,7 @@ useEffect(() => {
       const data: Inquire[] = await res.json();
 
       // ✅ filter inquiries where studentCount >= 1
-      const filtered = data.filter((inq) => (inq.studentCount ?? 0) == 0);
+      const filtered = data.filter((inq) => (inq.studentCount ?? 0) >= 1);
 
       setInquiries(filtered);
     } catch (err: any) {
@@ -87,7 +87,26 @@ useEffect(() => {
         return date.toLocaleDateString();
       },
     },
-    
+    {
+      accessorKey: "studentCount",
+      header: "Students",
+      cell: ({ row }) => row.original.studentCount || 0,
+      enableHiding: true, // You can control which columns can be hidden
+    },
+    {
+      id: "details",
+      header: "Details",
+      cell: ({ row }) => (
+        <Link
+          href={`/admin-dashboard/students?inquire=${row.original._id}`}
+          className="text-primary hover:underline flex items-center gap-1"
+        >
+          <Eye className="w-4 h-4" /> View
+        </Link>
+      ),
+      enableSorting: false,
+      enableHiding: false, // This column cannot be hidden
+    },
     {
       id: "actions",
       header: "Actions",
@@ -124,8 +143,8 @@ useEffect(() => {
 
   return (
   <div className="bg-white md:p-4 border-1 rounded-md">
-      <div className=" rounded-xl  max-md:h-[100vh] overflow-hidden max-md:max-w-[85vw]">
-      <h1 className="text-2xl font-semibold mb-4">Inquiries</h1>
+      <div className=" rounded-xl  max-md:h-[100vh] overflow-hidden max-md:max-w-[85vw] ">
+      <h1 className="text-2xl font-semibold mb-4">Onboardings</h1>
       {error && <p className="text-red-500 mb-3">{error}</p>}
       {loading ? (
         <div className="space-y-2">
