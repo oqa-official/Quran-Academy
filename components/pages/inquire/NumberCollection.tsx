@@ -119,6 +119,7 @@ export default function NumberCollection({ onSuccess }: { onSuccess?: () => void
           <PhoneInput
             defaultCountry="us"
             value={inputs.phone}
+             preferredCountries={["us", "gb", "ca", "au"]}
             onChange={handlePhoneChange}
             inputClassName="w-full border rounded-sm p-2 bg-transparent"
             className="bg-transparent"

@@ -2,7 +2,10 @@ export interface InstructorForm {
   name: string;
   designation: string;
   about: string;
-  qualifications: string;
+  qualifications: string; // still as single string (later split into array)
+  email: string;
+  number: string;
+  emergencyNumber: string;
 }
 
 

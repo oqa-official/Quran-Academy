@@ -22,32 +22,50 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
             totalSteps={2}
             hideProgress
         >
-            {/* Who is this for? */}
-            <label className="block my-2 mt-10 text-start">Who are you choosing for?</label>
-            <div className="flex gap-3 justify-start mb-6">
-                {["myself", "children"].map((type) => (
+            <label className="block my-2 mt-10 text-start">
+                Who are you choosing for?
+            </label>
+
+            <div className="flex gap-4 justify-start mb-6">
+                {[
+                    { type: "myself", label: "For Myself", img: "/assets/onboard/man.png" },
+                    { type: "children", label: "For My Children", img: "/assets/onboard/children.png" },
+                ].map(({ type, label, img }) => (
                     <label
                         key={type}
-                        className={`flex items-center text-xs justify-center px-4 py-2 rounded-full cursor-pointer border transition ${forWhom === type
-                            ? "bg-primary text-white border-primary"
-                            : "bg-white text-gray-700 border-gray-300"
+                        className={`relative cursor-pointer overflow-hidden w-40 h-44 rounded-xl border flex flex-col items-center justify-center p-4 transition-all
+                        ${forWhom === type
+                                ? "bg-primary border-primary text-white shadow-lg"
+                                : "bg-white border-gray-300 text-gray-700"
                             }`}
                     >
+                        {/* hidden input */}
                         <input
                             type="radio"
-                            name="forWhom"   // ❌ was "userType"
+                            name="forWhom"
                             value={type}
                             checked={forWhom === type}
                             onChange={() => setForWhom(type)}
                             className="hidden"
                         />
 
-                        <span className="capitalize text-sm">
-                            {type === "myself" ? "For Myself" : "For My Children"}
-                        </span>
+                        {/* Image with grayscale if not selected */}
+
+                        
+                        {/* Label */}
+                        <span className="text-sm font-medium mb-2">{label}</span>
+                        <img
+                            src={img}
+                            alt={label}
+                            className={`w-[200px] overflow-hidden -mb-9 object-contain transition-all duration-200
+                                        ${forWhom === type ? "grayscale-0" : "grayscale opacity-70"}
+        `}
+                        />
+
                     </label>
                 ))}
             </div>
+
 
             {/* Student Count if children */}
             {forWhom === "children" && (
@@ -56,12 +74,12 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
                         How many children will you add?
                     </label>
                     <div className="flex gap-3 justify-start flex-wrap">
-                        {[1, 2, 3, 4, 5].map((num) => (
+                        {[1, 2, 3, 4].map((num) => (
                             <label
                                 key={num}
                                 className={`flex items-center text-xs justify-center w-10 h-10 p-3 rounded-full cursor-pointer border transition ${studentCount === num
-                                        ? "bg-primary text-white border-primary"
-                                        : "bg-white text-gray-700 border-gray-300"
+                                    ? "bg-primary text-white border-primary"
+                                    : "bg-white text-gray-700 border-gray-300"
                                     }`}
                             >
                                 <input
@@ -80,16 +98,16 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
                         <label
                             key="5plus"
                             className={`flex items-center text-xs justify-center w-12 h-10 px-3 rounded-full cursor-pointer border transition ${studentCount === 6
-                                    ? "bg-primary text-white border-primary"
-                                    : "bg-white text-gray-700 border-gray-300"
+                                ? "bg-primary text-white border-primary"
+                                : "bg-white text-gray-700 border-gray-300"
                                 }`}
                         >
                             <input
                                 type="radio"
                                 name="studentCount"
-                                value={6}
-                                checked={studentCount === 6}
-                                onChange={() => setStudentCount(6)}
+                                value={5}
+                                checked={studentCount === 5}
+                                onChange={() => setStudentCount(5)}
                                 className="hidden"
                             />
                             5+

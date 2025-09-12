@@ -8,7 +8,6 @@
 
 import { useState } from 'react';
 import EditInstructorForm from './EditInstructorForm';
-import { Instructor } from '@/lib/types/instructor';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +20,24 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Loader2, TriangleAlert } from 'lucide-react';
+
+
+export interface Instructor {
+  _id: string;
+  userId: string; // 🔑 link to users table
+  name: string;
+  designation: string;
+  about: string;
+  qualifications: string[];
+  image: string;
+  email?: string;
+  number?: string;
+  emergencyNumber : string,
+  password?: string; // ⚠️ usually don’t expose this on frontend
+  cloudinaryImageId?: string;
+}
+
+
 
 interface InstructorsInfoProps {
   instructors: Instructor[];
@@ -83,9 +100,6 @@ export default function InstructorsInfo({ instructors, onUpdate }: InstructorsIn
 
 
 
-          {/* Optional Fields */}
-          {ins.email && <p className="text-xs text-gray-400 mt-2">📧 {ins.email}</p>}
-          {ins.phone && <p className="text-xs text-gray-400">📞 {ins.phone}</p>}
 
           {/* Action Buttons */}
           <div className="flex justify-end w-full mt-2 space-x-2 ">

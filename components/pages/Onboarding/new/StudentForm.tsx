@@ -91,24 +91,39 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
             onChange={(e) => handle("phone", e.target.value)}
             className="border rounded-md h-10 px-3 w-full"
           />
-         
+
         </div>
 
-        {/* Age */}
-        <div className="flex flex-col w-full">
-          <label className="text-xs text-start text-gray-500 mb-1">Age</label>
+        {/* Date of Birth */}
+        <div className="flex flex-col w-full ">
+          <label className="text-xs text-start text-gray-500 mb-1">Date of Birth</label>
           <input
-            name="age"
-            type="number"
-            min={3}
-            max={100}
-            value={data.age || ""}
-            placeholder="Enter correct age"
-            onChange={(e) => handle("age", e.target.value)}
+            type="date"
+            name="dateOfBirth"
+            value={data.dateOfBirth || ""}
+            onChange={(e) => handle("dateOfBirth", e.target.value)}
             className="border rounded-md h-10 px-3 w-full"
           />
         </div>
 
+        {/* Gender */}
+        <div className="flex flex-col w-full md:col-span-2">
+          <label className="text-xs text-start text-gray-500 mb-1">Gender</label>
+          <Select
+            value={data.gender || undefined}
+            onValueChange={(val) => handle("gender", val)}
+          >
+            <SelectTrigger className="border rounded-md h-10 w-full">
+              <SelectValue placeholder="Select gender" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <hr className="border-1 border-gray-400 md:col-span-2" />
         {/* Frequency */}
         <div className="flex flex-col w-full">
           <label className="text-xs text-start text-gray-500 mb-1">
@@ -152,8 +167,8 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
                 key={day}
                 onClick={() => toggleDay(day)}
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm border transition ${data.classDays?.includes(day)
-                    ? "bg-primary text-white border-primary"
-                    : "bg-white text-gray-700 border-gray-300"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-white text-gray-700 border-gray-300"
                   }`}
               >
                 {day[0]}

@@ -2,15 +2,20 @@ import mongoose from "mongoose";
 import "@/models/inquire.model";
 import "@/models/course.model";
 
-
 const StudentSchema = new mongoose.Schema(
   {
     parentInquiry: { type: mongoose.Schema.Types.ObjectId, ref: "Inquire" }, // link back
-    
+
     name: { type: String, required: true },
     email: { type: String, required: true, lowercase: true },
     phone: { type: String, required: true },
-    age: { type: Number, required: true }, // ✅ new
+
+    // ✅ New field - will replace age
+    dateOfBirth: { type: Date, required: false },
+    gender : { type: String, required: true,
+      enum: ["male", "female"],
+     },
+
 
     timezone: { type: String, required: true },
     preferredStartTime: { type: String }, // e.g. "18:00"
@@ -18,36 +23,40 @@ const StudentSchema = new mongoose.Schema(
     // Days they take classes: ["Mon", "Wed", "Fri"]
     classDays: {
       type: [String],
-      enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], // ✅ safer & more structured
+      enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
       required: true,
     },
 
-    // ✅ Link directly to Course (Level 1, Level 2, etc.)
+    // Link directly to Course (Level 1, Level 2, etc.)
     course: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: false,
     },
 
-    // ✅ Keep price explicitly on Student
-    // so even if course price changes later, old students keep their locked fee.
+    // Lock fee for this student
     price: { type: Number, required: true },
 
-    status: { 
-      type: String, 
-      enum: ["trial", "regular"], 
-      default: "trial" 
+    status: {
+      type: String,
+      enum: ["trial", "regular"],
+      default: "trial",
     },
 
     trialClasses: {
       assigned: { type: Number, default: 3 },
-      completed: { type: Number, default: 0 }
+      completed: { type: Number, default: 0 },
     },
 
     feeStatus: {
       paid: { type: Boolean, default: false },
-      lastPaymentDate: { type: Date }
-    }
+      lastPaymentDate: { type: Date },
+    },
+
+    // ✅ New auth fields
+    educationMail: { type: String, required: true, lowercase: true, unique: true },
+    userId: { type: String, required: true, lowercase: true, unique: true },
+    password: { type: String, required: true }, // store HASH, don’t make it unique
   },
   { timestamps: true }
 );

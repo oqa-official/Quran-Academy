@@ -1,17 +1,69 @@
 'use client';
 
+import { Button } from "@/components/ui/button";
+import { useUser } from "@/context/UserContext";
+import { useEffect, useState } from "react";
 
-export default function DashboardHeader({title}: {title?: string}) {
+
+export default function DashboardHeader() {
+  const { userId, role, clearUser } = useUser();
+  const [name, setName] = useState<string>("");
+
+  useEffect(() => {
+    if (!userId || !role) return;
+
+    const fetchName = async () => {
+      try {
+        let endpoint = "";
+
+        switch (role) {
+          case "admin":
+            endpoint = `/api/db/admin/${userId}`;
+            break;
+          case "instructor":
+            endpoint = `/api/db/instructors/${userId}`;
+            break;
+          case "student":
+            endpoint = `/api/db/students/${userId}`;
+            break;
+          default:
+            return;
+        }
+
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error("Failed to fetch user info");
+        const data = await res.json();
+        setName(data.name.split(" ")[0]);
+      } catch (err) {
+        console.error(err);
+        setName("Name");
+      }
+    };
+
+    fetchName();
+  }, [userId, role]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      clearUser(); // clears context state
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   return (
-    <header className="container px-10 max-md:px-20 bg-gray-300 shadow-md  p-4 flex items-center justify-between">
-      <h1 className="text-xl font-semibold ">
-        {title || 'Dashboard'}
+    <header className="container px-10 max-md:px-20 bg-gray-200 shadow-md p-4 flex items-center justify-between">
+      <h1 className="text-xl font-semibold">
+        { name || "Loading..."}
       </h1>
       <div className="flex items-center gap-4">
-          <button className="font-bold text-gray-600 hover:text-black">
-            Logout
-          </button>
+        <Button
+          onClick={handleLogout}
+          className="font-medium bg-primary px-6"
+        >
+          Logout
+        </Button>
       </div>
     </header>
   );

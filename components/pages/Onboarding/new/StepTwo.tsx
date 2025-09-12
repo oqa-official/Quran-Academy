@@ -27,9 +27,10 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
     name: "",
     email: "",
     phone: "",
-    age: "",
     frequency: "",
     classDays: [],
+     dateOfBirth: "",   // 🆕 added
+      gender: "",  
     timezone: "",
     preferredStartDate: "",
     preferredStartTime: "",
@@ -82,8 +83,9 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
         s?.name &&
         s?.email &&
         s?.phone &&
-        s?.age &&
         s?.frequency &&
+         s?.dateOfBirth &&  
+        s?.gender &&     
         (s?.classDays?.length || 0) > 0 &&
         s?.timezone &&
         s?.preferredStartDate &&
@@ -116,7 +118,7 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
           )
         ) : (
           <>
-            <Accordion type="single" collapsible className="w-full space-y-3">
+            <Accordion type="single" collapsible defaultValue="student-0" className="w-full space-y-3">
               {students.map((student, i) => (
                 <AccordionItem key={i} value={`student-${i}`}>
                   <AccordionTrigger className="no-underline hover:no-underline focus:no-underline">
@@ -179,7 +181,7 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
         </button>
         <button
           onClick={saveAndSubmit}
-          disabled={!isFormValid && loading}
+          disabled={!isFormValid || loading}
           className={`px-4 py-2 rounded-md text-white ${
             isFormValid ? "bg-primary hover:bg-accent" : "bg-gray-400 cursor-not-allowed"
           }`}

@@ -62,9 +62,11 @@ export default function Header() {
           <span className="border-l-2 px-3 flex items-center gap-2">
             <PhoneCall size={16} className="text-accent" /> 0092 311 4581 622
           </span>
+          <Link href={'/auth/login'}>
           <span className="border-r-2 border-l-2 px-3 flex items-center gap-2">
             <LogIn size={16} className="text-accent" /> Login
           </span>
+          </Link>
         </div>
       </div>
 

@@ -25,8 +25,6 @@ export default function page() {
      <CTASection/>
      <FloatingButtons/>
 
-     {/* Popup just on Home Page */}
-     <OfferPopup/>
     </>
   )
 }

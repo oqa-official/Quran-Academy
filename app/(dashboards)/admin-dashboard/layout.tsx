@@ -8,7 +8,7 @@ export default function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <RestrictedUsers>
+    <RestrictedUsers allowedRoles={["admin"]}>
     <div className={`flex  bg-white`}>
        <Sidebar links={adminLinks} dashboardName="Admin Dashboard" />
 

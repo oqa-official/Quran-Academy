@@ -28,7 +28,8 @@ interface Student {
   name: string;
   email: string;
   phone: string;
-  age: number;
+  dateOfBirth: Date,
+  gender: string,
   timezone: string;
   preferredStartTime: string;
   classDays: string[];
@@ -93,13 +94,23 @@ function StudentsPageContent() {
       header: "Email",
     },
     {
+      accessorKey: "gender",
+      header: "Gender",
+    },
+    {
+      accessorKey: "dateOfBirth",
+      header: "Date of Birth",
+      cell: ({ row }) =>
+        row.original.dateOfBirth
+          ? new Date(row.original.dateOfBirth).toLocaleDateString()
+          : "N/A",
+    },
+
+    {
       accessorKey: "phone",
       header: "Phone",
     },
-    {
-      accessorKey: "age",
-      header: "Age",
-    },
+
     {
       accessorKey: "timezone",
       header: "Timezone",
@@ -196,7 +207,7 @@ function StudentsPageContent() {
           ))}
         </div>
       ) : (
-        <DataTable columns={columns} data={students} searchPlaceholder="Search by name, email, or phone..." />
+        <DataTable columns={columns} data={students} searchPlaceholder="Search" />
       )}
 
       {editing && (

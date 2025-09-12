@@ -8,7 +8,7 @@ export default function StudentLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <RestrictedUsers>
+    <RestrictedUsers allowedRoles={["instructor"]}>
     <div className={`flex  bg-white`}>
      <Sidebar links={teacherLinks} dashboardName="Teacher Dashboard" />
 

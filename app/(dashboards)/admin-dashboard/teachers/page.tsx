@@ -8,13 +8,15 @@ import { toast } from "sonner";
 
 interface Instructor {
   _id: string;
+  userId : string,
   name: string;
   designation: string;
   about: string;
   qualifications: string[];
   image: string;
   email?: string;
-  phone?: string;
+  number?: string;
+  emergencyNumber : string
 }
 
 export default function TeachersPage() {

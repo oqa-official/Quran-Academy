@@ -24,7 +24,6 @@ export default function OnboardingPage() {
             name: string;
             email: string;
             phone: number;
-            age: string;
             level: string;
             classDays: string[];
             timezone: string;

@@ -10,47 +10,46 @@ const dashboardCards = [
     name: "Profile Management",
     button: "Manage",
     link: "/student-dashboard/profile",
-    illustration: "/assets/admin/illustration3.png",
+    illustration: "/assets/admin/icon3.png",
   },
   {
     name: "Zoom Class Links",
     button: "Manage",
     link: "#",
-    illustration: "/assets/admin/illustration2.png",
+    illustration: "/assets/admin/icon2.png",
   },
   {
     name: "Books",
     button: "Manage",
     link: "/library",
-    illustration: "/assets/admin/illustration1.png",
+    illustration: "/assets/admin/icon1.png",
   },
    {
     name: "Assigned Students",
     button: "View All",
     link: "#",
-    illustration: "/assets/admin/illustration1.png",
+    illustration: "/assets/admin/icon4.png",
   },
 ];
 
 export default function Page() {
-    const { userId, loading: userLoading } = useUser();
 
   return (
     <div className="p-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
         {dashboardCards.map((card, i) => (
           <motion.div
             key={i}
             whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="bg-white rounded-2xl shadow-md shadow-gray-400 p-6 flex flex-col  justify-between text-center cursor-pointer"
+            className="bg-primary rounded-2xl shadow-md shadow-gray-400 p-6 flex flex-col  justify-between text-center cursor-pointer"
           >
             <img
               src={card.illustration}
               alt={card.name}
-              className="w-full max-w-60 object-contain mb-4 mx-auto"
+              className="w-full max-w-32 object-contain mb-4 mx-auto"
             />
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">
+            <h2 className="text-lg font-semibold text-white mb-3">
               {card.name}
             </h2>
             <Link href={card.link}>

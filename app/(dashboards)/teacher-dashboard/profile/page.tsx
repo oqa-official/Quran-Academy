@@ -5,75 +5,70 @@ import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import InstructorEditProfileForm from './InstructorEditProfileForm';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import StudentEditProfileForm from './StudentEditProfileForm';
+import { Textarea } from '@/components/ui/textarea';
+import InstructorChangePassword from './InstructorChangePasswordForm';
 
-interface Student {
+interface Instructor {
   _id: string;
-  parentInquiry?: string;
+  userId: string;
   name: string;
-  email: string;
-  phone: string;
-  age: number;
-  timezone: string;
-  preferredStartTime?: string;
-  classDays: string[];
-  course: {
-    _id: string;
-    title: string;
-    price: number;
-  } | null;
-  price: number;
-  status: 'trial' | 'regular';
-  trialClasses: {
-    assigned: number;
-    completed: number;
-  };
-  feeStatus: {
-    paid: boolean;
-    lastPaymentDate?: Date;
-  };
-  createdAt: Date;
-  updatedAt: Date;
+  designation?: string;
+  about?: string;
+  qualifications?: string[];
+  image?: string;
+  email?: string;
+  number?: string;
+  educationMail: string;
+  emergencyNumber?: string;
 }
 
 export default function Page() {
   const { userId, loading: userLoading } = useUser();
-  const [student, setStudent] = useState<Student | null>(null);
+  const [instructor, setInstructor] = useState<Instructor | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [openEdit, setOpenEdit] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
 
   useEffect(() => {
     if (!userId) {
       setLoading(false);
+      setError('No user ID found');
       return;
     }
 
-    const fetchStudent = async () => {
+    const fetchInstructor = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/db/students/${userId}`);
-        if (!res.ok) throw new Error('Failed to fetch student');
+        const res = await fetch(`/api/db/instructors/${userId}`);
+        if (!res.ok) throw new Error(`Failed to fetch instructor: ${res.status}`);
         const data = await res.json();
-        setStudent(data);
-      } catch (err) {
-        console.error(err);
+
+        if (!data) throw new Error('Instructor data not found');
+
+        setInstructor(data);
+      } catch (err: any) {
+        console.error('Error fetching instructor:', err);
+        setError(err.message || 'Something went wrong');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStudent();
+    fetchInstructor();
   }, [userId]);
 
   if (userLoading || loading) {
     return (
       <div className="max-w-7xl mx-auto mt-10 space-y-6">
-        <h2 className='text-2xl'>Loading Personal Info...</h2>
+        <h2 className="text-2xl">Loading Personal Info...</h2>
         <Skeleton className="h-8 w-1/3 bg-primary" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-14 w-full bg-primary" />
           ))}
         </div>
@@ -81,72 +76,85 @@ export default function Page() {
     );
   }
 
-  if (!userId) {
-    return <div className="text-center mt-10">No student found</div>;
+  if (error) {
+    return <div className="text-center mt-10 text-red-600">{error}</div>;
   }
 
-  if (!student) {
-    return <div className="text-center mt-10">Student not found</div>;
+  if (!instructor) {
+    return <div className="text-center mt-10">Instructor not found</div>;
   }
-
-  const [country, city] = student.timezone.split('/');
 
   return (
-    <div className="max-w-7xl mt-10">
+    <div className="max-w-7xl mt-10 space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl"></CardTitle>
+          <CardTitle className="text-xl">Instructor Profile</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <h2 className="text-lg font-semibold">Personal Information</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
+              <Label>Instructor ID</Label>
+              <Input value={instructor.userId || 'N/A'} readOnly />
+            </div>
+            <div>
               <Label>Name</Label>
-              <Input value={student.name} readOnly />
+              <Input value={instructor.name || 'N/A'} readOnly />
             </div>
             <div>
               <Label>Email</Label>
-              <Input value={student.email} readOnly />
+              <Input value={instructor.email || 'N/A'} readOnly />
             </div>
             <div>
-              <Label>Phone</Label>
-              <Input value={student.phone} readOnly />
+              <Label>Educational Email</Label>
+              <Input value={instructor.educationMail || 'N/A'} readOnly />
             </div>
             <div>
-              <Label>Age</Label>
-              <Input value={student.age} readOnly />
+              <Label>Contact Number</Label>
+              <Input value={instructor.number || 'N/A'} readOnly />
             </div>
             <div>
-              <Label>Status</Label>
-              <Input value={student.status} readOnly />
-            </div>
-            <div>
-              <Label>Timezone</Label>
-              <Input value={`${country} / ${city}`} readOnly />
-            </div>
-            <div>
-              <Label>Course</Label>
-              <Input value={student.course?.title ?? 'N/A'} readOnly />
-            </div>
-            <div>
-              <Label>Price</Label>
-              <Input value={`$${student.price}`} readOnly />
+              <Label>Emergency Number</Label>
+              <Input value={instructor.emergencyNumber || 'N/A'} readOnly />
             </div>
           </div>
 
-          <div className="pt-4">
+          <div>
+            <Label>Qualifications</Label>
+            <Textarea
+              value={
+                instructor.qualifications?.length
+                  ? instructor.qualifications.join('\n')
+                  : 'N/A'
+              }
+              readOnly
+            />
+          </div>
+
+          <div className="pt-4 flex gap-4">
             <Button onClick={() => setOpenEdit(true)}>Edit Profile</Button>
+            <Button variant="outline" className='hover:bg-primary hover:text-white' onClick={() => setOpenChangePassword(true)}>
+              Change Password
+            </Button>
           </div>
         </CardContent>
       </Card>
 
       {/* Edit Profile Dialog */}
-      <StudentEditProfileForm
+      <InstructorEditProfileForm
         open={openEdit}
         onClose={() => setOpenEdit(false)}
-        student={student}
-        onSave={(updated) => setStudent(updated)}
+        instructor={instructor}
+        onSave={(updated) => setInstructor(updated)}
+      />
+
+      {/* Change Password Dialog */}
+      <InstructorChangePassword
+        open={openChangePassword}
+        onClose={() => setOpenChangePassword(false)}
+        instructor={instructor}
+        onSave={(updated) => setInstructor(updated)}
       />
     </div>
   );

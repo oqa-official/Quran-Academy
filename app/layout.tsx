@@ -31,11 +31,11 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${poppins.variable} ${merriweather.variable} antialiased bg-[#EFF2FA]`}
-      >
-        {/* <OfferPopup/> */}
+        >
         <LayoutWrapper>
            {children}
             <Toaster />
+        <OfferPopup/>
         </LayoutWrapper>
       </body>
     </html>

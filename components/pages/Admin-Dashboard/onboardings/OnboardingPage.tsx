@@ -153,7 +153,7 @@ useEffect(() => {
           ))}
         </div>
       ) : (
-        <DataTable columns={columns} data={inquiries} searchPlaceholder="Search by name or email..." />
+        <DataTable columns={columns} data={inquiries} searchPlaceholder="Search" />
       )}
     </div>
   </div>
