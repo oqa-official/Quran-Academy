@@ -14,7 +14,7 @@ export default function StudentLayout({
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white">
-        <AdminHeader title="Teacher's Dashbaord"/>
+        <AdminHeader />
         <main className="flex-1 p-6 overflow-y-auto">
           {children}
         </main>
