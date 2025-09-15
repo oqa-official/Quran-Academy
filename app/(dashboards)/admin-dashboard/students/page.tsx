@@ -29,6 +29,7 @@ interface Student {
   email: string;
   phone: string;
   dateOfBirth: Date,
+  userId : string
   gender: string,
   timezone: string;
   preferredStartTime: string;
@@ -85,6 +86,15 @@ function StudentsPageContent() {
   };
 
   const columns: ColumnDef<Student>[] = [
+    {
+      accessorKey: "userId", // Changed from "userId" to match the data model
+      header: "User ID",
+      cell: ({ row }) => (
+        <span className="font-mono text-xs">
+          {row.original.userId.toUpperCase()}
+        </span>
+      ),
+    },
     {
       accessorKey: "name",
       header: "Name",
