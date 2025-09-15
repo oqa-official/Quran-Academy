@@ -17,10 +17,9 @@ export async function GET() {
 
 
 
-export async function POST(req: Request) {
-  const session = await mongoose.startSession();
-  session.startTransaction();
 
+
+export async function POST(req: Request) {
   try {
     await connectToDB();
     const body = await req.json();
@@ -39,25 +38,17 @@ export async function POST(req: Request) {
     } = body;
 
     // ✅ Required validations
-    if (!name || !number || !email) {
+    if (!name || !number  || !email) {
       return NextResponse.json(
         { error: "Required fields are missing" },
         { status: 400 }
       );
     }
 
-    // ✅ Auto fields (with counters inside transaction)
-    const userId = await generateInstructorUserId(session);
-    const educationMail = await generateInstructorEducationMail(userId);
+    // ✅ Auto fields
+    const userId = await generateInstructorUserId();
+    const educationMail = await generateInstructorEducationMail(name);
     const password = incomingPassword || generateInstructorPassword(name);
-
-     const existing = await Instructor.findOne({email});
-      if (existing) {
-      return NextResponse.json(
-        { error: "Email already exists Try again with different one" },
-        { status: 400 }
-      );
-    }
 
     const newInstructor = new Instructor({
       name,
@@ -74,19 +65,11 @@ export async function POST(req: Request) {
       password,
     });
 
-    await newInstructor.save({ session });
-
-    // Commit only if everything succeeded
-    await session.commitTransaction();
-    session.endSession();
+    await newInstructor.save();
 
     return NextResponse.json(newInstructor, { status: 201 });
   } catch (error: any) {
-    // Rollback if failed
-    await session.abortTransaction();
-    session.endSession();
-
     console.error("❌ Error in POST /api/db/instructors:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-} 
+}

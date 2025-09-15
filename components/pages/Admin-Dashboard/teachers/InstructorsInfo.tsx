@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Loader2, TriangleAlert } from 'lucide-react';
+import { Delete, Edit, Loader2, Trash, TriangleAlert } from 'lucide-react';
 
 
 export interface Instructor {
@@ -81,40 +81,30 @@ export default function InstructorsInfo({ instructors, onUpdate }: InstructorsIn
             <img
               src={ins.image}
               alt={ins.name}
-              className="w-28 h-28 max-h-28 max-w-28 rounded-full object-cover shadow-md shadow-gray-500"
+              className="w-20 h-20 max-h-28 max-w-28 rounded-full object-cover shadow-md shadow-gray-500"
             />
 
             <div className="mt-4">
-              <h2 className="text-xl text-start font-semibold">{ins.name}</h2>
+              <h2 className="text-xl text-start font-semibold capitalize">{ins.name}</h2>
               <p className="text-sm text-start text-gray-500">{ins.designation}</p>
             </div>
           </div>
 
-          {/* About */}
-          <p className="text-sm text-start text-gray-600 mt-2">
-            {ins.about
-              ? ins.about.split(" ").slice(0, 5).join(" ") +
-              (ins.about.split(" ").length > 5 ? "..." : "")
-              : "No description available"}
-          </p>
-
-
-
-
+  
           {/* Action Buttons */}
-          <div className="flex justify-end w-full mt-2 space-x-2 ">
+          <div className="flex justify-end w-full  space-x-0 -mt-6">
             <button
               onClick={() => setEditingInstructor(ins)}
-              className="px-3 py-1 bg-accent hover:bg-accent-hover text-black rounded"
+              className="p-1 py-1 hover:scale-105 text-primary rounded"
             >
-              Edit
+              <Edit/>
             </button>
 
             {/* Delete with AlertDialog */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <button
-                  className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded disabled:opacity-50 flex items-center"
+                  className="p-1 py-1 text-red-500 rounded disabled:opacity-50 flex items-center"
                   disabled={deletingId === ins._id}
                 >
                   {deletingId === ins._id ? (
@@ -122,7 +112,7 @@ export default function InstructorsInfo({ instructors, onUpdate }: InstructorsIn
                       <Loader2 className="h-4 w-4 animate-spin mr-1" /> Deleting...
                     </>
                   ) : (
-                    'Delete'
+                    <Trash className=''/>
                   )}
                 </button>
               </AlertDialogTrigger>

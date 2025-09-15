@@ -31,9 +31,8 @@ const dashboardCards = [
     illustration: "/assets/admin/icon5.png",
   },
 ];
-
+ 
 export default function Page() {
-    const { userId, loading: userLoading } = useUser();
 
   return (
     <div className="p-6">

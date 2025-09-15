@@ -4,10 +4,10 @@ import "@/models/course.model";
 
 const StudentSchema = new mongoose.Schema(
   {
-    parentInquiry: { type: mongoose.Schema.Types.ObjectId, ref: "Inquire" }, // link back
+    parentInquiry: { type: mongoose.Schema.Types.ObjectId, ref: "Inquire" },
 
     name: { type: String, required: true },
-    email: { type: String, required: true, lowercase: true , unique : true},
+    email: { type: String, required: true, lowercase: true},
     phone: { type: String, required: true },
 
     // ✅ New field - will replace age

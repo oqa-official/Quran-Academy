@@ -53,14 +53,15 @@ export default function DashboardHeader() {
   };
 
   return (
-    <header className="container px-10 max-md:px-20 bg-gray-200 shadow-md p-4 flex items-center justify-between">
-      <h1 className="text-xl font-semibold">
+    <header className="container px-10 max-md:px-20 bg-primary shadow-md p-4 flex items-center justify-between">
+      <h1 className="text-xl font-semibold text-white">
         { name || "Loading..."}
       </h1>
       <div className="flex items-center gap-4">
         <Button
+        variant={'outline'}
           onClick={handleLogout}
-          className="font-medium bg-primary px-6"
+          className="font-medium border-accent bg-transparent text-accent hover:text-primary px-6"
         >
           Logout
         </Button>

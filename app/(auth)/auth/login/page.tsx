@@ -153,9 +153,9 @@ export default function LoginPage() {
 
         {/* Register Link */}
         <p className="mt-4 text-gray-600 text-sm">
-          Don’t have an account?{" "}
-          <Link href="/auth/register" className="text-accent hover:underline">
-            Register
+         Forgot your password?{" "}
+          <Link href="/auth/forgot-password" className="text-accent hover:underline">
+            Click Here
           </Link>
         </p>
       </div>
