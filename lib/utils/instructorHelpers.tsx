@@ -1,40 +1,39 @@
 import Instructor from "@/models/instructor.model";
 
+import Counter from "@/models/counter.model";
+
+// ✅ Atomic counter increment WITH session
+export async function getNextSequence(
+  name: "studentId" | "instructorId",
+  session: any
+) {
+  const counter = await Counter.findByIdAndUpdate(
+    name,
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true, session }
+  );
+
+  return counter.seq;
+}
+
 // Utility: Pad number like 0001
 function padNumber(num: number, length = 4) {
   return num.toString().padStart(length, "0");
 }
 
 // ✅ Generate next userId: e.g. oqa-ins-0001
-export async function generateInstructorUserId() {
-  const lastInstructor = await Instructor.findOne().sort({ createdAt: -1 }).select("userId");
-
-  if (!lastInstructor || !lastInstructor.userId) {
-    return "oqa-ins-0001";
-  }
-
-  const parts = lastInstructor.userId.split("-");
-  const lastNum = parseInt(parts[2], 10) || 0;
-  const nextNum = lastNum + 1;
-
-  return `oqa-ins-${padNumber(nextNum)}`;
+export async function generateInstructorUserId(session: any) {
+  const nextSeq = await getNextSequence("instructorId", session);
+  return `oqa-ins-${padNumber(nextSeq)}`;
 }
 
 // ✅ Generate educationMail: fa25-0001-ins@oqa.edu.pk
-export async function generateInstructorEducationMail() {
+export async function generateInstructorEducationMail(userId: string) {
   const year = new Date().getFullYear().toString().slice(-2);
-  const term = "fa"; // later you can switch fa/sp/su
+  const term = "fa"; // later switch fa/sp/su if needed
 
-  const lastInstructor = await Instructor.findOne().sort({ createdAt: -1 }).select("userId");
-
-  let nextNum = "0001";
-  if (lastInstructor?.userId) {
-    const parts = lastInstructor.userId.split("-");
-    const lastNum = parseInt(parts[2], 10);
-    nextNum = String(lastNum + 1).padStart(4, "0");
-  }
-
-  return `${term}${year}-${nextNum}-ins@oqa.edu.pk`;
+  const num = userId.split("-")[2]; // from userId, e.g. "0005"
+  return `${term}${year}-${num}-ins@oqa.edu.pk`;
 }
 
 // ✅ Generate secure password

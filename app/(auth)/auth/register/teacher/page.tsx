@@ -20,7 +20,7 @@ export default function RegisterPage() {
                 <TeacherRegisterForm />
 
 
-
+ 
                 <p className="mt-4 text-gray-600 text-sm">
                     Already have an account?{" "}
                     <Link href="/auth/login" className="text-accent hover:underline">

@@ -13,11 +13,13 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useUser } from "@/context/UserContext";
 
 type ReviewType = {
   _id: string;
   username: string;
   reviewText: string;
+  reviewUserId : string;
   rating: number;
   date: string;
   image?: string;
@@ -33,6 +35,7 @@ export default function ReviewList({
   onReviewDeleted: () => void;
 }) {
   const [visibleCount, setVisibleCount] = useState(5);
+  const { userId } = useUser();
 
   const handleDelete = async (id: string) => {
     try {
@@ -97,34 +100,37 @@ export default function ReviewList({
             {renderStars(review.rating)}
 
             {/* ✅ Delete button */}
-            <div className="mt-1">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <button className="text-xs text-red-500 hover:underline">
-                    Delete
-                  </button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you sure you want to delete this review?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      className="bg-red-500 text-white hover:bg-red-600"
-                      onClick={() => handleDelete(review._id)}
-                    >
-                      Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
+           {review.reviewUserId === userId && (
+  <div className="mt-1">
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <button className="text-xs text-red-500 hover:underline">
+          Delete
+        </button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Are you sure you want to delete this review?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-red-500 text-white hover:bg-red-600"
+            onClick={() => handleDelete(review._id)}
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </div>
+)}
+
           </div>
         ))}
 

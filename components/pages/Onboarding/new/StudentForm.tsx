@@ -10,6 +10,8 @@ import {
 import { generateAvailableDates, generateTimeSlots, TIMEZONES } from "@/lib/constants/timezones";
 import { PhoneInput } from "react-international-phone";
 import { toast } from "sonner";
+import "react-international-phone/style.css";
+
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -70,7 +72,7 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
         </div>
 
         {/* Email */}
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full ">
           <label className="text-xs text-start text-gray-500 mb-1">Email</label>
           <input
             name="email"
@@ -82,17 +84,19 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
         </div>
 
         {/* Phone */}
-        <div className="flex flex-col w-full">
+        {/* Phone */}
+        <div className="flex flex-col w-full md:col-span-1">
           <label className="text-xs text-start text-gray-500 mb-1">Student's Number</label>
-          <input
-            name="phone"
-            value={data.phone || ""}
-            placeholder="Phone Number"
-            onChange={(e) => handle("phone", e.target.value)}
-            className="border rounded-md h-10 px-3 w-full"
+          <PhoneInput
+            defaultCountry="us"
+             preferredCountries={["us", "gb", "ca", "au"]}
+            value={data.phone || ""} 
+            onChange={(phone) => handle("phone", phone)}
+            inputClassName="w-full border rounded-sm p-2 bg-transparent"
+            className="bg-transparent h-10 "
           />
-
         </div>
+
 
         {/* Date of Birth */}
         <div className="flex flex-col w-full ">

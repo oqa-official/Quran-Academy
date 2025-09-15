@@ -4,8 +4,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useParams } from 'next/navigation'
 import ReviewList from './ReviewList'
 import PostReview from './PostReview'
+import { useUser } from '@/context/UserContext'
 
 export default function CourseReviews() {
+   const { userId }  = useUser();
   const params = useParams()
   const slug = params?.slug as string | undefined
 
@@ -66,12 +68,13 @@ export default function CourseReviews() {
         )}
 
         {/* Post Review Form */}
-        <div className="mt-12">
+        {userId ? <div className="mt-12">
           <h2 className="text-xl sm:text-2xl font-semibold mb-6">
             {reviews?.length === 0 ? 'Be the first to review' : 'Leave A Comment'}
           </h2>
           {slug && <PostReview courseSlug={slug} onReviewAdded={fetchReviews} />}
-        </div>
+        </div> :<p>Please Login First to add your Review..</p>}
+       
       </CardContent>
     </Card>
   )

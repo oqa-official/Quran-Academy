@@ -8,9 +8,24 @@ import { toast } from "sonner";
 import { useUser } from "@/context/UserContext";
 
 export default function LoginPage() {
-  const { setUser } = useUser();
-
+  const { setUser, role } = useUser();
   const router = useRouter();
+
+  if(role){
+    if(role === 'admin'){
+      router.push("/admin-dashboard")
+      return
+    }
+    if(role === 'instructor'){
+      router.push("/teacher-dashboard")
+      return
+    }
+    if(role === 'student'){
+      router.push("/students-dashboard")
+      return
+    }
+  }
+
 
   const [form, setForm] = useState({
     educationMail: "",

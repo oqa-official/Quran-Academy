@@ -27,12 +27,14 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+    // 🔹 Check if phone OR email already exists
+    const existing = await Inquire.findOne({
+      $or: [{ phone }, { email }],
+    });
 
-    // 🔹 Check if phone already exists
-    const existing = await Inquire.findOne({ phone });
     if (existing) {
       return NextResponse.json(
-        { error: "Number already exists, try again with a different number." },
+        { error: "Number or Email already exists, try again with a different one." },
         { status: 400 }
       );
     }

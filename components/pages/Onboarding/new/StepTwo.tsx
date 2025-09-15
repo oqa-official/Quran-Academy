@@ -29,8 +29,8 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
     phone: "",
     frequency: "",
     classDays: [],
-     dateOfBirth: "",   // 🆕 added
-      gender: "",  
+    dateOfBirth: "",   // 🆕 added
+    gender: "",
     timezone: "",
     preferredStartDate: "",
     preferredStartTime: "",
@@ -42,8 +42,8 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
     formData.forWhom === "myself"
       ? [formData.students?.[0] || emptyStudent()]
       : formData.students.length > 0
-      ? formData.students
-      : Array.from({ length: formData.studentCount }, () => emptyStudent())
+        ? formData.students
+        : Array.from({ length: formData.studentCount }, () => emptyStudent())
   );
 
   // 🟢 Sync when switching between "myself" and "children"
@@ -84,15 +84,15 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
         s?.email &&
         s?.phone &&
         s?.frequency &&
-         s?.dateOfBirth &&  
-        s?.gender &&     
+        s?.dateOfBirth &&
+        s?.gender &&
         (s?.classDays?.length || 0) > 0 &&
         s?.timezone &&
         s?.preferredStartDate &&
         s?.preferredStartTime
     );
 
- const saveAndSubmit = () => {
+  const saveAndSubmit = () => {
     const updatedForm = {
       ...formData,
       students,
@@ -175,19 +175,23 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
         )}
       </div>
 
-      <div className="flex justify-between mt-6">
+      <div className="flex justify-between items-center mt-6">
         <button onClick={goBack} className="px-4 py-2 bg-gray-200 rounded-md">
           Back
         </button>
-        <button
-          onClick={saveAndSubmit}
-          disabled={!isFormValid || loading}
-          className={`px-4 py-2 rounded-md text-white ${
-            isFormValid ? "bg-primary hover:bg-accent" : "bg-gray-400 cursor-not-allowed"
-          }`}
-        >
-          Submit
-        </button>
+        <div className="flex flex-col">
+          {!isFormValid && <p className="text-blacks mb-1 text-gray-500 text-xs ">Fill all the data to continue</p>}
+
+          <button
+            onClick={saveAndSubmit}
+            disabled={!isFormValid || loading}
+            className={`px-4 py-2 rounded-md text-white ${isFormValid ? "bg-primary hover:bg-accent" : "bg-gray-400 cursor-not-allowed"
+              }`}
+          >
+            Submit
+          </button>
+
+        </div>
       </div>
     </FormWrapper>
   );

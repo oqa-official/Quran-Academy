@@ -1,5 +1,4 @@
 
-import { OfferPopup } from '@/components/global/OfferPopup'
 import { StatisticsSection } from '@/components/pages/About-us/Statistics'
 import CTASection from '@/components/pages/home/CTAsection'
 import FeaturedSectionCarousel from '@/components/pages/home/FeaturedSectionCarousel'

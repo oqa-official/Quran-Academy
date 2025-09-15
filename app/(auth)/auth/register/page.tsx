@@ -41,7 +41,7 @@ export default function RegisterPage() {
         <div className="flex gap-4 justify-center my-6">
           {[
             { type: "student", label: "Student", img: "/assets/onboard/children.png" },
-            { type: "teacher", label: "Teacher", img: "/assets/onboard/mans.png" },
+            { type: "teacher", label: "Teacher", img: "/assets/onboard/man.png" },
           ].map(({ type, label, img }) => (
             <label
               key={type}

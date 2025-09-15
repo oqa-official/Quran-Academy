@@ -335,13 +335,13 @@ export default function TeacherRegisterForm() {
       <div className="w-full">
         <Label>Name</Label>
         <Input name="name" value={form.name} onChange={handleChange} />
-        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+        {errors.name && <p className="text-red-500 text-xs mt-1 text-start">{errors.name}</p>}
       </div>
 
       <div className="w-full">
         <Label>Email</Label>
         <Input type="email" name="email" value={form.email} onChange={handleChange} />
-        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+        {errors.email && <p className="text-red-500 text-xs mt-1 text-start">{errors.email}</p>}
       </div>
 
       <div className="w-full">
@@ -353,13 +353,13 @@ export default function TeacherRegisterForm() {
           inputClassName="w-full border rounded-md p-2"
           className="w-full"
         />
-        {errors.number && <p className="text-red-500 text-xs mt-1">{errors.number}</p>}
+        {errors.number && <p className="text-red-500 text-xs mt-1 text-start">{errors.number}</p>}
       </div>
 
       <div className="w-full">
         <Label>Password</Label>
         <Input type="password" name="password" value={form.password} onChange={handleChange} />
-        {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+        {errors.password && <p className="text-red-500 text-xs mt-1 text-start">{errors.password}</p>}
       </div>
 
       <div className="w-full">
@@ -371,7 +371,7 @@ export default function TeacherRegisterForm() {
           onChange={handleChange}
         />
         {errors.confirmPassword && (
-          <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>
+          <p className="text-red-500 text-xs mt-1 text-start">{errors.confirmPassword}</p>
         )}
       </div>
 

@@ -39,6 +39,8 @@ interface StudentFormValues {
 }
 
 export default function StudentRegisterForm() {
+  const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/;
   const router = useRouter();
   const { setUser } = useUser();
 
@@ -91,24 +93,39 @@ export default function StudentRegisterForm() {
     handleChange("classDays", []);
   };
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    if (!form.name) newErrors.name = "Name is required";
-    if (!form.email) newErrors.email = "Email is required";
-    if (!form.phone) newErrors.phone = "Phone is required";
-    if (!form.dateOfBirth) newErrors.dateOfBirth = "Date of Birth is required";
-    if (!form.gender) newErrors.gender = "Gender is required";
-    if (!form.frequency) newErrors.frequency = "Select classes/week";
-    if (!form.classDays.length) newErrors.classDays = "Select class days";
-    if (!form.timezone) newErrors.timezone = "Timezone is required";
-    if (!form.preferredStartDate) newErrors.preferredStartDate = "Select preferred start date";
-    if (!form.preferredStartTime) newErrors.preferredStartTime = "Select preferred start time";
-    if (!form.password) newErrors.password = "Password is required";
-    if (form.password !== confirmPassword) newErrors.confirmPassword = "Passwords do not match";
+const validateForm = () => {
+  const newErrors: Record<string, string> = {};
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  if (!form.name) newErrors.name = "Name is required";
+  if (!form.email) newErrors.email = "Email is required";
+  if (!form.phone) newErrors.phone = "Phone is required";
+  if (!form.dateOfBirth) newErrors.dateOfBirth = "Date of Birth is required";
+  if (!form.gender) newErrors.gender = "Gender is required";
+  if (!form.frequency) newErrors.frequency = "Select classes/week";
+  if (!form.classDays.length) newErrors.classDays = "Select class days";
+  if (!form.timezone) newErrors.timezone = "Timezone is required";
+  if (!form.preferredStartDate) newErrors.preferredStartDate = "Select preferred start date";
+  if (!form.preferredStartTime) newErrors.preferredStartTime = "Select preferred start time";
+
+  // ✅ Password validation
+  if (!form.password) {
+    newErrors.password = "Password is required";
+  } else {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/;
+    if (!passwordRegex.test(form.password)) {
+      newErrors.password =
+        "Password must be at least 10 characters long, include uppercase, lowercase, number, and special character";
+    }
+  }
+
+  if (form.password !== confirmPassword) {
+    newErrors.confirmPassword = "Passwords do not match";
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,7 +169,7 @@ export default function StudentRegisterForm() {
             placeholder="Your name"
             className="border rounded-md h-10 px-3 w-full"
           />
-          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+          {errors.name && <p className="text-red-500 text-start text-xs mt-1">{errors.name}</p>}
         </div>
 
         {/* Email */}
@@ -165,7 +182,7 @@ export default function StudentRegisterForm() {
             onChange={(e) => handleChange("email", e.target.value)}
             className="border rounded-md h-10 px-3 w-full"
           />
-          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+          {errors.email && <p className="text-red-500 text-start text-xs mt-1">{errors.email}</p>}
         </div>
 
         {/* Phone */}
@@ -177,7 +194,7 @@ export default function StudentRegisterForm() {
             onChange={(val) => handleChange("phone", val)}
             inputClassName="w-full border rounded-md p-2"
           />
-          {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+          {errors.phone && <p className="text-red-500 text-start text-xs mt-1">{errors.phone}</p>}
         </div>
 
         {/* Date of Birth */}
@@ -190,7 +207,7 @@ export default function StudentRegisterForm() {
             className="border rounded-md h-10 px-3 w-full"
           />
           {errors.dateOfBirth && (
-            <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>
+            <p className="text-red-500 text-start text-xs mt-1">{errors.dateOfBirth}</p>
           )}
         </div>
 
@@ -209,7 +226,7 @@ export default function StudentRegisterForm() {
               <SelectItem value="female">Female</SelectItem>
             </SelectContent>
           </Select>
-          {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
+          {errors.gender && <p className="text-red-500 text-start text-xs mt-1">{errors.gender}</p>}
         </div>
 
         {/* Frequency */}
@@ -230,7 +247,7 @@ export default function StudentRegisterForm() {
             </SelectContent>
           </Select>
           {errors.frequency && (
-            <p className="text-red-500 text-xs mt-1">{errors.frequency}</p>
+            <p className="text-red-500 text-start text-xs mt-1">{errors.frequency}</p>
           )}
         </div>
 
@@ -264,7 +281,7 @@ export default function StudentRegisterForm() {
             ))}
           </div>
           {errors.classDays && (
-            <p className="text-red-500 text-xs mt-1">{errors.classDays}</p>
+            <p className="text-red-500 text-start text-xs mt-1">{errors.classDays}</p>
           )}
         </div>
 
@@ -287,7 +304,7 @@ export default function StudentRegisterForm() {
             </SelectContent>
           </Select>
           {errors.timezone && (
-            <p className="text-red-500 text-xs mt-1">{errors.timezone}</p>
+            <p className="text-red-500 text-start text-xs mt-1">{errors.timezone}</p>
           )}
         </div>
 
@@ -312,7 +329,7 @@ export default function StudentRegisterForm() {
             </SelectContent>
           </Select>
           {errors.preferredStartDate && (
-            <p className="text-red-500 text-xs mt-1">{errors.preferredStartDate}</p>
+            <p className="text-red-500 text-start text-xs mt-1">{errors.preferredStartDate}</p>
           )}
         </div>
 
@@ -337,7 +354,7 @@ export default function StudentRegisterForm() {
             </SelectContent>
           </Select>
           {errors.preferredStartTime && (
-            <p className="text-red-500 text-xs mt-1">{errors.preferredStartTime}</p>
+            <p className="text-red-500 text-start text-xs mt-1">{errors.preferredStartTime}</p>
           )}
         </div>
 
@@ -352,7 +369,7 @@ export default function StudentRegisterForm() {
             className="border rounded-md h-10 px-3 w-full"
           />
           {errors.password && (
-            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+            <p className="text-red-500 text-start text-xs mt-1">{errors.password}</p>
           )}
         </div>
 
@@ -369,7 +386,7 @@ export default function StudentRegisterForm() {
             className="border rounded-md h-10 px-3 w-full"
           />
           {errors.confirmPassword && (
-            <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>
+            <p className="text-red-500 text-start text-xs mt-1">{errors.confirmPassword}</p>
           )}
         </div>
       </div>

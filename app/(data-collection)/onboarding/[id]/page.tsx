@@ -37,29 +37,36 @@ export default function OnboardingPage() {
     const [loading, setLoading] = useState(false);
 
     // 🟢 Final submission
-    // 🟢 Final submission
-    const handleSubmit = async (finalData: typeof formData) => {
-        setLoading(true);
-        console.log("Submitting with:", finalData);
+  const handleSubmit = async (finalData: typeof formData) => {
+  setLoading(true);
+  console.log("Submitting with:", finalData);
 
-        try {
-            const res = await fetch("/api/db/students", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(finalData),
-            });
+  try {
+    const res = await fetch("/api/db/students", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(finalData),
+    });
 
-            if (!res.ok) throw new Error("Submission failed");
-             toast.success("Submission Successful. Thank you!");
+    const data = await res.json();
 
-            router.push("/onboarding/success");
-            setLoading(false);
-        } catch (err) {
-            console.error("Error submitting onboarding:", err);
-            toast.error("Submission failed. Please try again.");
-            setLoading(false);
-        }
-    };
+    if (!res.ok) {
+      // If backend sent a clue (error field), show that
+      toast.error(data.error || "Submission failed. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    toast.success("Submission Successful. Thank you!");
+    router.push("/onboarding/success");
+  } catch (err: any) {
+    console.error("Error submitting onboarding:", err);
+    toast.error(err.message || "Submission failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 
 

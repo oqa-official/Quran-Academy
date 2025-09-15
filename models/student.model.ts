@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import "@/models/inquire.model";
-import "@/models/course.model";
+import "@/models/course.model"; 
 
 const StudentSchema = new mongoose.Schema(
   {
     parentInquiry: { type: mongoose.Schema.Types.ObjectId, ref: "Inquire" }, // link back
 
     name: { type: String, required: true },
-    email: { type: String, required: true, lowercase: true },
+    email: { type: String, required: true, lowercase: true , unique : true},
     phone: { type: String, required: true },
 
     // ✅ New field - will replace age
