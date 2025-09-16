@@ -15,9 +15,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { motion, Variants } from "framer-motion";
+import { useUser } from "@/context/UserContext";
 
 export default function Header() {
-      const { setOpen } = usePopup();
+  const { userId, loading } = useUser();
+  const { setOpen } = usePopup();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -62,11 +64,22 @@ export default function Header() {
           <span className="border-l-2 px-3 flex items-center gap-2">
             <PhoneCall size={16} className="text-accent" /> 0092 311 4581 622
           </span>
-          <Link href={'/auth/login'}>
-          <span className="border-r-2 border-l-2 px-3 flex items-center gap-2">
-            <LogIn size={16} className="text-accent" /> Login
-          </span>
-          </Link>
+
+          {!userId ?
+            <Link href={'/auth/login'}>
+              <span className="border-r-2 border-l-2 px-3 flex items-center gap-2 hover:scale-[1.01] transition-transform">
+                <LogIn size={16} className="text-accent" /> Login
+              </span>
+            </Link>
+
+            :
+            <Link href={'/auth/login'}>
+              <span className="border-r-2 border-l-2 px-3 flex items-center justify-center gap-2 hover:scale-[1.01] transition-transform">
+                <img src={"/assets/global/user.jpg"} alt="user" className="w-8 h-8 rounded-full" /> Dashboard
+              </span>
+            </Link>
+          }
+
         </div>
       </div>
 
@@ -96,17 +109,15 @@ export default function Header() {
               <motion.div key={itemData.label} variants={item}>
                 <Link
                   href={itemData.href}
-                  className={`flex flex-col items-center gap-1 transition ${
-                    isActive ? "text-accent" : "text-gray-500 hover:text-primary hover:scale-[1.02]"
-                  }`}
+                  className={`flex flex-col items-center gap-1 transition ${isActive ? "text-accent" : "text-gray-500 hover:text-primary hover:scale-[1.02]"
+                    }`}
                 >
                   <Icon
                     size={16}
-                    className={`transition ${
-                      isActive
+                    className={`transition ${isActive
                         ? "text-accent fill-accent"
                         : "hover:text-primary-hover text-primary fill-primary hover:fill-primary-hover"
-                    }`}
+                      }`}
                   />
                   <span>{itemData.label}</span>
                   <span className="text-[10px] -mt-2 capitalize">
@@ -163,19 +174,17 @@ export default function Header() {
                       <Link
                         key={itemData.label}
                         href={itemData.href}
-                        className={`flex items-center gap-3 transition ${
-                          isActive
+                        className={`flex items-center gap-3 transition ${isActive
                             ? "text-accent"
                             : "text-gray-600 hover:text-primary"
-                        }`}
+                          }`}
                       >
                         <Icon
                           size={20}
-                          className={`transition ${
-                            isActive
+                          className={`transition ${isActive
                               ? "text-accent fill-accent"
                               : "hover:text-primary-hover text-primary fill-primary hover:fill-primary-hover"
-                          }`}
+                            }`}
                         />
                         {itemData.label}
                       </Link>
@@ -184,12 +193,18 @@ export default function Header() {
                 </nav>
 
                 {/* CTA */}
-                <Button onClick={() => setOpen(true)} className="w-full rounded-full bg-primary hover:bg-primary-hover">
-                  Free Trial
-                </Button>
-                <Button className="w-full rounded-full bg-accent hover:bg-accent-hover text-primary">
-                  Login
-                </Button>
+                {!userId &&
+                  <Button onClick={() => setOpen(true)} className="w-full rounded-full bg-primary hover:bg-primary-hover">
+                    Free Trial
+                  </Button>
+                }
+
+
+                <Link href={'/auth/login'}>
+                  <Button className="w-full rounded-full bg-accent hover:bg-accent-hover text-primary">
+                    {userId ? "Dashboard" : "Login"}
+                  </Button>
+                </Link>
               </div>
             </SheetContent>
           </Sheet>

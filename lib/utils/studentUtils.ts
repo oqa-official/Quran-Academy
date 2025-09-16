@@ -5,6 +5,56 @@ function padNumber(num: number, length = 4) {
   return num.toString().padStart(length, "0");
 }
 
+
+export async function getNextSerialNumber() {
+  const lastStudent = await Student.findOne()
+    .sort({ serialNumber: -1 })
+    .select("serialNumber");
+
+  return lastStudent?.serialNumber ? lastStudent.serialNumber + 1 : 1;
+}
+
+
+
+export async function generateStudentCredentials(name: string, incomingPassword?: string) {
+  const serialNumber = await getNextSerialNumber();
+  const userId = `oqastd${padNumber(serialNumber)}`;
+  const firstName = name.trim().split(" ")[0].toLowerCase();
+  const educationMail = `${firstName}${padNumber(serialNumber)}@oqa.edu.pk`;
+  const password = incomingPassword || generatePassword(name);
+
+  return { serialNumber, userId, educationMail, password };
+}
+
+
+export async function generateBulkCredentials(students: any[]) {
+  const lastStudent = await Student.findOne()
+    .sort({ serialNumber: -1 })
+    .select("serialNumber");
+
+  let lastSerial = lastStudent?.serialNumber || 0;
+  const results = [];
+
+  for (const s of students) {
+    lastSerial += 1;
+    const userId = `oqastd${padNumber(lastSerial)}`;
+    const firstName = s.name.trim().split(" ")[0].toLowerCase();
+    const educationMail = `${firstName}${padNumber(lastSerial)}@oqa.edu.pk`;
+    const password = s.password || generatePassword(s.name);
+
+    results.push({ serialNumber: lastSerial, userId, educationMail, password });
+  }
+
+  return results;
+}
+
+
+
+
+
+
+
+
 // ✅ Generate next userId: e.g. oqastd0001, oqastd0002 ...
 export async function generateUserId() {
   const lastStudent = await Student.findOne()

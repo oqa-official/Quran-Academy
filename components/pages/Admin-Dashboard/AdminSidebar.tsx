@@ -12,10 +12,11 @@ import {
   ArrowBigRight,
   Users,
   BookOpen,
+  LayoutDashboard,
   Library,
   MailOpen,
   User,
-   Phone,       // 👈 add here
+   Phone,     
   Settings, 
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -23,10 +24,11 @@ import { useState, useEffect } from 'react';
 const iconMap: Record<string, React.ElementType> = {
   users: Users,
   bookOpen: BookOpen,
+  layout_dashboard : LayoutDashboard,
   library: Library,
   mailOpen: MailOpen,
   user: User,
-   phone: Phone,        // 👈 map string "phone" to Phone icon
+   phone: Phone,        
   settings: Settings,
 };
 
@@ -48,8 +50,12 @@ export default function Sidebar({ links, dashboardName }: SidebarProps) {
 
   useEffect(() => setOpen(false), [pathname]);
 
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + '/');
+  const isActive = (href: string) => {
+  if (href === '/admin-dashboard' || href==='/student-dashboard' || href==='/teacher-dashboard') {
+    return pathname === href;
+  }
+  return pathname.startsWith(href);
+};
 
   const renderLinks = (isMobile = false) =>
     links.map(({ href, label, icon }) => {

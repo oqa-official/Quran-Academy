@@ -19,66 +19,6 @@ export async function GET() {
 
 
 
-// export async function POST(req: Request) {
-//   try {
-//     await connectToDB();
-//     const body = await req.json();
-
-//     const {
-//       name,
-//       number,
-//       emergencyNumber,
-//       email,
-//       image,
-//       cloudinaryImageId,
-//       designation,
-//       about,
-//       qualifications,
-//       password: incomingPassword,
-//     } = body;
-
-//     // ✅ Required validations
-//     if (!name || !number  || !email) {
-//       return NextResponse.json(
-//         { error: "Required fields are missing" },
-//         { status: 400 }
-//       );
-//     }
-
-//     // ✅ Auto fields
-//     const userId = await generateInstructorUserId();
-//     const educationMail = await generateInstructorEducationMail(name);
-//     const password =generateInstructorPassword(name);
-
-//     const newInstructor = new Instructor({
-//       name,
-//       number,
-//       emergencyNumber,
-//       email,
-//       image,
-//       cloudinaryImageId,
-//       designation,
-//       about,
-//       qualifications,
-//       userId,
-//       educationMail,
-//       password,
-//     });
-
-//     await newInstructor.save();
-
-//     return NextResponse.json(newInstructor, { status: 201 });
-//   } catch (error: any) {
-//     console.error("❌ Error in POST /api/db/instructors:", error);
-//     return NextResponse.json({ error: error.message }, { status: 500 });
-//   }
-// }
-
-
-
-
-
-
 
 
 
@@ -96,7 +36,7 @@ async function sendInstructorCredentialsEmail(user: any) {
     client.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!);
 
     const emailData = {
-      sender: { email: "ahmadwebcrafts@gmail.com", name: "Quran Academy" },
+      sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
       to: [{ email: user.email }],
       subject: "Your Instructor Account Credentials",
       htmlContent: `
@@ -117,6 +57,8 @@ async function sendInstructorCredentialsEmail(user: any) {
     console.warn("⚠️ Failed to send instructor email:", err?.response?.body || err);
   }
 }
+
+
 
 export async function POST(req: Request) {
   try {

@@ -1,24 +1,25 @@
 import { useCurrency } from "@/hooks/useCurrency";
+import { roundToNearestFive } from "@/lib/validation";
 import { Check, Star, User } from "lucide-react";
 
-const listpoints=[
-"Interactive Lessons",
-"Step-by-step Guidance",
-"Practical Assignments",
-"Certificate upon Completion",
+const listpoints = [
+  "Interactive Lessons",
+  "Step-by-step Guidance",
+  "Practical Assignments",
+  "Certificate upon Completion",
 ]
 
 function CourseCard({ title, price, reviews, list, rating, teacher, students, avatar, img, features = [], onClick }: any) {
   const { symbol, rate } = useCurrency();
   return (
-    <div className="keen-slider__slide p-2 min-w-[300px] max-w-[330px] md:py-6 py-2" onClick={onClick}>
-      <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg cursor-pointer shadow-md shadow-gray-400 transition-all duration-300 hover:scale-[1.030]">
+    <div className="keen-slider__slide p-2 min-w-[300px]  max-w-[330px] md:py-6 py-2" onClick={onClick}>
+      <div className="bg-white rounded-lg overflow-hidden min-h-[480px] hover:shadow-lg cursor-pointer shadow-md shadow-gray-400 transition-all duration-300 hover:scale-[1.030]">
         {/* Top Image */}
         <div className="relative">
           <img src={img} alt={title} className="w-full min-w-[300px]  h-56 object-cover max-h-[210px]" />
           <div className="absolute right-2 bg-accent p-2 rounded-full -bottom-5 flex items-baseline justify-center">
             <span className="text-sm self-start text-black"> {symbol} </span>
-            <h2 className="text-2xl font-bold text-gray-800">{(price * rate).toFixed(1)}</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{roundToNearestFive(price * rate)}</h2>
           </div>
         </div>
 
@@ -29,11 +30,20 @@ function CourseCard({ title, price, reviews, list, rating, teacher, students, av
             {[...Array(rating)].map((_, i) => (
               <Star key={i} className="fill-accent" size={15} />
             ))}
-            <span className="ml-2 text-gray-600">({reviews +2} Reviews)</span>
+            <span className="ml-2 text-gray-600">({reviews + 2} Reviews)</span>
           </div>
 
           {/* Title */}
-          <h2 className="text-lg font-bold text-gray-800 mb-3 text-start max-w-[280px] hover:text-accent" dangerouslySetInnerHTML={{ __html: title }} />
+
+          <h2
+            className="text-lg min-h-[54px] font-bold text-gray-800 mb-3 text-start max-w-[280px] hover:text-accent"
+            dangerouslySetInnerHTML={{
+              __html:
+                typeof title === 'string' && title.length > 120
+                  ? `${title.substring(0, 120)}...`
+                  : title
+            }}
+          />
 
           {/* Features */}
           <ul className="space-y-2 mt-4">
@@ -44,7 +54,7 @@ function CourseCard({ title, price, reviews, list, rating, teacher, students, av
               </li>
             ))}
 
-            {list &&  listpoints.map((item: string, idx: number) => (
+            {list && listpoints.map((item: string, idx: number) => (
               <li key={idx} className="flex items-center text-gray-600 text-xs hover:text-primary">
                 <Check className="w-4 h-4 mr-2 text-accent" strokeWidth={3} />
                 {item}

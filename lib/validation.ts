@@ -10,3 +10,14 @@ export const validateImageFile = (file: File): string | null => {
   }
   return null;
 };
+
+
+
+
+
+
+
+
+export function roundToNearestFive(value: number): number {
+  return Math.round(value / 5) * 5;
+}

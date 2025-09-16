@@ -26,6 +26,7 @@ const StudentSchema = new mongoose.Schema(
       enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
       required: true,
     },
+    serialNumber: { type: Number, unique: true }, // ✅ new field
 
     // Link directly to Course (Level 1, Level 2, etc.)
     course: {

@@ -70,6 +70,7 @@ export const allFeatures = [
 
 
 export const adminLinks = [
+  { href: '/admin-dashboard', label: 'Dashboard', icon: 'layout_dashboard' },
   { href: '/admin-dashboard/teachers', label: 'Teachers', icon: 'users' },
   { href: '/admin-dashboard/courses', label: 'Courses', icon: 'bookOpen' },
   { href: '/admin-dashboard/library', label: 'Library', icon: 'library' },
@@ -81,6 +82,7 @@ export const adminLinks = [
 
 
 export const studentLinks = [
+  { href: '/student-dashboard', label: 'Dashboard', icon: 'layout_dashboard' },
   { href: '/student-dashboard/profile', label: 'Profile', icon: 'users' },
   { href: '/student-dashboard/forms', label: 'Forms', icon: 'mailOpen' },
   { href: '/policies', label: 'Policies', icon: 'library' },
@@ -90,6 +92,7 @@ export const studentLinks = [
 
 
 export const teacherLinks = [
+  { href: '/teacher-dashboard', label: 'Dashboard', icon: 'layout_dashboard' },
   { href: '/teacher-dashboard/profile', label: 'Profile', icon: 'users' },
   { href: '/teacher-dashboard/forms', label: 'Forms', icon: 'mailOpen' },
   { href: '/policies', label: 'Policies', icon: 'library' },

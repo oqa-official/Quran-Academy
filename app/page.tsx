@@ -23,7 +23,6 @@ export default function page() {
      <TestimonialsSection/>
      <CTASection/>
      <FloatingButtons/>
-
     </>
   )
 }

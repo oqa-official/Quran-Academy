@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import { useEffect } from "react";
@@ -13,26 +10,51 @@ import {
 import { X } from "lucide-react";
 import NumberCollection from "../pages/inquire/NumberCollection";
 import { usePopup } from "@/context/PopupContext";
+import { usePathname } from "next/navigation";
 
 export function OfferPopup() {
+  const pathname = usePathname();
   const { open, setOpen } = usePopup();
 
-  // ✅ Check localStorage once on mount
+  // Define the routes where the popup should be excluded
+   const excludedRoutes = [
+    "/onboarding",
+    "/auth",
+    "/admin-dashboard",
+    "/inquire",
+    "/student-dashboard",
+    "/teacher-dashboard",
+    "/courses", // Add this line
+  ];
+
+  const isExcludedRoute = excludedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  // Use useEffect to handle the popup logic based on both conditions
   useEffect(() => {
-    const dismissedUntil = localStorage.getItem("popupDismissedUntil");
-    const now = Date.now();
+    // Only proceed if the current route is NOT an excluded route
+    if (!isExcludedRoute) {
+      const dismissedUntil = localStorage.getItem("popupDismissedUntil");
+      const now = Date.now();
 
-    if (!dismissedUntil || now > Number(dismissedUntil)) {
-      setOpen(true);
+      if (!dismissedUntil || now > Number(dismissedUntil)) {
+        setOpen(true);
+      }
     }
-  }, [setOpen]);
+  }, [setOpen, isExcludedRoute]); // Add isExcludedRoute to the dependency array
 
-  // ✅ Handle close (manual close or after successful submission)
+  // Handle close (manual close or after successful submission)
   const handleClose = () => {
     setOpen(false);
     const sevenDaysLater = Date.now() + 7 * 24 * 60 * 60 * 1000;
     localStorage.setItem("popupDismissedUntil", sevenDaysLater.toString());
   };
+
+  // Do not render the Dialog component if it's an excluded route
+  if (isExcludedRoute) {
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

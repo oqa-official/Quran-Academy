@@ -11,6 +11,8 @@ import { generateAvailableDates, generateTimeSlots, TIMEZONES } from "@/lib/cons
 import { PhoneInput } from "react-international-phone";
 import { toast } from "sonner";
 import "react-international-phone/style.css";
+import { useCurrency } from "@/hooks/useCurrency";
+import { roundToNearestFive } from "@/lib/validation";
 
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -23,6 +25,7 @@ interface StudentFormProps {
 }
 
 export default function StudentForm({ index, data, onChange, basePrice }: StudentFormProps) {
+  const { symbol, rate } = useCurrency();
   const handle = (name: string, value: string | number) =>
     onChange({ ...data, [name]: value });
 
@@ -89,8 +92,8 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
           <label className="text-xs text-start text-gray-500 mb-1">Student's Number</label>
           <PhoneInput
             defaultCountry="us"
-             preferredCountries={["us", "gb", "ca", "au"]}
-            value={data.phone || ""} 
+            preferredCountries={["us", "gb", "ca", "au"]}
+            value={data.phone || ""}
             onChange={(phone) => handle("phone", phone)}
             inputClassName="w-full border rounded-sm p-2 bg-transparent"
             className="bg-transparent h-10 "
@@ -141,22 +144,22 @@ export default function StudentForm({ index, data, onChange, basePrice }: Studen
               <SelectValue placeholder="Select classes per week" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="2">2 Classes/week (${basePrice})</SelectItem>
-              <SelectItem value="3">3 Classes/week (${basePrice + 10})</SelectItem>
-              <SelectItem value="4">4 Classes/week (${basePrice + 20})</SelectItem>
-              <SelectItem value="5">5 Classes/week (${basePrice + 25})</SelectItem>
+              <SelectItem value="2">2 Classes/week ({symbol}{basePrice})</SelectItem>
+              <SelectItem value="3">3 Classes/week ({symbol}{basePrice + 10})</SelectItem>
+              <SelectItem value="4">4 Classes/week ({symbol}{basePrice + 20})</SelectItem>
+              <SelectItem value="5">5 Classes/week ({symbol}{basePrice + 25})</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Auto Price */}
         <div className="flex flex-col w-full">
-          <label className="text-xs text-start text-gray-500 mb-1">Fee/Month in $</label>
+          <label className="text-xs text-start text-gray-500 mb-1">Fee/Month in {symbol}</label>
           <input
             name="price"
-            value={data.price || ""}
+            value={roundToNearestFive(Number(data.price * rate)) || ""}
             readOnly
-            placeholder="$"
+            placeholder={symbol}
             className="border rounded-md h-10 px-3 w-full bg-gray-100"
           />
         </div>

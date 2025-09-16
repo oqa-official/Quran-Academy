@@ -75,37 +75,38 @@ const PlanTab = ({ id, title, image, isActive, onClick }: any) => (
       `}
     />
     <p
-      className={`text-sm md:text-lg font-medium md:font-semibold ${
-        isActive ? "text-primary" : "text-gray-300"
-      }`}
+      className={`text-sm md:text-lg font-medium md:font-semibold ${isActive ? "text-primary" : "text-gray-300"
+        }`}
     >
       {title}
     </p>
     <div
-      className={`absolute ${
-        !isActive && "hidden"
-      } -bottom-3 md:-bottom-5 -z-[1] left-1/2 transform -translate-x-1/2  md:w-10 md:h-10 w-6 h-6 border-b-1 border-gray-200 rotate-45 bg-white border-r-2`}
+      className={`absolute ${!isActive && "hidden"
+        } -bottom-3 md:-bottom-5 -z-[1] left-1/2 transform -translate-x-1/2  md:w-10 md:h-10 w-6 h-6 border-b-1 border-gray-200 rotate-45 bg-white border-r-2`}
     ></div>
   </div>
 );
 
 const PlanContent = ({ course, image }: any) => (
-  <div className="flex flex-col md:flex-row justify-center items-center gap-10">
+  <div className="flex flex-col md:flex-row justify-center  items-center gap-10  mx-auto">
     {/* Left side */}
-    <div className="flex-1 md:max-w-[50%] flex flex-col items-start text-center md:text-left">
-      <img src={image} alt="plan icon" className="w-16" />
+    <div className=" 2xl:max-w-[47%] flex-1  flex flex-col items-start gap-0 text-center md:text-left">
+      <img src={image} alt="plan icon" className="w-32" />
       <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-2 max-w-[500px] leading-relaxed">
         {course.title}
       </h2>
       <img
         src="/assets/home/arrow.png"
         alt="Quran verse"
-        className="w-[120px] -ms-2"
+        className="w-[120px] -ms-2 mb-4"
       />
-      <p className="text-gray-600 max-w-[500px] mb-6">
-        {course.overview?.summary || "No description available."}
-      </p>
-      <div className="flex flex-row gap-2">
+      <p className="text-gray-600 max-w-[700px] mb-6">
+        {course.overview?.summary
+          ? course.overview.summary.length > 400
+            ? `${course.overview.summary.substring(0, 400)}...`
+            : course.overview.summary
+          : "No description available."}      </p>
+      <div className="flex flex-row gap-2 mt-10">
         <Link href={`/courses/${course._id}`}>
           <button className="bg-primary hover:bg-primary-hover text-white py-3 px-6 rounded-md transition-colors duration-300">
             Get Started
@@ -121,7 +122,7 @@ const PlanContent = ({ course, image }: any) => (
     </div>
 
     {/* Right side */}
-    <div className="flex-1 md:max-w-[40%] hidden md:flex">
+    <div className="flex-1 md:max-w-[30%] hidden md:flex">
       <CourseCard
         title={course.title}
         price={course.price}
