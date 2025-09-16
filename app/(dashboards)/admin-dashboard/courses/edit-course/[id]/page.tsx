@@ -513,14 +513,14 @@ export default function EditCourseForm() {
 
 
       {/* Actions */}
-      <div className="flex flex-col gap-3 mt-6">
-        <Button className="w-full" onClick={handleSave} disabled={saving}>
+      <div className="flex flex-col md:flex-row justify-end gap-2 mt-6">
+        <Button className="w-full max-w-[200px]" onClick={handleSave} disabled={saving}>
           {saving ? <Loader className="animate-spin mx-auto" /> : "Save Changes"}
         </Button>
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="destructive" className="w-full">
+            <Button variant="destructive" className="w-full max-w-[200px]">
               Delete Course
             </Button>
           </AlertDialogTrigger>

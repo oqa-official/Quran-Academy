@@ -5,10 +5,10 @@ import FeaturedSectionCarousel from '@/components/pages/home/FeaturedSectionCaro
 import FloatingButtons from '@/components/pages/home/FloatingButtons'
 import Hero from '@/components/pages/home/Hero'
 import HowItWorks from '@/components/pages/home/HowItWorks'
-import Pricing_Section from '@/components/pages/home/Pricing'
 import TestimonialsSection from '@/components/pages/home/Testimonials'
 import VisionMission from '@/components/pages/home/VisionMission'
 import WhyChooseUs from '@/components/pages/home/WhyChooseUs'
+import WhyStudyWithUs from '@/components/pages/home/WhyStudyWithUs'
 
 export default function page() {
   return (
@@ -17,9 +17,9 @@ export default function page() {
      <WhyChooseUs/>
      <FeaturedSectionCarousel lamp={true}/>
      <VisionMission/>
-     <Pricing_Section/>
      <StatisticsSection/>
      <HowItWorks/>
+     <WhyStudyWithUs/>
      <TestimonialsSection/>
      <CTASection/>
      <FloatingButtons/>

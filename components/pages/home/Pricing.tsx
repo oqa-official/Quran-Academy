@@ -22,12 +22,21 @@ function Page() {
         if (!res.ok) throw new Error("Failed to fetch courses");
         const data = await res.json();
 
-        const mapped = data.slice(0, 3).map((course: any, i: number) => ({
+        // const mapped = data.slice(0, 3).map((course: any, i: number) => ({
+        //   id: course._id,
+        //   title: course.title,
+        //   summary: course.overview?.summary || "No summary available",
+        //   basePrice: course.price || (25 + i * 10),
+        // }));
+
+
+        const mapped = data.map((course: any, i: number) => ({
           id: course._id,
           title: course.title,
           summary: course.overview?.summary || "No summary available",
           basePrice: course.price || (25 + i * 10),
         }));
+        setCourses(mapped);
 
         setCourses(mapped);
       } catch (err) {
