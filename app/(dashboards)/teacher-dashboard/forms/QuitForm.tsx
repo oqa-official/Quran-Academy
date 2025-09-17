@@ -39,7 +39,7 @@ export default function QuitForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+    <form onSubmit={handleSubmit} className="space-y-4 mt-4 p-5 bg-white rounded-md dark:bg-[#122031]">
       <div>
         <Label className='mb-1'>Reason to Quit</Label>
         <Select value={reason} onValueChange={setReason} >

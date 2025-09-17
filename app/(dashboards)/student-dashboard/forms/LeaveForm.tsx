@@ -34,16 +34,16 @@ export default function LeaveForm() {
   if (loading) {
     return (
       <div className="space-y-4 mt-4">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-full dark:bg-[#122031]" />
+        <Skeleton className="h-10 w-full dark:bg-[#122031]" />
+        <Skeleton className="h-20 w-full dark:bg-[#122031]" />
+        <Skeleton className="h-10 w-32 dark:bg-[#122031]" />
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+    <form onSubmit={handleSubmit} className="space-y-4 mt-4 dark:bg-[#122031] p-4 rounded-md bg-white">
       <div>
         <Label className='mb-1'>Leave From</Label>
         <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} required className='py-7'/>

@@ -17,8 +17,8 @@ export default function page() {
      <WhyChooseUs/>
      <FeaturedSectionCarousel lamp={true}/>
      <VisionMission/>
-     <StatisticsSection/>
      <HowItWorks/>
+     <StatisticsSection/>
      <WhyStudyWithUs/>
      <TestimonialsSection/>
      <CTASection/>

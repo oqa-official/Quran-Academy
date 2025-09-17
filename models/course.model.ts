@@ -20,6 +20,11 @@ const CourseSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Instructor", // FK relation
     },
+    status: {
+      type: String,
+      enum: ["pending", "active"],
+      default: "pending",
+    },
 
     overview: {
       summary: String,

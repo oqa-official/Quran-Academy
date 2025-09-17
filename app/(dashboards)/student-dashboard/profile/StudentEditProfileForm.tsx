@@ -63,11 +63,11 @@ export default function StudentEditProfileForm({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className='dark:bg-[#122031]'>
         <DialogHeader>
           <DialogTitle>Edit Student Profile</DialogTitle>
         </DialogHeader>
-        <div className="space-y-3">
+        <div className="space-y-5">
           <div>
             <Label>Name</Label>
             <Input name="name" value={form.name} onChange={handleChange} />

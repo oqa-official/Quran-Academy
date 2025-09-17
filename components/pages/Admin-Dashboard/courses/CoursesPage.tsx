@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import AddCourseForm from "./AddCourseForm";
 import CoursesGrid from "./CoursesGrid";
 import { Course } from "@/lib/types/courses";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,27 +43,37 @@ export default function CoursesPage() {
   }, []);
 
   return (
-    <div className="container w-full">
+    <div className=" w-full">
       <h1 className="text-2xl font-bold mb-6">Manage Courses</h1>
-
-      {/* Add New Course */}
-      <AddCourseForm onSuccess={fetchCourses} />
 
       {/* Loading State */}
       {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-6">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="space-y-3 max-w-[350px] flex flex-col justify-start items-start"
-            >
-              <Skeleton className="h-48 w-full rounded-md bg-primary" />
-              <Skeleton className="h-10 w-full bg-primary" />
-              <Skeleton className="h-4 w-[75%] bg-primary" />
-              <Skeleton className="h-4 w-[50%] bg-primary" />
+       <div className="rounded-md border border-border bg-background mt-4">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr>
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <th key={i} className="px-4 py-3 text-left">
+                        <Skeleton className="h-4 w-[70%] bg-muted" />
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from({ length: 5 }).map((_, rowIndex) => (
+                    <tr key={rowIndex} className="border-b border-border">
+                      {Array.from({ length: 6 }).map((_, colIndex) => (
+                        <td key={colIndex} className="px-4 py-3">
+                          <Skeleton className="h-4 w-[70%] bg-muted" />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
-        </div>
+          </div>
       )}
 
       {/* Error / Empty State */}

@@ -57,12 +57,12 @@ export default function EditStudentDialog({ student, open, onClose, onSaved }: a
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg dark:bg-[#122031] bg-white">
         <DialogHeader>
           <DialogTitle>Edit Student</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-3 grid grid-cols-1 md:grid-cols-2 gap-1">
+        <div className="space-y-3 grid grid-cols-1 md:grid-cols-2 gap-1 ">
           <Input value={form.name || ""} onChange={(e) => handleChange("name", e.target.value)} placeholder="Name" />
           <Input value={form.email || ""} onChange={(e) => handleChange("email", e.target.value)} placeholder="Email" />
           <Input value={form.phone || ""} onChange={(e) => handleChange("phone", e.target.value)} placeholder="Phone" />

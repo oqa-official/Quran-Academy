@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import { OfferPopup } from "./OfferPopup";
 import { PopupProvider } from "@/context/PopupContext";
 import { CurrencyProvider } from "@/context/CurrencyContext";
 import { UserProvider } from "@/context/UserContext";
@@ -14,7 +13,7 @@ interface LayoutWrapperProps {
 }
 
 // ✅ routes where header/footer should NOT appear
-const excludedRoutes = ["/onboarding/*" ,"/auth/*", "/admin-dashboard/*", "/inquire/*", "/student-dashboard/*", "/teacher-dashboard/*"];
+const excludedRoutes = ["/onboarding/*" ,"/auth/*", "/admin-dashboard/*","/admin_dashboard/*", "/inquire/*", "/student-dashboard/*", "/teacher-dashboard/*"];
 
 export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     const pathname = usePathname();

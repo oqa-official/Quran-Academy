@@ -93,7 +93,7 @@ const handleSubmit = async () => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className='dark:bg-[#122031]'> 
         <DialogHeader>
           <DialogTitle>Change Password</DialogTitle>
         </DialogHeader>

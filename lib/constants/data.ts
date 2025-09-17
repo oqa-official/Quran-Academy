@@ -1,4 +1,6 @@
-import { BookOpen, Library, MailOpen, User, Users } from "lucide-react";
+import { NavSection } from "@/app/(dashboards)/admin_dashboard/componnets/Sidebar";
+import { BookOpen, LayoutDashboard, Library, LibraryBig, MailOpen, Phone, Settings, User, Users } from "lucide-react";
+
 
 export const fallbackCourses = [
   {
@@ -81,6 +83,34 @@ export const adminLinks = [
 
 
 
+
+
+export const teacherLinks = [
+  { href: '/teacher-dashboard', label: 'Dashboard', icon: 'layout_dashboard' },
+  { href: '/teacher-dashboard/profile', label: 'Profile', icon: 'users' },
+  { href: '/teacher-dashboard/forms', label: 'Forms', icon: 'mailOpen' },
+  { href: '/policies', label: 'Policies', icon: 'library' },
+  { href: '/library', label: 'Library', icon: 'bookOpen' },
+  { href: '/contact', label: 'Contact Us', icon: 'phone' },
+];
+
+export const NAV_DATA_TEACHER = [
+  {
+    label: "TEACHER MENU",
+    items: [
+      { title: "Dashboard", url: "/teacher-dashboard", icon: LayoutDashboard },
+      { title: "Profile", url: "/teacher-dashboard/profile", icon: User },
+      { title: "Forms", url: "/teacher-dashboard/forms", icon: MailOpen },
+      { title: "Policies", url: "/policies", icon: Library },
+      { title: "Library", url: "/library", icon: LibraryBig },
+      { title: "Contact Us", url: "/contact-us", icon: Phone },
+    ],
+  },
+];
+
+
+
+
 export const studentLinks = [
   { href: '/student-dashboard', label: 'Dashboard', icon: 'layout_dashboard' },
   { href: '/student-dashboard/profile', label: 'Profile', icon: 'users' },
@@ -91,11 +121,63 @@ export const studentLinks = [
 ];
 
 
-export const teacherLinks = [
-  { href: '/teacher-dashboard', label: 'Dashboard', icon: 'layout_dashboard' },
-  { href: '/teacher-dashboard/profile', label: 'Profile', icon: 'users' },
-  { href: '/teacher-dashboard/forms', label: 'Forms', icon: 'mailOpen' },
-  { href: '/policies', label: 'Policies', icon: 'library' },
-  { href: '/library', label: 'Library', icon: 'bookOpen' },
-  { href: '/contact', label: 'Contact Us', icon: 'phone' },
+
+export const NAV_DATA_STUDENT = [
+  {
+    label: "STUDENT MENU",
+    items: [
+      { title: "Dashboard", url: "/student-dashboard", icon: LayoutDashboard },
+      { title: "Profile", url: "/student-dashboard/profile", icon: User },
+      { title: "Forms", url: "/student-dashboard/forms", icon: MailOpen },
+      { title: "Policies", url: "/policies", icon: LibraryBig },
+      { title: "Library", url: "/library", icon: Library },
+      { title: "Contact", url: "/contact-us", icon: Phone },
+    ],
+  },
+];
+
+
+
+
+export const NAV_DATA_ADMIN: NavSection[] = [
+  {
+    label: "Main Menu",
+    items: [
+      { title: "Dashboard", url: "/admin_dashboard", icon: LayoutDashboard },
+      {
+        title: "Teachers",
+        icon: Users,
+        items: [
+          { title: "View All", url: "/admin_dashboard/teachers", icon: Users },
+          { title: "Add Teacher", url: "/admin_dashboard/teachers/add", icon: Users },
+        ],
+      },
+      {
+        title: "Courses",
+        icon: BookOpen,
+        items: [
+          { title: "View All", url: "/admin_dashboard/courses", icon: BookOpen },
+          { title: "Add New", url: "/admin_dashboard/courses/add", icon: BookOpen },
+        ],
+      },
+      {
+        title: "Library",
+        icon: LibraryBig,
+        items: [
+          { title: "View All", url: "/admin_dashboard/library", icon: LibraryBig },
+          { title: "Add Book", url: "/admin_dashboard/library/add", icon: LibraryBig },
+        ],
+      },
+      { title: "Inquire", url: "/admin_dashboard/inquire", icon: MailOpen },
+      { title: "Onboardings", url: "/admin_dashboard/onboardings", icon: MailOpen },
+      {
+        title: "Students",
+        icon: User,
+        items: [
+          { title: "View All", url: "/admin_dashboard/students", icon: User },
+        ],
+      },
+      { title: "Profile", url: "/admin_dashboard/profile", icon: Settings },
+    ],
+  },
 ];

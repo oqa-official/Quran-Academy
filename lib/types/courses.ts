@@ -15,6 +15,7 @@ export interface CourseOverview {
   certification: string;
 }
 
+
 export interface Course {
   _id?: string;
   image: string;

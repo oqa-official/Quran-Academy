@@ -39,7 +39,7 @@ export default function FeedbackForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+    <form onSubmit={handleSubmit} className="space-y-4 mt-4 p-4 bg-white dark:bg-[#122031] rounded-md">
       <div>
         <Label className='mb-1'>Feedback Type</Label>
         <Select value={topic} onValueChange={setTopic}>

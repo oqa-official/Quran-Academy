@@ -1,12 +1,6 @@
 
 
 'use client';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
 import { useState } from "react";
 import { Loader2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
@@ -115,15 +109,10 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
     };
 
     return (
-        <Accordion type="single" collapsible>
-            <AccordionItem value="item-1">
-                <AccordionTrigger className="w-full text-lg bg-gray-100 my-2 p-3 shadow-md">
-                    Add Instructor
-                </AccordionTrigger>
-                <AccordionContent>
+       
                     <form
                         onSubmit={handleSubmit}
-                        className="bg-gray-100 p-6 rounded-lg shadow space-y-2 grid grid-cols-1 md:grid-cols-2 gap-1"
+                        className="bg-wite dark:bg-[#122031] p-6 rounded-lg shadow space-y-2 grid grid-cols-1 md:grid-cols-2 gap-1"
                     >
                         {/* Name */}
                         <input
@@ -169,7 +158,7 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
                         <input
                             type="text"
                             placeholder="Emergency Contact Number"
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border rounded md:col-span-2"
                             value={form.emergencyNumber}
                             onChange={(e) => setForm({ ...form, emergencyNumber: e.target.value })}
                         />
@@ -178,7 +167,7 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
                         <textarea
                             placeholder="About"
                             required
-                            className="w-full col-span-2 p-2 border rounded min-h-[100px]"
+                            className="w-full md:col-span-2 p-2 border rounded min-h-[100px]"
                             value={form.about}
                             onChange={(e) => setForm({ ...form, about: e.target.value })}
                         />
@@ -224,8 +213,5 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
                             {loading ? "Adding..." : "Add"}
                         </button>
                     </form>
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
     );
 }

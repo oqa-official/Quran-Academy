@@ -13,7 +13,7 @@ export default function LoginPage() {
 
   if(role){
     if(role === 'admin'){
-      router.push("/admin-dashboard")
+      router.push("/admin_dashboard")
       return
     }
     if(role === 'instructor'){
@@ -66,7 +66,7 @@ export default function LoginPage() {
       // 🔹 Role-based redirect on frontend
       switch (data.role) {
         case "admin":
-          router.push("/admin-dashboard");
+          router.push("/admin_dashboard");
           break;
         case "instructor":
           router.push("/teacher-dashboard");

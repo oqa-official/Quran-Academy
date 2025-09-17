@@ -64,12 +64,12 @@ export default function Page() {
 
   if (userLoading || loading) {
     return (
-      <div className="max-w-7xl mx-auto mt-10 space-y-6">
+      <div className="max-w-7xl mx-auto mt-10 space-y-6 ">
         <h2 className="text-2xl">Loading Personal Info...</h2>
-        <Skeleton className="h-8 w-1/3 bg-primary" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Skeleton className="h-8 w-1/3 bg-primary dark:bg-[#122031]" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-14 w-full bg-primary" />
+            <Skeleton key={i} className="h-14 w-full bg-primary dark:bg-[#122031]" />
           ))}
         </div>
       </div>
@@ -85,12 +85,12 @@ export default function Page() {
   }
 
   return (
-    <div className="max-w-7xl mt-10 space-y-6">
-      <Card>
+    <div className="max-w-7xl  mt-10 space-y-6">
+      <Card className='dark:bg-[#122031]'>
         <CardHeader>
           <CardTitle className="text-xl">Instructor Profile</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 ">
           <h2 className="text-lg font-semibold">Personal Information</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

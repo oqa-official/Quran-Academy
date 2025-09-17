@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Delete, Edit, Loader2, Trash, TriangleAlert } from 'lucide-react';
+import { useState } from "react";
+import { Loader2, Trash, Edit, TriangleAlert } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,8 +12,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import EditBookForm from './EditBookForm';
+} from "@/components/ui/alert-dialog";
+import { ColumnDef } from "@tanstack/react-table";
+import EditBookForm from "./EditBookForm";
+import { DataTable } from "@/components/global/data-table";
 
 interface Book {
   _id: string;
@@ -25,53 +27,99 @@ interface Book {
   category?: string;
 }
 
-export default function BooksInfo({ books, onUpdate }: { books: Book[], onUpdate: () => void }) {
+export default function BooksInfo({
+  books,
+  onUpdate,
+}: {
+  books: Book[];
+  onUpdate: () => void;
+}) {
   const [editingBook, setEditingBook] = useState<Book | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
     try {
       setDeletingId(id);
-      const res = await fetch(`/api/db/books/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/db/books/${id}`, { method: "DELETE" });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to delete book');
+        throw new Error(data.error || "Failed to delete book");
       }
 
       onUpdate();
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
     } finally {
       setDeletingId(null);
     }
   };
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-6 mt-4">
-      {books.map((book) => (
-        <div
-          key={book._id}
-          className="bg-gray-100 shadow-lg rounded-lg p-3 flex flex-col items-start"
+  // ✅ Define table columns
+  const columns: ColumnDef<Book>[] = [
+    {
+      accessorKey: "coverImage",
+      header: "Cover",
+      cell: ({ row }) => (
+        <img
+          src={row.original.coverImage}
+          alt={row.original.name}
+          className="h-16 w-12 object-cover rounded-sm"
+        />
+      ),
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+       cell: ({ row }) => {
+        const value = row.getValue("name") as string;
+        return value && value.length > 15 ? value.substring(0, 15) + "..." : value;
+      },
+    },
+    {
+      accessorKey: "author",
+      header: "Author",
+      cell: ({ row }) => {
+        const value = row.getValue("author") as string;
+        return value && value.length > 15 ? value.substring(0, 15) + "..." : value;
+      },
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => row.original.category || "Uncategorized",
+    },
+    {
+      accessorKey: "pdfUrl",
+      header: "PDF",
+      cell: ({ row }) => (
+        <a
+          href={row.original.pdfUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-[#b3a02353] dark:text-primary text-xs p-1 rounded-[5px] hover:underline"
         >
-        <div className='flex justify-between w-full '>
-            <img
-            src={book.coverImage}
-            alt={book.name}
-            className="w-full max-w-36  max-h-36 object-cover rounded-md"
-          />
-          <div className="flex justify-center items-start  w-full space-x-2">
-            <Edit 
+          Open Link
+        </a>
+      ),
+    }
+    ,
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const book = row.original;
+        return (
+          <div className="flex gap-2 items-center">
+            <Edit
               onClick={() => setEditingBook(book)}
-              className="bg-accent text-white p-1 rounded-[2px] hover:scale-110 transition-transform cursor-pointer"
-            >
-              Edit
-            </Edit>
+              className=" text-accent p-1 rounded-[2px] hover:scale-110 transition-transform cursor-pointer"
+            />
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <button
-                  className=" rounded disabled:opacity-50 flex items-center"
+                  className="rounded disabled:opacity-50 flex items-center"
                   disabled={deletingId === book._id}
                 >
                   {deletingId === book._id ? (
@@ -79,25 +127,28 @@ export default function BooksInfo({ books, onUpdate }: { books: Book[], onUpdate
                       <Loader2 className="h-4 w-4 animate-spin mr-1" /> Deleting...
                     </>
                   ) : (
-                    <Trash className='bg-red-500 text-white p-1 rounded-[2px] hover:scale-110 transition-transform cursor-pointer'/>
+                    <Trash className="text-red-600 p-1 rounded-[2px] hover:scale-110 transition-transform cursor-pointer" />
                   )}
                 </button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle className='flex gap-3 items-center text-primary'>
+                  <AlertDialogTitle className="flex gap-3 items-center text-primary">
                     <TriangleAlert /> Confirm Delete?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    Deleting this book will remove its cover & PDF as well. This action cannot be undone.
+                    Deleting this book will remove its cover & PDF as well. This action
+                    cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel disabled={deletingId === book._id}>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel disabled={deletingId === book._id}>
+                    Cancel
+                  </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => handleDelete(book._id)}
                     disabled={deletingId === book._id}
-                    className='bg-red-600 hover:bg-red-700'
+                    className="bg-red-600 hover:bg-red-700"
                   >
                     Confirm Delete
                   </AlertDialogAction>
@@ -105,28 +156,29 @@ export default function BooksInfo({ books, onUpdate }: { books: Book[], onUpdate
               </AlertDialogContent>
             </AlertDialog>
           </div>
-        </div>
+        );
+      },
+    },
+  ];
 
-          <h2 className="text-lg font-semibold mt-2">{book.name}</h2>
-          <p className="text-sm text-accent font-medium">By {book.author}</p>
-         
-          <p className="text-xs text-gray-500 font-semibold my-1">Category:  {book.category || "Uncategorized"}</p>
-          <a href={book.pdfUrl} className='text-xs text-accent underline font-semibold'>PDF URL</a>
+  return (
+    <div className="mt-4">
+      <DataTable
+        columns={columns}
+        data={books}
+        searchPlaceholder="Search books..."
+      />
 
-          
-
-          {editingBook && (
-            <EditBookForm
-              book={editingBook}
-              onClose={() => setEditingBook(null)}
-              onSuccess={() => {
-                setEditingBook(null);
-                onUpdate();
-              }}
-            />
-          )}
-        </div>
-      ))}
+      {editingBook && (
+        <EditBookForm
+          book={editingBook}
+          onClose={() => setEditingBook(null)}
+          onSuccess={() => {
+            setEditingBook(null);
+            onUpdate();
+          }}
+        />
+      )}
     </div>
   );
 }

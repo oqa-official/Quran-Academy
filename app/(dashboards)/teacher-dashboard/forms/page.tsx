@@ -15,19 +15,19 @@ export default function StudentForms() {
         <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 gap-2 min-h-[50px]">
           <TabsTrigger
             value="leave"
-            className="data-[state=active]:bg-primary data-[state=active]:text-white bg-white"
+            className="data-[state=active]:bg-primary data-[state=active]:text-white bg-white dark:bg-[#122031]"
           >
             Leave Form
           </TabsTrigger>
           <TabsTrigger
             value="feedback"
-            className="data-[state=active]:bg-primary data-[state=active]:text-white bg-white"
+            className="data-[state=active]:bg-primary data-[state=active]:text-white bg-white dark:bg-[#122031]"
           >
             Feedback Form
           </TabsTrigger>
           <TabsTrigger
             value="quit"
-            className="data-[state=active]:bg-primary data-[state=active]:text-white bg-white"
+            className="data-[state=active]:bg-primary data-[state=active]:text-white bg-white dark:bg-[#122031]"
           >
             Quit Form
           </TabsTrigger>

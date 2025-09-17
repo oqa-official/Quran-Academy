@@ -134,7 +134,7 @@ export default function EditInstructorForm({
         />
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow-lg space-y-4 overflow-x-hidden md:max-h-[95vh] max-h-[90vh] overflow-y-auto"
+          className="bg-white dark:bg-[#122031] p-6 rounded-lg shadow-lg space-y-4 overflow-x-hidden md:max-h-[95vh] max-h-[90vh] overflow-y-auto"
         >
           <h2 className="text-lg font-semibold mb-4">Edit Instructor</h2>
 
@@ -203,7 +203,7 @@ export default function EditInstructorForm({
               <label className="text-xs text-gray-500">User ID</label>
               <input
                 type="text"
-                className="w-full p-2 border rounded bg-gray-100"
+                className="w-full p-2 border rounded"
                 value={form.userId}
                 readOnly
               />
@@ -214,7 +214,7 @@ export default function EditInstructorForm({
               <label className="text-xs text-gray-500">Password</label>
               <input
                 type="text"
-                className="w-full p-2 border rounded bg-gray-100 "
+                className="w-full p-2 border rounded "
                 value={form.password}
                 readOnly
               />

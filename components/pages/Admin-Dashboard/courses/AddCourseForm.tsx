@@ -153,13 +153,11 @@ export default function AddCourseForm({ onSuccess }: AddCourseFormProps) {
   };
 
   return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
-        <AccordionTrigger className="w-full text-lg bg-gray-100 my-2 p-3 shadow-md">Add New Course</AccordionTrigger>
-        <AccordionContent>
+
+
           <form
             onSubmit={handleSubmit}
-            className="space-y-4 w-full bg-gray-100 p-4 shadow rounded-md"
+            className="space-y-4 w-full bg-gray-100 dark:bg-[#122031] p-4 shadow rounded-md"
           >
 
             <input
@@ -221,7 +219,7 @@ export default function AddCourseForm({ onSuccess }: AddCourseFormProps) {
               <img src={previewUrl} alt="Preview" className="h-32 mt-2 rounded" />
             )}
 
-            <div className="bg-white rounded-md p-5">
+            <div className="bg-white dark:bg-[#091b30] rounded-md p-5">
               <p className="ms-1 my-1">Course Overview</p>
               <textarea
                 name="summary"
@@ -276,8 +274,7 @@ export default function AddCourseForm({ onSuccess }: AddCourseFormProps) {
               {loading ? <Loader className="animate-spin text-black text-center flex justify-center" /> : "Add Course"}
             </button>
           </form>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+
+        
   );
 }

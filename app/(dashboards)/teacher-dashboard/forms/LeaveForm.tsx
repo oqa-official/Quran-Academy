@@ -43,7 +43,7 @@ export default function LeaveForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+    <form onSubmit={handleSubmit} className="space-y-4 mt-4 bg-white dark:bg-[#122031] p-5 rounded-md">
       <div>
         <Label className='mb-1'>Leave From</Label>
         <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} required className='py-7'/>
