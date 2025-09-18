@@ -71,7 +71,7 @@ function StudentsPageContent() {
     }, [inquireId]);
 
     const handleResetFilter = () => {
-        router.push("/admin-dashboard/students");
+        router.push("/admin_dashboard/students");
     };
 
     const handleDelete = async (id: string) => {

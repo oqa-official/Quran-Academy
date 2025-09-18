@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -52,22 +52,20 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   searchPlaceholder,
-  searchKey
+  searchKey,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const columnsWithSerial = useMemo(() => {
-    const serialNumberColumn: ColumnDef<TData> = {
-      id: "serialNumber",
-      header: "S.No.",
-      cell: ({ row }) => {
-        const pageIndex = table.getState().pagination.pageIndex;
-        const pageSize = table.getState().pagination.pageSize;
-        return <span>{pageIndex * pageSize + row.index + 1}</span>;
-      },
-    };
-    return [serialNumberColumn, ...columns];
-  }, [columns]);
+  // Serial number resets from 1 for each page
+  const serialNumberColumn: ColumnDef<TData> = {
+    id: "serialNumber",
+    header: "S.No.",
+    cell: ({ row }) => {
+      return <span>{row.index + 1}</span>;
+    },
+  };
+
+  const columnsWithSerial = [serialNumberColumn, ...columns];
 
   const table = useReactTable({
     data,
@@ -88,11 +86,14 @@ export function DataTable<TData, TValue>({
     const headers = visibleColumns.map(
       (col) => col.columnDef.header as string
     );
-    const rows = table.getFilteredRowModel().rows.map((row, idx) =>
+
+    const rows = table.getRowModel().rows.map((row, idx) =>
       visibleColumns.map((col) => {
         const colId = col.id;
 
-        if (colId === "serialNumber") return idx + 1;
+        if (colId === "serialNumber") {
+          return idx + 1; // reset numbering on each page
+        }
         if (colId === "actions") return "Actions";
         if (colId === "details") return "View Details";
 
@@ -142,7 +143,6 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4 md:p-4 p-2 bg-white dark:bg-[#122031] rounded-md">
       {/* Top bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3">
-       
         <Input
           placeholder={searchPlaceholder}
           value={(table.getColumn(searchKey || "title")?.getFilterValue() as string) ?? ""}
@@ -152,12 +152,11 @@ export function DataTable<TData, TValue>({
           className="w-full md:max-w-sm rounded-md border px-3 py-2"
         />
 
-
         <div className="flex max-md:flex-wrap items-center gap-2">
           {/* Export dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="">
+              <Button variant="outline" size="sm">
                 <FileText className=" h-4 w-4" /> Export
               </Button>
             </DropdownMenuTrigger>
@@ -233,10 +232,7 @@ export function DataTable<TData, TValue>({
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -251,10 +247,7 @@ export function DataTable<TData, TValue>({
                         key={cell.id}
                         className="px-4 py-3 text-sm text-foreground"
                       >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
                   </TableRow>

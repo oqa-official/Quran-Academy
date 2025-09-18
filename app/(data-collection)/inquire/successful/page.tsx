@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { CircleX, CrossIcon } from "lucide-react";
 // Assuming you have a custom utility function, please update the path if needed
 
 export default function Page() {
@@ -23,6 +24,11 @@ export default function Page() {
         style={{ backgroundImage: "url('/assets/home/pattern.png')" }}
       ></div>
       <div className="w-full max-w-2xl bg-white text-center rounded-2xl p-4 relative z-10">
+        <Link href={'/'}>
+        <div>
+          <CircleX className="absolute top-2 right-2 hover:scale-105"/>
+        </div>
+        </Link>
         {/* Header */}
         <>
           <p className="text-2xl md:text-3xl my-2 text-accent">
@@ -45,11 +51,11 @@ export default function Page() {
             alt="success"
             className="w-32 mx-auto"
           />
-          <h3 className="text-lg font-normal text-gray-700">
+          <p className="text-lg font-normal text-gray-700">
             Thanks for the information
             <br /> You should receive the link on your number for further
             procedure.
-          </h3>
+          </p>
           
           {onboardingLink ? (
             <Link
@@ -62,11 +68,11 @@ export default function Page() {
             <p className="text-gray-500">Loading onboarding link...</p>
           )}
 
-          <Link href={"/"}>
+          <Link href={onboardingLink ? onboardingLink : "#"}>
             <button
               className="px-4 py-2 rounded-sm bg-primary text-white hover:bg-accent"
             >
-              Go Back
+              Start Onboarding Now
             </button>
           </Link>
         </div>

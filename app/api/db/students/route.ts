@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
     const students = await Student.find(query)
       .populate("course", "title")
-      .sort({ createdAt: -1 });
+      .sort({ serialNumber: -1 });
 
     return NextResponse.json(students, { status: 200 });
   } catch (error: any) {
