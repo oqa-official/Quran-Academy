@@ -69,7 +69,7 @@ export const instructorColumns = (
           {/* Edit */}
           <button
             onClick={() => handleEdit(ins)}
-            className=" text-primary hover:scale-105 bg-[#ffffff32] p-2 rounded-md"
+            className=" text-primary hover:scale-105 dark:bg-[#ffffff32] bg-[#60656832] p-2 rounded-md"
           >
             <Pencil size={20} />
           </button>
@@ -78,7 +78,7 @@ export const instructorColumns = (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button
-                className="p-2 text-red-500 disabled:opacity-50 bg-[#6104045f] rounded-md" 
+                className="p-2 text-red-500 disabled:opacity-50 dark:bg-[#6104045f] bg-[#ec98985f] rounded-md" 
                 disabled={deletingId === ins._id}
               >
                 {deletingId === ins._id ? (

@@ -2,9 +2,8 @@
 
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/db/db";
-import Student from "@/models/student.model";
-import Instructor from "@/models/instructor.model";
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
+import Admin from "@/models/admin.model";
 
 export async function POST(req: Request) {
   try {
@@ -16,16 +15,13 @@ export async function POST(req: Request) {
     let user: any = null;
     let role = "";
 
-    user = await Instructor.findOne({
-      $or: [{ userId: identifier }, { educationMail: identifier }],
-    });
-    if (user) role = "teacher";
+   
 
     if (!user) {
-      user = await Student.findOne({
+      user = await Admin.findOne({
         $or: [{ userId: identifier }, { educationMail: identifier }],
       });
-      if (user) role = "student";
+      if (user) role = "admin";
     }
 
     if (!user) return NextResponse.json({ error: "No account found." }, { status: 404 });
@@ -51,7 +47,7 @@ export async function POST(req: Request) {
     try {
       const result = await client.sendTransacEmail(emailData);
     } catch (emailErr:any) {
-      // console.log("error in email sending", emailErr.response)
+      console.log("error in email sending", emailErr.response)
     }
 
     return NextResponse.json({ message: "Acount recovery instructions sent to the respective email address", role }, { status: 200 });

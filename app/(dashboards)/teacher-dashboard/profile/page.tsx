@@ -64,12 +64,12 @@ export default function Page() {
 
   if (userLoading || loading) {
     return (
-      <div className="max-w-7xl mx-auto mt-10 space-y-6 ">
-        <h2 className="text-2xl">Loading Personal Info...</h2>
-        <Skeleton className="h-8 w-1/3 bg-primary dark:bg-[#122031]" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-14 w-full bg-primary dark:bg-[#122031]" />
+     <div className="max-w-7xl mx-auto mt-10 space-y-6">
+        <h2 className='text-2xl'>Loading Personal Info...</h2>
+        <Skeleton className="h-8 w-1/2 bg-white dark:bg-[#122031]"/>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-14 w-full bg-white dark:bg-[#122031]" />
           ))}
         </div>
       </div>

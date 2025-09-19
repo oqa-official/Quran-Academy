@@ -1,9 +1,8 @@
 
+
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { connectToDB } from "@/lib/db/db";
-import Student from "@/models/student.model";
-import Instructor from "@/models/instructor.model";
 import Admin from "@/models/admin.model";
 
 export async function POST(req: Request) {
@@ -22,36 +21,18 @@ export async function POST(req: Request) {
 
     const cookieStore = await cookies();
 
-    
-
-    // --- Instructor ---
-    let user = await Instructor.findOne({ educationMail });
+    // --- Admin ---
+    let user = await Admin.findOne({ educationMail });
     if (user && user.password === password) {
-      cookieStore.set("session", JSON.stringify({ userId: user._id, role: "instructor" }), {
+      cookieStore.set("session", JSON.stringify({ userId: user._id, role: "admin" }), {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         path: "/",
-        maxAge: 60 * 60 * 24,
+        maxAge: 60 * 60 * 24 * 4, // 4 days
       });
 
       return NextResponse.json(
-        { _id: user._id, role: "instructor", redirect: "/teacher-dashboard" },
-        { status: 200 }
-      );
-    }
-
-    // --- Student ---
-    user = await Student.findOne({ educationMail });
-    if (user && user.password === password) {
-      cookieStore.set("session", JSON.stringify({ userId: user._id, role: "student" }), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: 60 * 60 * 24,
-      });
-
-      return NextResponse.json(
-        { _id: user._id, role: "student", redirect: "/student-dashboard" },
+        { _id: user._id, role: "admin", redirect: "/admin-dashboard" },
         { status: 200 }
       );
     }
