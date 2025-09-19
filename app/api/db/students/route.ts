@@ -89,7 +89,7 @@ import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate }
 
 const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
 
-export async function sendStudentCredentialsEmail(student: any) {
+ async function sendStudentCredentialsEmail(student: any) {
   try {
     const client = new TransactionalEmailsApi();
     client.setApiKey(

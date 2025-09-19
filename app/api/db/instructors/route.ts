@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import Instructor from "@/models/instructor.model";
 import { connectToDB } from "@/lib/db/db";
 import { generateInstructorEducationMail, generateInstructorPassword, generateInstructorUserId } from "@/lib/utils/instructorHelpers";
-import mongoose from "mongoose";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 
 // ✅ GET all instructors
@@ -20,7 +19,7 @@ export async function GET() {
 
 const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
 
-export async function sendInstructorCredentialsEmail(user: any) {
+ async function sendInstructorCredentialsEmail(user: any) {
   try {
     const client = new TransactionalEmailsApi();
     client.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!);
