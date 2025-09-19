@@ -20,42 +20,45 @@ export default function FeaturedSectionCarousel({
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const res = await fetch("/api/db/courses");
-        if (!res.ok) throw new Error("Failed to fetch courses.");
+useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const data = await res.json();
-        if(data.length < 1){
-          return;
-        }
+      const res = await fetch("/api/db/courses");
+      if (!res.ok) throw new Error("Failed to fetch courses.");
 
-        const mapped = data.map((c: any) => ({
-          _id: c._id,
-          title: c.title,
-          price: c.price,
-          reviews: c.reviewsCount ?? 0,
-          rating: 5,
-          teacher: c.instructor?.name ?? "Instructor",
-          students: 50 + Math.floor(Math.random() * 20), // Random for demo
-          avatar: c.instructor?.image ?? "/assets/home/teacher1.png",
-          img: c.image ?? "/assets/home/course_1.png",
-          fromApi: true,
-        }));
+      const data = await res.json();
+      if (!data || data.length < 1) return;
 
-        setCourses(mapped);
-      } catch (err: any) {
-        setError(err.message || "Something went wrong.");
-      } finally {
-        setLoading(false);
-      }
-    };
+      // ✅ Filter only active courses
+      const activeCourses = data.filter((c: any) => c.status === "active");
 
-    fetchCourses();
-  }, []);
+      const mapped = activeCourses.map((c: any) => ({
+        _id: c._id,
+        title: c.title,
+        price: c.price,
+        reviews: c.reviewsCount ?? 0,
+        rating: 5,
+        teacher: c.instructor?.name ?? "Instructor",
+        students: 50 + Math.floor(Math.random() * 20),
+        avatar: c.instructor?.image ?? "/assets/home/teacher1.png",
+        img: c.image ?? "/assets/home/course_1.png",
+        fromApi: true,
+      }));
+
+      setCourses(mapped);
+    } catch (err: any) {
+      setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCourses();
+}, []);
+
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);

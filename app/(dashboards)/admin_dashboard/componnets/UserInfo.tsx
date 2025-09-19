@@ -14,7 +14,7 @@ import { useUser } from "@/context/UserContext";
 import { useTheme } from "next-themes";
 
 export function UserInfo() {
-    const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const { role, userId, clearUser } = useUser();
   const [userData, setUserData] = useState<{ name: string; email: string }>({
@@ -56,26 +56,29 @@ export function UserInfo() {
     fetchUser();
   }, [role, userId]);
 
-  
-
   const handleLogout = async () => {
-  try {
-    await fetch("/api/auth/logout", { method: "POST" });
-    
-    // Force reset theme back to light
-    setTheme("light");
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
 
-    localStorage.removeItem("theme");
+      // Force reset theme back to light
+      setTheme("light");
+      localStorage.removeItem("theme");
+      clearUser();
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
-    clearUser();
-  } catch (err) {
-    console.error("Logout failed", err);
-  }
-};
-
+  // Determine dashboard link based on role
+  const dashboardLink =
+    role === "admin"
+      ? "/admin_dashboard/profile"
+      : role === "student"
+      ? "/student-dashboard/profile"
+      : "/teacher-dashboard/profile";
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu open={open} onOpenChange={setOpen} >
       <DropdownMenuTrigger className="rounded outline-none ring-primary ring-offset-2 focus-visible:ring-1">
         <span className="sr-only">My Account</span>
         <figure className="flex items-center gap-3">
@@ -87,7 +90,7 @@ export function UserInfo() {
             height={100}
           />
           <figcaption className="flex items-center gap-1 font-medium text-foreground max-[1024px]:sr-only">
-            <span>{userData.name}</span>
+            <span>{userData.name.split(" ").slice(0, 2).join(" ")}</span>
             <ChevronUpIcon
               aria-hidden
               className={cn(
@@ -116,7 +119,7 @@ export function UserInfo() {
           />
           <figcaption className="space-y-1 text-base font-medium">
             <div className="mb-2 leading-none text-foreground">
-              {userData.name}
+              {userData.name.split(" ").slice(0, 2).join(" ")}
             </div>
             <div className="leading-none text-muted-foreground">
               {userData.email}
@@ -126,34 +129,34 @@ export function UserInfo() {
 
         <hr className="border-border" />
 
-        {role && role=='admin' && 
+        {/* Profile & Account Settings for all roles */}
+        {role && ["admin", "student", "instructor"].includes(role) && (
           <div className="p-2 text-base text-muted-foreground [&>*]:cursor-pointer">
-          <Link
-            href="/admin_dashboard/profile"
-            onClick={() => setOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-muted/50 hover:text-foreground"
-          >
-            <UserIcon />
-            <span className="mr-auto text-base font-medium">View profile</span>
-          </Link>
+            <Link
+              href={dashboardLink}
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-muted/50 hover:text-foreground"
+            >
+              <UserIcon />
+              <span className="mr-auto text-base font-medium">View profile</span>
+            </Link>
 
-          <Link
-            href="/admin_dashboard/profile"
-            onClick={() => setOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-muted/50 hover:text-foreground"
-          >
-            <Settings />
-            <span className="mr-auto text-base font-medium">
-              Account Settings
-            </span>
-          </Link>
-        </div>
-        }
-
-      
+            {/* <Link
+              href={dashboardLink}
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-muted/50 hover:text-foreground"
+            >
+              <Settings />
+              <span className="mr-auto text-base font-medium">
+                Account Settings
+              </span>
+            </Link> */}
+          </div>
+        )}
 
         <hr className="border-border" />
 
+        {/* Logout */}
         <div className="p-2 text-base text-muted-foreground">
           <button
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-muted/50 hover:text-foreground"

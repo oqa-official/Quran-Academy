@@ -176,7 +176,7 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
       </div>
 
       <div className="flex justify-between items-center mt-6">
-        <button onClick={goBack} className="px-4 py-2 bg-gray-200 rounded-md">
+        <button onClick={goBack} className="px-4 py-2 bg-gray-400 text-white rounded-md">
           Back
         </button>
         <div className="flex flex-col">
@@ -185,7 +185,7 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
           <button
             onClick={saveAndSubmit}
             disabled={!isFormValid || loading}
-            className={`px-4 py-2 rounded-md text-white ${isFormValid ? "bg-primary hover:bg-accent" : "bg-gray-400 cursor-not-allowed"
+            className={`px-4 py-2 rounded-md text-white ${isFormValid ? "bg-primary hover:bg-accent" : "bg-primary opacity-90 cursor-not-allowed"
               }`}
           >
             {loading? "Submitting..."  : "Submit"}

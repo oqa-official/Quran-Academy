@@ -21,12 +21,36 @@ const columns: ColumnDef<Course>[] = [
   },
   {
     accessorKey: "title",
+    enableGlobalFilter: true,
     header: "Title",
     cell: ({ row }) => {
       const title = row.original.title || "Untitled";
       return title.length > 20 ? title.slice(0, 20) + "..." : title;
     },
   },
+
+  {
+    accessorKey: "status",
+    enableGlobalFilter: true,
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status || "Untitled";
+
+      const bgClass =
+        status.toLowerCase() === "pending"
+          ? "bg-red-100 text-red-700 dark:text-red-400"   // reddish tone
+          : "bg-yellow-100 text-yellow-700"; // yellowish tone
+
+      return (
+        <div
+          className={`max-w-[65px] p-1 text-center rounded-[5px] text-xs font-medium ${bgClass}`}
+        >
+          {status.length > 20 ? status.slice(0, 20) + "..." : status}
+        </div>
+      );
+    },
+  }
+  ,
   {
     accessorKey: "duration",
     header: "Duration",
@@ -61,7 +85,6 @@ export default function CoursesGrid({ courses }: { courses: Course[] }) {
       searchPlaceholder="Search Courses"
       columns={columns}
       data={courses}
-      searchKey="title" 
     />
   );
 }

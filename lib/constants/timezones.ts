@@ -1,35 +1,35 @@
-export const TIMEZONES = [
-  // European Timezones
-  { value: 'Europe/London', label: 'London (GMT)' },
-  { value: 'Europe/Paris', label: 'Paris (CET)' },
-  { value: 'Europe/Berlin', label: 'Berlin (CET)' },
-  { value: 'Europe/Madrid', label: 'Madrid (CET)' },
-  { value: 'Europe/Rome', label: 'Rome (CET)' },
-  { value: 'Europe/Moscow', label: 'Moscow (MSK)' },
-  { value: 'Europe/Istanbul', label: 'Istanbul (TRT)' },
+// export const TIMEZONES = [
+//   // European Timezones
+//   { value: 'Europe/London', label: 'London (GMT)' },
+//   { value: 'Europe/Paris', label: 'Paris (CET)' },
+//   { value: 'Europe/Berlin', label: 'Berlin (CET)' },
+//   { value: 'Europe/Madrid', label: 'Madrid (CET)' },
+//   { value: 'Europe/Rome', label: 'Rome (CET)' },
+//   { value: 'Europe/Moscow', label: 'Moscow (MSK)' },
+//   { value: 'Europe/Istanbul', label: 'Istanbul (TRT)' },
 
-  // American Timezones
-  { value: 'America/New_York', label: 'New York (EST)' },
-  { value: 'America/Chicago', label: 'Chicago (CST)' },
-  { value: 'America/Denver', label: 'Denver (MST)' },
-  { value: 'America/Los_Angeles', label: 'Los Angeles (PST)' },
-  { value: 'America/Sao_Paulo', label: 'São Paulo (BRT)' },
-  { value: 'America/Mexico_City', label: 'Mexico City (CST)' },
+//   // American Timezones
+//   { value: 'America/New_York', label: 'New York (EST)' },
+//   { value: 'America/Chicago', label: 'Chicago (CST)' },
+//   { value: 'America/Denver', label: 'Denver (MST)' },
+//   { value: 'America/Los_Angeles', label: 'Los Angeles (PST)' },
+//   { value: 'America/Sao_Paulo', label: 'São Paulo (BRT)' },
+//   { value: 'America/Mexico_City', label: 'Mexico City (CST)' },
 
-  // Asian Timezones
-  { value: 'Asia/Tokyo', label: 'Tokyo (JST)' },
-  { value: 'Asia/Shanghai', label: 'Shanghai (CST)' },
-  { value: 'Asia/Hong_Kong', label: 'Hong Kong (HKT)' },
-  { value: 'Asia/Kolkata', label: 'Kolkata (IST)' },
-  { value: 'Asia/Singapore', label: 'Singapore (SGT)' },
-  { value: 'Asia/Seoul', label: 'Seoul (KST)' },
+//   // Asian Timezones
+//   { value: 'Asia/Tokyo', label: 'Tokyo (JST)' },
+//   { value: 'Asia/Shanghai', label: 'Shanghai (CST)' },
+//   { value: 'Asia/Hong_Kong', label: 'Hong Kong (HKT)' },
+//   { value: 'Asia/Kolkata', label: 'Kolkata (IST)' },
+//   { value: 'Asia/Singapore', label: 'Singapore (SGT)' },
+//   { value: 'Asia/Seoul', label: 'Seoul (KST)' },
   
-  // Middle Eastern Timezones
-  { value: 'Asia/Dubai', label: 'Dubai (GST)' },
-  { value: 'Asia/Riyadh', label: 'Riyadh (AST)' },
-  { value: 'Asia/Karachi', label: 'Karachi (PKT)' },
-  { value: 'Asia/Jerusalem', label: 'Jerusalem (IST)' },
-];
+//   // Middle Eastern Timezones
+//   { value: 'Asia/Dubai', label: 'Dubai (GST)' },
+//   { value: 'Asia/Riyadh', label: 'Riyadh (AST)' },
+//   { value: 'Asia/Karachi', label: 'Karachi (PKT)' },
+//   { value: 'Asia/Jerusalem', label: 'Jerusalem (IST)' },
+// ];
 
 
 
@@ -40,11 +40,24 @@ export const TIMEZONES = [
 
 
 
-export function generateTimeSlots(): string[] {
-  const slots: string[] = [];
+
+
+
+export function generateTimeSlots() {
+  const slots = [];
   for (let h = 0; h < 24; h++) {
-    slots.push(`${h.toString().padStart(2, "0")}:00`);
-    slots.push(`${h.toString().padStart(2, "0")}:30`);
+    // Determine the hour for 12-hour format
+    const displayHour = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    // Determine the AM/PM suffix
+    const ampm = h >= 12 ? 'PM' : 'AM';
+
+    // Format the hours and minutes with leading zeros
+    const formatHour = displayHour.toString();
+    
+    // Add :00 slot
+    slots.push(`${formatHour}:00 ${ampm}`);
+    // Add :30 slot
+    slots.push(`${formatHour}:30 ${ampm}`);
   }
   return slots;
 }

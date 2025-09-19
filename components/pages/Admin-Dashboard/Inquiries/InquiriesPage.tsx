@@ -69,13 +69,16 @@ export default function InquiriesPage() {
     {
       accessorKey: "name",
       header: "Name",
+      enableGlobalFilter: true,
     },
     {
       accessorKey: "email",
       header: "Email",
+      enableGlobalFilter: true,
     },
     {
       accessorKey: "phone",
+      enableGlobalFilter: true,
       header: "Phone",
       enableSorting: false, // You can disable sorting on specific columns
     },

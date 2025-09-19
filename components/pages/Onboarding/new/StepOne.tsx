@@ -22,11 +22,11 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
             totalSteps={2}
             hideProgress
         >
-            <label className="block my-2 mt-10 text-start">
+            <label className="block my-2 mt-10 text-center">
                 Who are you choosing for?
             </label>
 
-            <div className="flex gap-4 justify-start mb-6">
+            <div className="flex gap-4 justify-center mb-6">
                 {[
                     { type: "myself", label: "For Myself", img: "/assets/onboard/man.png" },
                     { type: "children", label: "For My Children", img: "/assets/onboard/children.png" },
@@ -70,10 +70,10 @@ export default function StepOne({ formData, setFormData, goNext }: any) {
             {/* Student Count if children */}
             {forWhom === "children" && (
                 <div className="mb-6">
-                    <label className="block mb-2 text-start">
+                    <label className="block mb-2 text-center">
                         How many children will you add?
                     </label>
-                    <div className="flex gap-3 justify-start flex-wrap">
+                    <div className="flex gap-3 justify-center flex-wrap">
                         {[1, 2, 3, 4].map((num) => (
                             <label
                                 key={num}

@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Loader2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useDirtyForm } from "@/context/DirtyFormContext";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
 const UPLOAD_PRESET = "Quran_Academy";
@@ -15,6 +17,7 @@ export default function AddBook({ onSuccess }: { onSuccess: () => void }) {
     category: "",
   });
 
+  const { setDirty } = useDirtyForm();
   const [cover, setCover] = useState<File | null>(null);
   const [pdf, setPdf] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -22,6 +25,19 @@ export default function AddBook({ onSuccess }: { onSuccess: () => void }) {
 
   const coverInputRef = useRef<HTMLInputElement | null>(null);
   const pdfInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
+
+  // mark form as dirty on any change
+  useEffect(() => {
+    setDirty(
+      form.name !== "" ||
+      form.author !== "" ||
+      form.description !== "" ||
+      form.category !== "" ||
+      cover !== null ||
+      pdf !== null
+    );
+  }, [form, cover, pdf, setDirty]);
 
   const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,6 +56,7 @@ export default function AddBook({ onSuccess }: { onSuccess: () => void }) {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", UPLOAD_PRESET);
+    formData.append("folder", "library"); 
 
     const res = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`,
@@ -79,15 +96,18 @@ export default function AddBook({ onSuccess }: { onSuccess: () => void }) {
 
       toast.success("Book added successfully!");
 
-      // reset form
+      // reset form and dirty state
       setForm({ name: "", author: "", description: "", category: "" });
       setCover(null);
       setPdf(null);
       setPreview(null);
       if (coverInputRef.current) coverInputRef.current.value = "";
       if (pdfInputRef.current) pdfInputRef.current.value = "";
+      setDirty(false);
 
       onSuccess();
+      router.push("/admin_dashboard/library");
+
     } catch (err: any) {
       toast.error(err.message || "Error adding book.");
     } finally {

@@ -276,6 +276,15 @@
 }
 
 
+.react-international-phone-country-selector-button{
+  padding: 5px 5px !important; /* Adjust the 10px value as needed */
 
+}
+
+
+
+.rdp-dropdown {
+  @apply h-10  rounded-md border bg-background text-sm;
+}
 
 

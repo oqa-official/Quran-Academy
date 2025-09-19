@@ -78,7 +78,6 @@ async function sendStudentCredentialsEmail(student: any) {
     };
 
     const result = await client.sendTransacEmail(emailData);
-    console.log(`✅ Email sent to ${student.email}:`, result);
   } catch (err: any) {
     console.warn(`⚠️ Failed to send email to ${student.email}:`, err?.response?.body || err);
   }

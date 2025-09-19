@@ -37,7 +37,7 @@ export default function ReviewListAdmin() {
   }, [id])
 
   return (
-    <Card className="mt-2 rounded-sm max-h-[200px]  overflow-y-scroll">
+    <Card className="mt-2 rounded-sm max-h-[200px]  overflow-y-scroll dark:bg-[#020D1A] bg-gray-100">
       <CardContent className="p-3">
         <h2 className="text-xl sm:text-xl font-semibold mb-2">This Course Reviews</h2>
 

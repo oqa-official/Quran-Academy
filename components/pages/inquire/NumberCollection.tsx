@@ -72,7 +72,7 @@ export default function NumberCollection({ onSuccess }: { onSuccess?: () => void
       localStorage.setItem("onboardingLink", onboardingPath);
 
       // ✅ Toast message
-      toast.success(`Inquiry created successfully! (ID: ${inquiryId})`);
+      toast.success(`Inquiry submitted successfully!`);
 
       // ✅ Trigger optional callback
       if (onSuccess) {

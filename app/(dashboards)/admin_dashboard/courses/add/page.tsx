@@ -42,8 +42,8 @@ export default function CoursesAdd() {
   }, []);
 
   return (
-    <div className="container w-full">
-      <h1 className="text-2xl font-bold mb-6">Manage Courses</h1>
+    <div className="container w-full bg-white shadow-xl p-4 dark:bg-[#122031] rounded-md">
+      <h1 className="text-2xl font-bold mb-6">Add Course</h1>
 
       {/* Add New Course */}
       <AddCourseForm onSuccess={fetchCourses} />

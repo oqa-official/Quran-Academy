@@ -1,4 +1,5 @@
 "use client";
+import "./hideclose.css"
 
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -22,7 +23,7 @@ export default function EditStudentDialog({ student, open, onClose, onSaved }: a
       const res = await fetch("/api/db/courses");
       console.log("courses res", res);
       if (res.ok) setCourses(await res.json());
-      console.log("response status",res.ok)
+      console.log("response status", res.ok)
     };
     fetchCourses();
   }, []);
@@ -32,53 +33,64 @@ export default function EditStudentDialog({ student, open, onClose, onSaved }: a
   };
 
   const handleSave = async () => {
-   try {
-     const res = await fetch(`/api/db/students/${form._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    if (res.ok) {
-      const updated = await res.json();
-      toast.success("Student updated successfully");
-      onSaved(updated);
+    try {
+      const res = await fetch(`/api/db/students/${form._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        toast.success("Student updated successfully");
+        onSaved(updated);
+        onClose();
+      }
+      else {
+        throw new Error("Failed to update student");
+      }
+    } catch (error) {
+      toast.error("Failed to update student");
       onClose();
     }
-    else {
-      throw new Error("Failed to update student");
-    }
-   } catch (error) {
-    toast.error("Failed to update student");
-    onClose();
-   }
   };
 
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open}  modal>
+       <DialogHeader className="close_button_hidden">
+      <DialogTitle>Edit Student</DialogTitle>
+
+      {/* Only include a close button if your Dialog component provides one */}
+      <button
+        onClick={onClose}
+        className="absolute bg-white p-20 top-3 right-3 text-muted-foreground hover:text-foreground w-7 h-7 "
+      >
+        ✕
+      </button>
+    </DialogHeader>
+    
       <DialogContent className="max-w-lg dark:bg-[#122031] bg-white">
         <DialogHeader>
           <DialogTitle>Edit Student</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-3 grid grid-cols-1 md:grid-cols-2 gap-1 ">
+        <div className="space-y-3 grid grid-cols-1 md:grid-cols-2 gap-3 ">
           <Input value={form.name || ""} onChange={(e) => handleChange("name", e.target.value)} placeholder="Name" />
           <Input value={form.email || ""} onChange={(e) => handleChange("email", e.target.value)} placeholder="Email" />
           <Input value={form.phone || ""} onChange={(e) => handleChange("phone", e.target.value)} placeholder="Phone" />
-          <Input type="number" value={form.age || ""} onChange={(e) => handleChange("age", Number(e.target.value))} placeholder="Age" />
           <Input type="number" value={form.price || ""} onChange={(e) => handleChange("price", Number(e.target.value))} placeholder="Price" />
 
           {/* Status */}
-          <Select  value={form.status} onValueChange={(val) => handleChange("status", val)} >
-            <SelectTrigger  className="w-full"><SelectValue placeholder="Status" /></SelectTrigger>
+          <Select value={form.status} onValueChange={(val) => handleChange("status", val)} >
+            <SelectTrigger className="w-full"><SelectValue placeholder="Status" /></SelectTrigger>
             <SelectContent className="w-full">
               <SelectItem value="trial">Trial</SelectItem>
               <SelectItem value="regular">Regular</SelectItem>
             </SelectContent>
           </Select>
 
-            {/* Course */}
+          {/* Course */}
           <Select value={form.course?._id || ""} onValueChange={(val) => handleChange("course", val)}>
             <SelectTrigger className="w-full"><SelectValue placeholder="Select course" /></SelectTrigger>
             <SelectContent>
@@ -104,7 +116,7 @@ export default function EditStudentDialog({ student, open, onClose, onSaved }: a
             ))}
           </div>
 
-        
+
         </div>
 
         <DialogFooter>

@@ -70,7 +70,7 @@ export default function ReviewList({
     return <p className="text-gray-500">No reviews yet.</p>;
 
   return (
-    <div>
+    <div className="">
       {reviews
         .slice()
         .reverse()
@@ -78,7 +78,7 @@ export default function ReviewList({
         .map((review) => (
           <div
             key={review._id}
-            className="mb-8 border-b border-gray-200 pb-4 last:border-b-0"
+            className="mb-8  border-b border-gray-200 pb-4 last:border-b-0"
           >
             <div className="flex items-center mb-2">
               <img

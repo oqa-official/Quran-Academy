@@ -44,7 +44,6 @@ export default function BooksPage() {
 
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-6">Add Book</h1>
 
       {/* Add New Book */}
       <AddBook onSuccess={fetchBooks} />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Trash, Edit, TriangleAlert } from "lucide-react";
+import { Loader2, Trash, Edit, TriangleAlert, Pencil } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -70,6 +70,7 @@ export default function BooksInfo({
     },
     {
       accessorKey: "name",
+      enableGlobalFilter: true,
       header: "Name",
        cell: ({ row }) => {
         const value = row.getValue("name") as string;
@@ -78,6 +79,7 @@ export default function BooksInfo({
     },
     {
       accessorKey: "author",
+      enableGlobalFilter: true,
       header: "Author",
       cell: ({ row }) => {
         const value = row.getValue("author") as string;
@@ -86,6 +88,7 @@ export default function BooksInfo({
     },
     {
       accessorKey: "category",
+      enableGlobalFilter: true,
       header: "Category",
       cell: ({ row }) => row.original.category || "Uncategorized",
     },
@@ -110,16 +113,18 @@ export default function BooksInfo({
       cell: ({ row }) => {
         const book = row.original;
         return (
-          <div className="flex gap-2 items-center">
-            <Edit
+          <div className="flex gap-2 items-center ">
+           <div className="p-2 bg-[#ffffff4a] rounded-md">
+             <Pencil size={18}
               onClick={() => setEditingBook(book)}
-              className=" text-accent p-1 rounded-[2px] hover:scale-110 transition-transform cursor-pointer"
+              className=" text-accent hover:scale-110 transition-transform cursor-pointer"
             />
+           </div>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <button
-                  className="rounded disabled:opacity-50 flex items-center"
+                  className="rounded disabled:opacity-50 flex items-center bg-[#6b0b0b67] p-2 rounded-md"
                   disabled={deletingId === book._id}
                 >
                   {deletingId === book._id ? (
@@ -127,7 +132,7 @@ export default function BooksInfo({
                       <Loader2 className="h-4 w-4 animate-spin mr-1" /> Deleting...
                     </>
                   ) : (
-                    <Trash className="text-red-600 p-1 rounded-[2px] hover:scale-110 transition-transform cursor-pointer" />
+                    <Trash size={18} className="text-red-500 hover:scale-110 transition-transform cursor-pointer" />
                   )}
                 </button>
               </AlertDialogTrigger>

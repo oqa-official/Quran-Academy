@@ -17,8 +17,8 @@ export default function Page() {
                     <p className="text-2xl md:text-3xl my-2 text-accent">
                         جَزَاكُمُ ٱللَّهُ خَيْرًا
                     </p>
-                    <p className="text-2xl md:text-3xl my-2 text-primary font-merriweather font-semibold">
-                        Thank you for your response.
+                    <p className="text-lg  md:text-xl my-2 text-primary font-medium">
+                        <span className="text-accent text-2xl md:text-3xl font-merriweather">Congratulations!!</span><br/> You have unlocked your Free Trial
                     </p>
                 </>
 
@@ -34,15 +34,14 @@ export default function Page() {
                         alt="success"
                         className="w-32 mx-auto"
                     />
-                    <h3 className="text-lg font-normal text-gray-700">
-                        Thanks for filling out the form<br /> 
-                        We will process your application and get back to you soon.
-                    </h3>
-                    <Link href={"/"}>
+                    <p className="text-lg font-normal text-gray-700">
+                       We Have sent the Login credentials of your Quran Academy Account to the attached email
+                    </p>
+                    <Link href={"/auth/login"}>
                         <button
                             className="px-4 py-2 rounded-sm bg-primary text-white hover:bg-accent"
                         >
-                            Go to Home
+                            Go to Portal
                         </button>
                     </Link>
                 </div>

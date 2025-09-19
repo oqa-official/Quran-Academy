@@ -7,10 +7,12 @@ import { Sidebar } from "./componnets/Sidebar";
 import { Header } from "./componnets/Header";
 import NextTopLoader from "nextjs-toploader";
 import RestrictedUsers from "@/components/pages/Admin-Dashboard/Restricted-Users";
+import { DirtyFormProvider } from "@/context/DirtyFormContext";
 
 function Admin_layout({ children }: { children: React.ReactNode }) {
   return (
     <html>
+      <DirtyFormProvider>
     <RestrictedUsers allowedRoles={["admin"]}>
       <ThemeProvider  storageKey="admin-theme"  attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 
@@ -30,6 +32,7 @@ function Admin_layout({ children }: { children: React.ReactNode }) {
         </SidebarProvider>
       </ThemeProvider>
     </RestrictedUsers>
+    </DirtyFormProvider>
     </html>
   );
 }

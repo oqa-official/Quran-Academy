@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -8,9 +9,6 @@ import {
   useReactTable,
   getPaginationRowModel,
   getFilteredRowModel,
-  ColumnFiltersState,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
   getSortedRowModel,
 } from "@tanstack/react-table";
 
@@ -45,24 +43,20 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchPlaceholder: string;
-  searchKey?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchPlaceholder,
-  searchKey,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
 
-  // Serial number resets from 1 for each page
+  // Serial number column
   const serialNumberColumn: ColumnDef<TData> = {
     id: "serialNumber",
     header: "S.No.",
-    cell: ({ row }) => {
-      return <span>{row.index + 1}</span>;
-    },
+    cell: ({ row }) => <span>{row.index + 1}</span>,
   };
 
   const columnsWithSerial = [serialNumberColumn, ...columns];
@@ -70,14 +64,13 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns: columnsWithSerial,
+    state: { globalFilter },
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
     getSortedRowModel: getSortedRowModel(),
-    state: { columnFilters },
+    globalFilterFn: "includesString", // built-in fn
   });
 
   // --- Export helpers ---
@@ -91,9 +84,7 @@ export function DataTable<TData, TValue>({
       visibleColumns.map((col) => {
         const colId = col.id;
 
-        if (colId === "serialNumber") {
-          return idx + 1; // reset numbering on each page
-        }
+        if (colId === "serialNumber") return idx + 1;
         if (colId === "actions") return "Actions";
         if (colId === "details") return "View Details";
 
@@ -109,7 +100,9 @@ export function DataTable<TData, TValue>({
 
   const exportCSV = () => {
     const { headers, rows } = getTableDataForExport();
-    const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join(
+      "\n"
+    );
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -145,10 +138,8 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-col md:flex-row items-center justify-between gap-3">
         <Input
           placeholder={searchPlaceholder}
-          value={(table.getColumn(searchKey || "title")?.getFilterValue() as string) ?? ""}
-          onChange={(e) =>
-            table.getColumn(searchKey || "title")?.setFilterValue(e.target.value)
-          }
+          value={globalFilter ?? ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
           className="w-full md:max-w-sm rounded-md border px-3 py-2"
         />
 
@@ -167,9 +158,9 @@ export function DataTable<TData, TValue>({
               <DropdownMenuCheckboxItem onClick={exportExcel}>
                 <FileSpreadsheet className="-ms-5 h-4 w-4" /> Excel
               </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem onClick={exportPDF}>
+              {/* <DropdownMenuCheckboxItem onClick={exportPDF}>
                 <FileText className="-ms-5 h-4 w-4" /> PDF
-              </DropdownMenuCheckboxItem>
+              </DropdownMenuCheckboxItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -232,7 +223,10 @@ export function DataTable<TData, TValue>({
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -247,7 +241,10 @@ export function DataTable<TData, TValue>({
                         key={cell.id}
                         className="px-4 py-3 text-sm text-foreground"
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>

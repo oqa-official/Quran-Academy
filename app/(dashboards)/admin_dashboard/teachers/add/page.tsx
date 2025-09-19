@@ -56,7 +56,7 @@ export default function TeachersPage() {
   }, []);
 
   return (
-    <div className="">
+    <div className="bg-white p-4 rounded-md shadow-lg dark:bg-[#122031]">
       <h1 className="text-2xl font-bold mb-6">Add Instructor</h1>
 
       {/* Add New Instructor */}

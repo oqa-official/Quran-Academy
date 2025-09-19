@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface Course {
   _id: string;
   title: string;
+  status? : string,
   price: number;
   overview?: { summary?: string };
   reviews?: number;
@@ -145,22 +146,28 @@ const OurPlans: React.FC = () => {
   const [activeId, setActiveId] = useState<string>(fallbackCourses[0]._id);
   const [startIndex, setStartIndex] = useState(0);
 
-  useEffect(() => {
-    async function fetchCourses() {
-      try {
-        const res = await fetch("/api/db/courses");
-        if (!res.ok) throw new Error("Failed to fetch courses");
-        const data: Course[] = await res.json();
+useEffect(() => {
+  async function fetchCourses() {
+    try {
+      const res = await fetch("/api/db/courses");
+      if (!res.ok) throw new Error("Failed to fetch courses");
 
-        setCourses(data);
-        if (data.length > 0) setActiveId(data[0]._id);
-      } catch (err) {
-        console.error("Error fetching courses:", err);
-        // do nothing → fallback stays
-      }
+      const data: Course[] & { status?: string }[] = await res.json();
+
+      // ✅ Filter only active courses
+      const activeCourses = data.filter((c) => c.status === "active");
+
+      setCourses(activeCourses);
+      if (activeCourses.length > 0) setActiveId(activeCourses[0]._id);
+    } catch (err) {
+      console.error("Error fetching courses:", err);
+      // fallbackCourses will stay as default
     }
-    fetchCourses();
-  }, []);
+  }
+
+  fetchCourses();
+}, []);
+
 
   const visibleCourses = courses.slice(startIndex, startIndex + 3);
   const activeCourse = courses.find((c) => c._id === activeId);

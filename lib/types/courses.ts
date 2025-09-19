@@ -18,6 +18,7 @@ export interface CourseOverview {
 
 export interface Course {
   _id?: string;
+  status : string;
   image: string;
   cloudinaryImageId: string;
   title: string;

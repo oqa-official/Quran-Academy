@@ -53,6 +53,7 @@ export default function CurriculumTab({ curriculum }: { curriculum: Lesson[] }) 
                   <Clock className="w-4 h-4 text-gray-500 hidden md:flex" />
                   <span className="text-xs md:text-sm text-gray-600 whitespace-nowrap">
                     {lesson.lessonDuration}
+                    {" "}Days
                   </span>
                 </div>
               )}

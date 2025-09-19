@@ -1,10 +1,14 @@
 'use client';
 
-
+import { useState, useEffect } from "react";
+import { CircleX, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { validateImageFile } from "@/lib/validation";
+import { useDirtyForm } from "@/context/DirtyFormContext";
 
 export interface Instructor {
   _id: string;
-  userId: string; // 🔑 link to users table
+  userId: string;
   name: string;
   designation: string;
   about: string;
@@ -12,17 +16,10 @@ export interface Instructor {
   image: string;
   email?: string;
   number?: string;
-  emergencyNumber : string,
-  password?: string; // ⚠️ usually don’t expose this on frontend
+  emergencyNumber: string;
+  password?: string;
   cloudinaryImageId?: string;
 }
-
-
-
-import { useState } from "react";
-import { CircleX, Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import { validateImageFile } from "@/lib/validation";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
 const UPLOAD_PRESET = "Quran_Academy";
@@ -56,6 +53,24 @@ export default function EditInstructorForm({
   const [preview, setPreview] = useState<string | null>(instructor.image || null);
   const [loading, setLoading] = useState(false);
 
+  // 🟢 dirty form context
+  const { setDirty } = useDirtyForm();
+
+  // check if form is dirty
+  useEffect(() => {
+    const isFormDirty =
+      form.name !== instructor.name ||
+      form.designation !== instructor.designation ||
+      form.about !== instructor.about ||
+      form.qualifications !== instructor.qualifications.join("\n") ||
+      form.email !== (instructor.email || "") ||
+      form.number !== (instructor.number || "") ||
+      form.emergencyNumber !== (instructor.emergencyNumber || "") ||
+      file !== null;
+
+    setDirty(isFormDirty);
+  }, [form, file, instructor, setDirty]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
@@ -84,6 +99,7 @@ export default function EditInstructorForm({
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", UPLOAD_PRESET);
+        formData.append("folder", "Teachers");
 
         const uploadRes = await fetch(
           `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
@@ -116,6 +132,7 @@ export default function EditInstructorForm({
       if (!res.ok) throw new Error("Failed to update instructor.");
 
       toast.success("Instructor updated successfully!");
+      setDirty(false); // 🟢 reset dirty state
       onSuccess();
     } catch (err: unknown) {
       console.error("🔥 Error updating instructor:", err);
@@ -129,7 +146,7 @@ export default function EditInstructorForm({
     <div className="fixed px-6 inset-0 bg-[#020000af] flex items-center justify-center">
       <div className="rounded-lg overflow-hidden relative w-full max-w-4xl">
         <CircleX
-          className="absolute top-2 right-5 bg-gray-500 hover:scale-110 text-white rounded-full w-[28px] h-[28px]"
+          className="absolute top-2 right-5 bg-gray-500 hover:scale-110 text-white rounded-full w-[28px] h-[28px] cursor-pointer"
           onClick={onClose}
         />
         <form
@@ -194,7 +211,9 @@ export default function EditInstructorForm({
                 type="text"
                 className="w-full p-2 border rounded"
                 value={form.emergencyNumber}
-                onChange={(e) => setForm({ ...form, emergencyNumber: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, emergencyNumber: e.target.value })
+                }
               />
             </div>
 
@@ -234,11 +253,15 @@ export default function EditInstructorForm({
 
           {/* Qualifications */}
           <div>
-            <label className="text-xs text-gray-500">Qualifications (One Per Line)</label>
+            <label className="text-xs text-gray-500">
+              Qualifications (One Per Line)
+            </label>
             <textarea
               className="w-full p-2 border rounded min-h-[80px]"
               value={form.qualifications}
-              onChange={(e) => setForm({ ...form, qualifications: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, qualifications: e.target.value })
+              }
             />
           </div>
 

@@ -97,6 +97,7 @@ function StudentsPageContent() {
         },
         {
             accessorKey: "name",
+            enableGlobalFilter: true,
             header: "Name",
             cell: ({ row }) => {
                 const value = row.getValue("name") as string;
@@ -105,13 +106,19 @@ function StudentsPageContent() {
         },
         {
             accessorKey: "email",
+            enableGlobalFilter: true,
             header: "Email",
+             cell: ({ row }) => {
+                const value = row.getValue("email") as string;
+                return value && value.length > 17 ? value.substring(0, 17) + "..." : value;
+            },
         },
         {
             accessorKey: "gender",
+            enableGlobalFilter: true,
             header: "Gender",
             cell: ({ row }) => (
-                <div className="flex items-center bg-[#189c564a] px-2 py-1 rounded-sm">
+                <div className="flex items-center bg-[#189c564a] text-center  px-3 py-1 rounded-sm">
                     <span>{row.original.gender}</span>
                 </div>
             ),
@@ -119,6 +126,7 @@ function StudentsPageContent() {
        
         {
             accessorKey: "dateOfBirth",
+            enableGlobalFilter: true,
             header: "Date of Birth",
             cell: ({ row }) =>
                 row.original.dateOfBirth
@@ -147,6 +155,7 @@ function StudentsPageContent() {
 
         {
             accessorKey: "course.title",
+            enableGlobalFilter: true,
             header: "Course",
             cell: ({ row }) => {
                 const value = row.original.course?.title;
@@ -161,6 +170,7 @@ function StudentsPageContent() {
         },
       {
             accessorKey: "status",
+            enableGlobalFilter: true,
             header: "Status",
             cell: ({ row }) => (
                 <div className="flex items-center bg-[#9c23184a] px-2 py-1 rounded-sm">

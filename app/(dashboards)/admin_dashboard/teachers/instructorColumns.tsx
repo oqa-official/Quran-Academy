@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit, Loader2, Trash, TriangleAlert } from "lucide-react";
+import { Edit, Loader2, Pencil, Trash, TriangleAlert } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,6 +37,7 @@ export const instructorColumns = (
 
   {
     accessorKey: "name",
+    enableGlobalFilter: true,
     header: "Name",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
@@ -50,10 +51,12 @@ export const instructorColumns = (
   },
   {
     accessorKey: "email",
+    enableGlobalFilter: true,
     header: "Email",
   },
   {
     accessorKey: "number",
+    enableGlobalFilter: true,
     header: "Phone",
   },
   {
@@ -66,22 +69,22 @@ export const instructorColumns = (
           {/* Edit */}
           <button
             onClick={() => handleEdit(ins)}
-            className="p-1 text-primary hover:scale-105"
+            className=" text-primary hover:scale-105 bg-[#ffffff32] p-2 rounded-md"
           >
-            <Edit size={16} />
+            <Pencil size={20} />
           </button>
 
           {/* Delete */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button
-                className="p-1 text-red-500 disabled:opacity-50"
+                className="p-2 text-red-500 disabled:opacity-50 bg-[#6104045f] rounded-md" 
                 disabled={deletingId === ins._id}
               >
                 {deletingId === ins._id ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Trash size={16} />
+                  <Trash size={20} />
                 )}
               </button>
             </AlertDialogTrigger>

@@ -68,10 +68,12 @@ export default function Onbaordings() {
   const columns: ColumnDef<Inquire>[] = [
     {
       accessorKey: "name",
+      enableGlobalFilter: true,
       header: "Name",
     },
     {
       accessorKey: "email",
+      enableGlobalFilter: true,
       header: "Email",
     },
     {

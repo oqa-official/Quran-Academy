@@ -21,10 +21,10 @@ export function OfferPopup() {
     "/onboarding",
     "/auth",
     "/admin-dashboard",
+    "/admin_dashboard",
     "/inquire",
     "/student-dashboard",
     "/teacher-dashboard",
-    "/courses", // Add this line
   ];
 
   const isExcludedRoute = excludedRoutes.some((route) =>

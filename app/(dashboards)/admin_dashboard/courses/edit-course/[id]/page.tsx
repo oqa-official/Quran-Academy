@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -8,7 +7,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { UploadCloud, Loader, ArrowBigLeft } from "lucide-react";
+import { UploadCloud, Loader, ArrowBigLeft, Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -35,13 +34,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Course, CurriculumItem } from "@/lib/types/courses";
 import { Instructor } from "@/lib/types/instructor";
-import ReviewList from "@/components/pages/SingleCourse/ReviewList";
 import ReviewListAdmin from "@/components/pages/Admin-Dashboard/courses/ReviewListAdmin";
 import Link from "next/link";
+import { useDirtyForm } from "@/context/DirtyFormContext"; // ✅ import
+import { Skeleton } from "@/components/ui/skeleton";
 
-// ✅ Local override type (only for this file)
+// ✅ Local override type
 interface CourseWithPopulatedInstructor extends Omit<Course, "instructor"> {
-  instructor: Instructor; // populated instructor object
+  instructor: Instructor;
 }
 
 // ✅ Curriculum Editor Component
@@ -61,12 +61,20 @@ function CurriculumEditor({
 
   const handleAdd = () => {
     if (!newItem.lessonName.trim()) return;
-    const updated = [...curriculum, newItem].sort(
-      (a, b) => a.lessonNumber - b.lessonNumber
-    );
+
+    const nextNumber =
+      curriculum.length > 0
+        ? Math.max(...curriculum.map((c) => c.lessonNumber)) + 1
+        : 1;
+
+    const updated = [
+      ...curriculum,
+      { ...newItem, lessonNumber: nextNumber },
+    ];
+
     setCurriculum(updated);
     setNewItem({
-      lessonNumber: newItem.lessonNumber + 1,
+      lessonNumber: nextNumber + 1,
       lessonName: "",
       lessonDuration: "",
       lessonDescription: "",
@@ -92,21 +100,20 @@ function CurriculumEditor({
     <div>
       <h3 className="text-lg font-semibold mb-2">Curriculum</h3>
 
-      {/* Existing Curriculum */}
       <div className="space-y-3">
         {curriculum
           .sort((a, b) => a.lessonNumber - b.lessonNumber)
           .map((item, index) => (
-            <div key={index} className="p-3 border rounded">
-              <div className="grid grid-cols-2 gap-2">
-                <Input
-                  type="number"
-                  value={item.lessonNumber}
-                  onChange={(e) =>
-                    handleChange(index, "lessonNumber", Number(e.target.value))
-                  }
-                  placeholder="Lesson Number"
-                />
+            <div
+              key={index}
+              className="p-3 border rounded space-y-2 grid grid-cols-1 md:grid-cols-2 gap-1"
+            >
+              <p className="text-sm font-semibold md:col-span-2">
+                Lesson {item.lessonNumber}
+              </p>
+
+              <div>
+                <label className="text-xs text-gray-500">Lesson Name</label>
                 <Input
                   value={item.lessonName}
                   onChange={(e) =>
@@ -114,13 +121,31 @@ function CurriculumEditor({
                   }
                   placeholder="Lesson Name"
                 />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500">
+                  Duration (Days)
+                </label>
                 <Input
+                  type="number"
+                  min={1}
                   value={item.lessonDuration}
                   onChange={(e) =>
-                    handleChange(index, "lessonDuration", e.target.value)
+                    handleChange(
+                      index,
+                      "lessonDuration",
+                      String(Math.max(1, Number(e.target.value)))
+                    )
                   }
-                  placeholder="Duration (e.g. 45m)"
+                  placeholder="Duration"
                 />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="text-xs text-gray-500">
+                  Lesson Description
+                </label>
                 <Input
                   value={item.lessonDescription}
                   onChange={(e) =>
@@ -129,10 +154,11 @@ function CurriculumEditor({
                   placeholder="Description"
                 />
               </div>
+
               <Button
                 variant="destructive"
                 size="sm"
-                className="mt-2"
+                className="mt-2 max-w-[100px]"
                 onClick={() => handleRemove(index)}
               >
                 Remove
@@ -141,25 +167,11 @@ function CurriculumEditor({
           ))}
       </div>
 
-      {/* Add New Item */}
       <div className="mt-4 p-3 border rounded">
         <h4 className="font-medium mb-2">Add Curriculum Item</h4>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-xs text-gray-500">Lesson Number</label>
-            <Input
-              type="number"
-              value={newItem.lessonNumber}
-              onChange={(e) =>
-                setNewItem({ ...newItem, lessonNumber: Number(e.target.value) })
-              }
-              placeholder="Lesson Number"
-            />
-          </div>
-
-          <div>
             <label className="text-xs text-gray-500">Lesson Name</label>
-
             <Input
               value={newItem.lessonName}
               onChange={(e) =>
@@ -167,26 +179,37 @@ function CurriculumEditor({
               }
               placeholder="Lesson Name"
             />
-
           </div>
 
           <div>
             <label className="text-xs text-gray-500">Lesson Duration</label>
             <Input
+              type="number"
+              min={1}
               value={newItem.lessonDuration}
               onChange={(e) =>
-                setNewItem({ ...newItem, lessonDuration: e.target.value })
+                setNewItem({
+                  ...newItem,
+                  lessonDuration: String(
+                    Math.max(1, Number(e.target.value))
+                  ),
+                })
               }
-              placeholder="Duration (e.g. 45m)"
+              placeholder="Duration (Days)"
             />
           </div>
 
-          <div>
-            <label className="text-xs text-gray-500">Lesson Description</label>
+          <div className="col-span-2">
+            <label className="text-xs text-gray-500">
+              Lesson Description
+            </label>
             <Input
               value={newItem.lessonDescription}
               onChange={(e) =>
-                setNewItem({ ...newItem, lessonDescription: e.target.value })
+                setNewItem({
+                  ...newItem,
+                  lessonDescription: e.target.value,
+                })
               }
               placeholder="Description"
             />
@@ -210,15 +233,20 @@ export default function EditCourseForm() {
   const [course, setCourse] = useState<CourseWithPopulatedInstructor | null>(
     null
   );
+  const [initialCourse, setInitialCourse] =
+    useState<CourseWithPopulatedInstructor | null>(null); // ✅ store initial snapshot
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const { setDirty } = useDirtyForm(); // ✅ hook
 
   // ✅ Cloudinary upload
   const uploadToCloudinary = async (file: File) => {
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "Quran_Academy");
+    data.append("folder", "course");
 
     const res = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -232,6 +260,7 @@ export default function EditCourseForm() {
     return res.json();
   };
 
+  // ✅ Fetch course + instructors
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -240,6 +269,7 @@ export default function EditCourseForm() {
           axios.get(`/api/db/instructors`),
         ]);
         setCourse(courseRes.data);
+        setInitialCourse(courseRes.data); // ✅ save initial copy
         setInstructors(instructorsRes.data);
       } catch (err) {
         console.error(err);
@@ -249,6 +279,20 @@ export default function EditCourseForm() {
     };
     fetchData();
   }, [id]);
+
+  // ✅ Dirty check effect
+  useEffect(() => {
+    if (!course || !initialCourse) return;
+
+    const isDirty =
+      JSON.stringify({ ...course, instructor: course.instructor._id }) !==
+        JSON.stringify({
+          ...initialCourse,
+          instructor: initialCourse.instructor._id,
+        }) || selectedImage !== null;
+
+    setDirty(isDirty);
+  }, [course, initialCourse, selectedImage, setDirty]);
 
   const handleSave = async () => {
     if (!course) return;
@@ -267,16 +311,20 @@ export default function EditCourseForm() {
         ...course,
         image: imageUrl,
         cloudinaryImageId: cloudinaryId,
-        instructor: course.instructor._id, // ✅ send back only the id
+        instructor: course.instructor._id,
       };
 
       await axios.put(`/api/db/courses/${id}`, payload);
-      toast.success("Course Updated successfully")
+
+      setInitialCourse({ ...course, image: imageUrl }); // ✅ reset snapshot
+      setSelectedImage(null);
+      setDirty(false);
+
+      toast.success("Course Updated successfully");
       router.push("/admin_dashboard/courses");
     } catch (err) {
       console.error(err);
-      toast.error("Something went wrong")
-
+      toast.error("Something went wrong");
     } finally {
       setSaving(false);
     }
@@ -286,12 +334,11 @@ export default function EditCourseForm() {
     setDeleting(true);
     try {
       await axios.delete(`/api/db/courses/${id}`);
-      toast.success("Course deleted successfully")
-      router.push("/admin-dashboard");
+      toast.success("Course deleted successfully");
+      router.push("/admin_dashboard/courses");
     } catch (err) {
       console.error(err);
-      toast.error("Something went wrong")
-
+      toast.error("Something went wrong");
     } finally {
       setDeleting(false);
     }
@@ -306,9 +353,13 @@ export default function EditCourseForm() {
 
   if (loading) {
     return (
-      <div className="w-full p-10">
-        <Progress value={50} className="w-full" />
-        <p className="mt-2 text-center">Loading course...</p>
+      <div className="w-full p-10 grid grid-cols-2 gap-3">
+       <Skeleton className="w-full h-[200px] bg-white dark:bg-[#122031] col-span-2"/>
+       <Skeleton className="w-full h-[120px] bg-white dark:bg-[#122031] col-span-2"/>
+       <Skeleton className="w-full h-[80px] bg-white dark:bg-[#122031]"/>
+       <Skeleton className="w-full h-[80px] bg-white dark:bg-[#122031]"/>
+       <Skeleton className="w-full h-[50px] bg-white dark:bg-[#122031] col-span-2"/>
+       <Skeleton className="w-full h-[50px] bg-white dark:bg-[#122031] col-span-2"/>
       </div>
     );
   }
@@ -316,15 +367,17 @@ export default function EditCourseForm() {
   if (!course) return <p>Course not found</p>;
 
   return (
-    <div className="container p-6">
+    <div className=" p-6 bg-white rounded-lg dark:bg-[#122031]">
       <div className="flex flex-row justify-between mb-4">
         <h2 className="text-2xl font-bold">Edit Course</h2>
 
-        <Link href="/admin_dashboard/courses" className="flex gap-2 items-center justify-start">
+        <Link
+          href="/admin_dashboard/courses"
+          className="flex gap-2 items-center justify-start"
+        >
           <ArrowBigLeft />
           <p className="text-lg">Go Back</p>
         </Link>
-
       </div>
 
       {/* Title / Duration / Price */}
@@ -338,14 +391,39 @@ export default function EditCourseForm() {
 
       <label className="text-xs text-gray-500">Course duration</label>
       <Input
+        type="number"
+        min={1}
         value={course.duration}
-        onChange={(e) => setCourse({ ...course, duration: e.target.value })}
-        placeholder="Duration (e.g. 5h 30m)"
+        onChange={(e) =>
+          setCourse({
+            ...course,
+            duration: String(Math.max(1, Number(e.target.value))),
+          })
+        }
+        placeholder="Duration (hours)"
         className="mb-3"
       />
 
+      {/* Course Status */}
+      <div className="mb-3">
+        <label className="text-xs text-gray-500">Course Status</label>
+        <Select
+          value={course.status || ""}
+          onValueChange={(val) => setCourse({ ...course, status: val })}
+        >
+          <SelectTrigger className="border rounded-md h-10 w-full">
+            <SelectValue placeholder="Select Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-      <label className="text-xs text-gray-500">Course Price for 2 Days/week</label>
+      <label className="text-xs text-gray-500">
+        Course Price for 2 Days/week
+      </label>
       <Input
         type="number"
         value={course.price}
@@ -386,7 +464,9 @@ export default function EditCourseForm() {
       </div>
 
       {/* Image Upload */}
-      <label className="text-xs text-gray-500">Change Course Banner Image</label>
+      <label className="text-xs text-gray-500">
+        Change Course Banner Image
+      </label>
       <div className="flex items-center gap-2 w-full p-2 border rounded mb-3">
         <UploadCloud />
         <input
@@ -407,9 +487,11 @@ export default function EditCourseForm() {
       {/* Overview Fields */}
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger className="w-full text-base bg-gray-100 dark:bg-[#122031] my-3 p-3 shadow-md">Course Overview</AccordionTrigger>
+          <AccordionTrigger className="w-full text-base bg-gray-100 dark:bg-[#020D1A] my-3 p-3 shadow-md">
+            Course Overview
+          </AccordionTrigger>
           <AccordionContent>
-            <div className="bg-gray-100 dark:bg-[#122031] rounded-md p-5 mt-4">
+            <div className="bg-gray-100 dark:bg-[#020D1A] rounded-md p-5 mt-4">
               <label className="text-xs text-gray-500">Course Summary</label>
               <textarea
                 name="summary"
@@ -433,7 +515,10 @@ export default function EditCourseForm() {
                 onChange={(e) =>
                   setCourse({
                     ...course,
-                    overview: { ...course.overview, whatYouLearn: e.target.value },
+                    overview: {
+                      ...course.overview,
+                      whatYouLearn: e.target.value,
+                    },
                   })
                 }
               />
@@ -447,12 +532,17 @@ export default function EditCourseForm() {
                 onChange={(e) =>
                   setCourse({
                     ...course,
-                    overview: { ...course.overview, whoFor: e.target.value },
+                    overview: {
+                      ...course.overview,
+                      whoFor: e.target.value,
+                    },
                   })
                 }
               />
 
-              <label className="text-xs text-gray-500">Course Requirements</label>
+              <label className="text-xs text-gray-500">
+                Course Requirements
+              </label>
               <textarea
                 name="requirements"
                 placeholder="Requirements"
@@ -461,7 +551,10 @@ export default function EditCourseForm() {
                 onChange={(e) =>
                   setCourse({
                     ...course,
-                    overview: { ...course.overview, requirements: e.target.value },
+                    overview: {
+                      ...course.overview,
+                      requirements: e.target.value,
+                    },
                   })
                 }
               />
@@ -475,22 +568,25 @@ export default function EditCourseForm() {
                 onChange={(e) =>
                   setCourse({
                     ...course,
-                    overview: { ...course.overview, certification: e.target.value },
+                    overview: {
+                      ...course.overview,
+                      certification: e.target.value,
+                    },
                   })
                 }
               />
             </div>
-
           </AccordionContent>
         </AccordionItem>
       </Accordion>
 
-
-
+      {/* Curriculum */}
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger className="w-full text-base bg-gray-100 dark:bg-[#122031] my-3 p-3 shadow-md">Course Cariculum</AccordionTrigger>
-          <AccordionContent>
+          <AccordionTrigger className="w-full text-base bg-gray-100 dark:bg-[#020D1A] my-3 p-3 shadow-md">
+            Course Curriculum
+          </AccordionTrigger>
+          <AccordionContent className="dark:bg-[#020D1A] p-3">
             <CurriculumEditor
               curriculum={course.curriculum}
               setCurriculum={(c) => setCourse({ ...course, curriculum: c })}
@@ -498,29 +594,32 @@ export default function EditCourseForm() {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-      {/* Curriculum */}
 
-
+      {/* Reviews */}
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger className="w-full text-base bg-gray-100 dark:bg-[#122031] my-3 p-3 shadow-md">Course Reviews</AccordionTrigger>
-          <AccordionContent>
+          <AccordionTrigger className="w-full text-base bg-gray-100 dark:bg-[#020D1A] my-3 p-3 shadow-md">
+            Course Reviews
+          </AccordionTrigger>
+          <AccordionContent className="dark:bg-[#020D1A]">
             <ReviewListAdmin />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
 
-
-
       {/* Actions */}
       <div className="flex flex-col md:flex-row justify-end gap-2 mt-6">
-        <Button className="w-full max-w-[200px]" onClick={handleSave} disabled={saving}>
+        <Button
+          className="w-full max-w-[200px]"
+          onClick={handleSave}
+          disabled={saving}
+        >
           {saving ? <Loader className="animate-spin mx-auto" /> : "Save Changes"}
         </Button>
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="destructive" className="w-full max-w-[200px]">
+            <Button variant="destructive" className="w-full max-w-[200px] ">
               Delete Course
             </Button>
           </AlertDialogTrigger>
@@ -535,11 +634,12 @@ export default function EditCourseForm() {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
+                className="bg-red-600 text-white hover:bg-red-600"
                 onClick={handleDelete}
-                className="bg-red-600 hover:bg-red-700"
+                disabled={deleting}
               >
                 {deleting ? (
-                  <Loader className="animate-spin mx-auto" />
+                  <Loader2 className="animate-spin mx-auto" />
                 ) : (
                   "Delete"
                 )}
