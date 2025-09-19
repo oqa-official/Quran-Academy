@@ -1,5 +1,5 @@
 import { NavSection } from "@/app/(dashboards)/admin_dashboard/componnets/Sidebar";
-import { BookOpen, LayoutDashboard, Library, LibraryBig, MailOpen, Phone, Settings, User, Users } from "lucide-react";
+import { BookOpen, LayoutDashboard, Library, LibraryBig, MailCheck, MailOpen, Phone, Settings, User, Users } from "lucide-react";
 
 
 export const fallbackCourses = [
@@ -177,6 +177,18 @@ export const NAV_DATA_ADMIN: NavSection[] = [
           { title: "View All", url: "/admin_dashboard/students", icon: User },
         ],
       },
+
+       {
+        title: "Emails",
+        icon: MailCheck,
+        items: [
+          { title: "Student Created", url: "/admin_dashboard/emails/student-created", icon: User },
+          { title: "Teacher Created", url: "/admin_dashboard/emails/instructor-created", icon: User },
+          { title: "Reset Password", url: "/admin_dashboard/emails/forgot-password", icon: User },
+        ],
+      },
+
+
       { title: "Profile", url: "/admin_dashboard/profile", icon: Settings },
     ],
   },

@@ -1,6 +1,6 @@
 import { connectToDB } from "@/lib/db/db";
 import { NextResponse } from "next/server";
-import Inquire from "@/models/inquire.model";
+import Email from "@/models/email.model";
 
 
 
@@ -12,51 +12,56 @@ export async function GET(
   try {
     await connectToDB();
     const { id } = await context.params;
-    const inquire = await Inquire.findById(id);
+    const emailTemplate = await Email.findById(id);
 
-    if (!inquire) {
-      return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
+    if (!emailTemplate) {
+      return NextResponse.json({ error: "Email template not found" }, { status: 404 });
     }
 
-    return NextResponse.json(inquire, { status: 200 });
+    return NextResponse.json(emailTemplate, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-// ✅ PUT (update by ID)
-export async function PUT(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
-) {
+
+
+export async function PUT(req: Request) {
   try {
     await connectToDB();
-    const { id } = await context.params;
     const body = await req.json();
-    const { name, email, phone } = body;
+    const { event, subject, bodyHtml } = body;
 
-    if (!name || !email || !phone) {
+    if (!event) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Event is required" },
         { status: 400 }
       );
     }
 
-    const inquire = await Inquire.findByIdAndUpdate(
-      id,
-      { name, email, phone },
+    const updated = await Email.findOneAndUpdate(
+      { event },
+      { subject, bodyHtml },
       { new: true, runValidators: true }
     );
 
-    if (!inquire) {
-      return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
+    if (!updated) {
+      return NextResponse.json(
+        { error: "Email template not found" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json(inquire, { status: 200 });
+    return NextResponse.json(updated, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+
+
+
+
 
 // ✅ DELETE (remove by ID)
 export async function DELETE(
@@ -67,13 +72,13 @@ export async function DELETE(
     await connectToDB();
     const { id } = await context.params;
 
-    const inquire = await Inquire.findByIdAndDelete(id);
-    if (!inquire) {
-      return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
+    const emailTemplate = await Email.findByIdAndDelete(id);
+    if (!emailTemplate) {
+      return NextResponse.json({ error: "Email template not found" }, { status: 404 });
     }
 
     return NextResponse.json(
-      { message: "Inquiry deleted successfully" },
+      { message: "Email template deleted successfully" },
       { status: 200 }
     );
   } catch (error: any) {

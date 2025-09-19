@@ -1,8 +1,10 @@
+import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import { NextResponse } from "next/server";
 import Instructor from "@/models/instructor.model";
 import { connectToDB } from "@/lib/db/db";
 import { generateInstructorEducationMail, generateInstructorPassword, generateInstructorUserId } from "@/lib/utils/instructorHelpers";
 import mongoose from "mongoose";
+import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 
 // ✅ GET all instructors
 export async function GET() {
@@ -16,47 +18,39 @@ export async function GET() {
 }
 
 
+const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
 
-
-
-
-
-
-
-
-
-
-
-import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
-
-// ✅ Email sender function
-async function sendInstructorCredentialsEmail(user: any) {
+export async function sendInstructorCredentialsEmail(user: any) {
   try {
     const client = new TransactionalEmailsApi();
     client.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!);
 
+    // 1. Fetch DB template
+    let dbTemplate = await getEmailTemplate("instructor_created");
+
+    // 2. If missing or invalid, fallback
+    if (!dbTemplate || !validateTemplate(dbTemplate.bodyHtml, REQUIRED_FIELDS)) {
+      console.warn("⚠️ instructor_added template missing/invalid → using fallback");
+      dbTemplate = fallbackTemplates.instructor_added;
+    }
+
+    // 3. Render template with dynamic user values
+    const subject = renderTemplate(dbTemplate.subject, user);
+    const htmlContent = renderTemplate(dbTemplate.bodyHtml, user);
+
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
       to: [{ email: user.email }],
-      subject: "Your Instructor Account Credentials",
-      htmlContent: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-          <h2>Welcome ${user.name}</h2>
-          <p>Your instructor account has been created successfully. Here are your credentials:</p>
-          <p><b>Educational Email:</b> ${user.educationMail}</p>
-          <p><b>User ID:</b> ${user.userId}</p>
-          <p><b>Password:</b> ${user.password}</p>
-          <p>Please keep this information safe.</p>
-        </div>
-      `,
+      subject,
+      htmlContent,
     };
 
     const result = await client.sendTransacEmail(emailData);
-    console.log("✅ Instructor email sent successfully:", result);
   } catch (err: any) {
     console.warn("⚠️ Failed to send instructor email:", err?.response?.body || err);
   }
 }
+
 
 
 
