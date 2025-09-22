@@ -1,41 +1,50 @@
 import React from "react";
 
-interface Props {
+interface FormNavigationProps {
   step: number;
   totalSteps: number;
+  loading? : boolean,
   onNext: () => void;
   onPrev: () => void;
+  onSubmit?: () => void; // ✅ add this
 }
 
-const FormNavigation: React.FC<Props> = ({ step, totalSteps, onNext, onPrev }) => {
+const FormNavigation: React.FC<FormNavigationProps> = ({
+  step,
+  loading, 
+  totalSteps,
+  onNext,
+  onPrev,
+  onSubmit,
+}) => {
   return (
-    <div className="mt-8 flex justify-between">
-      {step > 1 ? (
+    <div className="flex justify-between mt-6">
+      {step > 1 && (
         <button
           type="button"
           onClick={onPrev}
-          className="px-6 py-2 rounded-md border bg-gray-200 hover:bg-gray-300"
+          className="px-4 py-2 border rounded bg-gray-200"
         >
-          Back
+          Previous
         </button>
-      ) : (
-        <span />
       )}
 
       {step < totalSteps ? (
         <button
           type="button"
           onClick={onNext}
-          className="px-6 py-2 rounded-md bg-primary text-white hover:bg-primary-hover"
+          className="ml-auto px-4 py-2 border rounded bg-primary text-white"
         >
           Next
         </button>
       ) : (
         <button
-          type="submit"
-          className="px-6 py-2 rounded-md bg-primary text-white hover:bg-primary-hover"
+          type="button"
+          disabled={loading}
+          onClick={onSubmit} // ✅ will now work
+          className="ml-auto px-4 py-2 border rounded bg-primary disabled:cursor-not-allowed text-white"
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
       )}
     </div>

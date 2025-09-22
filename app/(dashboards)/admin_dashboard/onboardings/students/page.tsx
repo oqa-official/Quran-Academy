@@ -65,7 +65,7 @@ function StudentsPageContent() {
 
                 // ✅ Only keep students with status "trial"
                 const trialStudents = data.filter(
-                    (student: any) => student.status !== "trial"
+                    (student: any) => student.status === "trial"
                 );
 
                 setStudents(trialStudents);
@@ -78,8 +78,9 @@ function StudentsPageContent() {
         fetchStudents();
     }, [inquireId]);
 
+
     const handleResetFilter = () => {
-        router.push("/admin_dashboard/students");
+        router.push("/admin_dashboard/onboardings/students");
     };
 
     const handleDelete = async (id: string) => {
@@ -255,7 +256,7 @@ function StudentsPageContent() {
     return (
         <div className="bg-white dark:bg-[#122031] rounded-xl shadow-md md:p-4 max-w-[90vw]   md:max-w-[80vw]">
             <div className="flex items-center justify-between mb-4">
-                <h1 className="text-2xl font-semibold">Students</h1>
+                <h1 className="text-2xl font-semibold">Trial Students</h1>
                 <div className="flex gap-2">
                     {inquireId && (
                         <Button variant="outline" onClick={handleResetFilter}>
@@ -306,6 +307,7 @@ function StudentsPageContent() {
                     onSaved={(updated: any) => {
                         setStudents((prev) =>
                             prev.map((s) => (s._id === updated._id ? updated : s))
+
                         );
                         setEditing(null);
                     }}

@@ -100,7 +100,7 @@ export default function Onbaordings() {
       header: "Details",
       cell: ({ row }) => (
         <Link
-          href={`/admin_dashboard/students?inquire=${row.original._id}`}
+          href={`/admin_dashboard/onboardings/students?inquire=${row.original._id}`}
           className="text-primary hover:underline flex items-center gap-1"
         >
           <Eye className="w-4 h-4" /> View

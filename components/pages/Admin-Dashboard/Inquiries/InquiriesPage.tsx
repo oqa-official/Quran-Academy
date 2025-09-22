@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/global/data-table";
+import { toast } from "sonner";
 
 interface Inquire {
   _id: string;
@@ -90,6 +91,49 @@ export default function InquiriesPage() {
         return date.toLocaleDateString();
       },
     },
+
+    {
+      accessorKey: "_id",
+      header: "Onboarding Link",
+      cell: ({ row }) => {
+        const id = row.original._id;
+        const shortId = id.slice(0, 4) + "..."; // only first 4 chars
+
+        const link = `/onboarding/${id}`;
+
+        const handleCopy = async () => {
+          try {
+            await navigator.clipboard.writeText(link);
+            toast.success("Link copy to clipboard")
+          } catch (err) {
+            toast.error("Failed to copy Link ")
+          }
+        };
+
+        return (
+          <div className="flex items-center gap-2">
+            {/* Clickable Link */}
+            <Link
+              href={link}
+              className="text-accent hover:underline"
+              target="_blank"
+            >
+              {shortId}
+            </Link>
+
+            {/* Copy Button */}
+            <button
+              onClick={handleCopy}
+              className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+            >
+              Copy
+            </button>
+          </div>
+        );
+      },
+      enableSorting: false,
+    }
+    ,
 
     {
       id: "actions",

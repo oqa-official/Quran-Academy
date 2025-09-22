@@ -288,3 +288,19 @@
 }
 
 
+/* TimezoneSelect dark mode overrides */
+.dark .react-timezone-select__control {
+  background-color: #122031 !important;
+  color: white !important;
+  border-color: #334155 !important; /* optional darker border */
+}
+
+.dark .react-timezone-select__menu {
+  background-color: #1e293b !important;
+  color: white !important;
+}
+
+.dark .react-timezone-select__option--is-focused {
+  background-color: #334155 !important;
+}
+

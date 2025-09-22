@@ -40,7 +40,7 @@ const StudentSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["trial", "regular"],
+      enum: ["trial", "regular","ongoing", "onhold", "quit", "onleave"],
       default: "trial",
     },
 

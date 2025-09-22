@@ -17,6 +17,8 @@ export async function GET() {
 }
 
 
+
+
 const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
 
  async function sendInstructorCredentialsEmail(user: any) {

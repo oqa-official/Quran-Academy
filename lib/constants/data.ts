@@ -150,6 +150,7 @@ export const NAV_DATA_ADMIN: NavSection[] = [
         items: [
           { title: "View All", url: "/admin_dashboard/teachers", icon: Users },
           { title: "Add Teacher", url: "/admin_dashboard/teachers/add", icon: Users },
+          { title: "Teacher Inquiries", url: "/admin_dashboard/teachers/teacher-inquiries", icon: Users },
         ],
       },
       {
@@ -169,7 +170,14 @@ export const NAV_DATA_ADMIN: NavSection[] = [
         ],
       },
       { title: "Inquire", url: "/admin_dashboard/inquire", icon: MailOpen },
-      { title: "Onboardings", url: "/admin_dashboard/onboardings", icon: MailOpen },
+       {
+        title: "Onboardings",
+        icon: MailOpen,
+        items: [
+          { title: "Onboarded Inquiries", url: "/admin_dashboard/onboardings", icon: User },
+          { title: "View Students", url: "/admin_dashboard/onboardings/students", icon: User },
+        ],
+      },
       {
         title: "Students",
         icon: User,
@@ -182,9 +190,11 @@ export const NAV_DATA_ADMIN: NavSection[] = [
         title: "Emails",
         icon: MailCheck,
         items: [
-          { title: "Student Created", url: "/admin_dashboard/emails/student-created", icon: User },
-          { title: "Teacher Created", url: "/admin_dashboard/emails/instructor-created", icon: User },
+          { title: "Student Onboarded", url: "/admin_dashboard/emails/student-created", icon: User },
+          { title: "Teacher Added", url: "/admin_dashboard/emails/instructor-created", icon: User },
           { title: "Reset Password", url: "/admin_dashboard/emails/forgot-password", icon: User },
+          { title: "Inquiry Fill", url: "/admin_dashboard/emails/inquiry-fill", icon: User },
+          { title: "Teacher Inquiry", url: "/admin_dashboard/emails/teacher-inquiry", icon: User },
         ],
       },
 
