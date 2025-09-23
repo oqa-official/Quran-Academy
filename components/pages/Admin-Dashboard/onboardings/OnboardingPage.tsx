@@ -119,7 +119,7 @@ export default function Onbaordings() {
               <Trash2 className="w-4 h-4" />
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent className="dark:bg-[#122031]">
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
@@ -130,7 +130,7 @@ export default function Onbaordings() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => handleDelete(row.original._id)}
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-red-600 hover:bg-red-700 text-white"
               >
                 Delete
               </AlertDialogAction>

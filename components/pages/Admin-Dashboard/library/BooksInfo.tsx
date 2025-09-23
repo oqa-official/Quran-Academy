@@ -136,7 +136,7 @@ export default function BooksInfo({
                   )}
                 </button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="dark:bg-[#122031]">
                 <AlertDialogHeader>
                   <AlertDialogTitle className="flex gap-3 items-center text-primary">
                     <TriangleAlert /> Confirm Delete?
@@ -153,7 +153,7 @@ export default function BooksInfo({
                   <AlertDialogAction
                     onClick={() => handleDelete(book._id)}
                     disabled={deletingId === book._id}
-                    className="bg-red-600 hover:bg-red-700"
+                    className="bg-red-600 hover:bg-red-700 text-white"
                   >
                     Confirm Delete
                   </AlertDialogAction>

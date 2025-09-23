@@ -1,5 +1,5 @@
 import { NavSection } from "@/app/(dashboards)/admin_dashboard/componnets/Sidebar";
-import { BookOpen, LayoutDashboard, Library, LibraryBig, MailCheck, MailOpen, Phone, Settings, User, Users } from "lucide-react";
+import { BookOpen, DollarSign, LayoutDashboard, Library, LibraryBig, MailCheck, MailOpen, Phone, Settings, User, Users } from "lucide-react";
 
 
 export const fallbackCourses = [
@@ -128,6 +128,7 @@ export const NAV_DATA_STUDENT = [
     items: [
       { title: "Dashboard", url: "/student-dashboard", icon: LayoutDashboard },
       { title: "Profile", url: "/student-dashboard/profile", icon: User },
+      { title: "Payments", url: "/student-dashboard/payments", icon: DollarSign },
       { title: "Forms", url: "/student-dashboard/forms", icon: MailOpen },
       { title: "Policies", url: "/policies", icon: LibraryBig },
       { title: "Library", url: "/library", icon: Library },

@@ -37,6 +37,7 @@ const StudentSchema = new mongoose.Schema(
 
     // Lock fee for this student
     price: { type: Number, required: true },
+    paymentLink: { type: String, default: null },
 
     status: {
       type: String,

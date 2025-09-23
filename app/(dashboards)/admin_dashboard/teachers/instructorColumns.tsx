@@ -88,7 +88,7 @@ export const instructorColumns = (
                 )}
               </button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="dark:bg-[#122031]">
               <AlertDialogHeader>
                 <AlertDialogTitle className="flex gap-2 items-center text-primary">
                   <TriangleAlert /> Are you sure?
@@ -101,7 +101,7 @@ export const instructorColumns = (
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={() => handleDelete(ins._id)}
-                  className="bg-red-600 hover:bg-red-700"
+                  className="bg-red-600 hover:bg-red-700 text-white"
                 >
                   Confirm Delete
                 </AlertDialogAction>
