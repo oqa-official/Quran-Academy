@@ -152,6 +152,11 @@ function StudentsPageContent() {
             header: "Timezone",
         },
         {
+            accessorKey: "educationMail",
+            enableGlobalFilter: true,
+            header: "Edu Email",
+        },
+        {
             accessorKey: "preferredStartTime",
             header: "Preferred Time",
         },

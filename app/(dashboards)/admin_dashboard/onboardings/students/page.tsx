@@ -147,6 +147,11 @@ function StudentsPageContent() {
             accessorKey: "phone",
             header: "Phone",
         },
+         {
+            accessorKey: "educationMail",
+            enableGlobalFilter: true,
+            header: "Edu Email",
+        },
 
         {
             accessorKey: "timezone",

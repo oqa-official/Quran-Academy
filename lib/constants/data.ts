@@ -196,6 +196,7 @@ export const NAV_DATA_ADMIN: NavSection[] = [
           { title: "Reset Password", url: "/admin_dashboard/emails/forgot-password", icon: User },
           { title: "Inquiry Fill", url: "/admin_dashboard/emails/inquiry-fill", icon: User },
           { title: "Teacher Inquiry", url: "/admin_dashboard/emails/teacher-inquiry", icon: User },
+          { title: "Custom Emails", url: "/admin_dashboard/emails/custom-emails", icon: User },
         ],
       },
 
