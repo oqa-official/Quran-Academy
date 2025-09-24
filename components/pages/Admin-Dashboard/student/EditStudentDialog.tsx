@@ -201,19 +201,23 @@ export default function EditStudentDialog({
             </label>
             <Select
               value={form.course?._id || ""}
-              onValueChange={(val) => handleChange("course", val)}
+              onValueChange={(val) => {
+                const selected = courses.find((c) => c._id === val);
+                handleChange("course", selected); // store full object
+              }}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select course" />
               </SelectTrigger>
               <SelectContent>
                 {courses.map((c) => (
-                  <SelectItem key={c._id} value={c._id ? c._id : ""}>
+                  <SelectItem key={c._id} value={c._id ?? ""}>
                     {c.title}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+
 
           </div>
           {/* Timezone */}

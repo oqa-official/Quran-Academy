@@ -12,27 +12,27 @@ import { DirtyFormProvider } from "@/context/DirtyFormContext";
 function Student_layout({ children }: { children: React.ReactNode }) {
   return (
     <html>
-       <DirtyFormProvider>
-    <RestrictedUsers allowedRoles={["student"]}>
-      <ThemeProvider  storageKey="admin-theme"  attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <DirtyFormProvider>
+        <RestrictedUsers allowedRoles={["student"]}>
+          <ThemeProvider storageKey="admin-theme" attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 
-        <SidebarProvider>
-          <NextTopLoader color="#5750F1" showSpinner={false} />
+            <SidebarProvider>
+              <NextTopLoader color="#5750F1" showSpinner={false} />
 
-          <div className="flex min-h-screen">
-            <Sidebar role="student"/>
+              <div className="flex min-h-screen">
+                <Sidebar role="student" />
 
-            <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
-              <Header />
-              <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-6 2xl:p-10">
-                {children}
-              </main>
-            </div>
-          </div>
-        </SidebarProvider>
-      </ThemeProvider>
-    </RestrictedUsers>
-    </DirtyFormProvider>
+                <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
+                  <Header />
+                  <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-6 2xl:p-10">
+                    {children}
+                  </main>
+                </div>
+              </div>
+            </SidebarProvider>
+          </ThemeProvider>
+        </RestrictedUsers>
+      </DirtyFormProvider>
     </html>
   );
 }

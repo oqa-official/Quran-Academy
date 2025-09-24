@@ -1,12 +1,13 @@
+
+
 "use client";
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/UserContext";
-import Analytics from "../admin_dashboard/componnets/Analytics";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { ArrowRight } from "lucide-react";
 
 interface Student {
   _id: string;
@@ -21,33 +22,6 @@ interface Student {
     lastPaymentDate?: string;
   };
 }
-
-const dashboardCards = [
-  {
-    name: "Profile Management",
-    button: "Manage",
-    link: "/student-dashboard/profile",
-    illustration: "/assets/admin/icon3.png",
-  },
-  {
-    name: "Zoom Class Links",
-    button: "Manage",
-    link: "#",
-    illustration: "/assets/admin/icon3.png",
-  },
-  {
-    name: "Books",
-    button: "Manage",
-    link: "/library",
-    illustration: "/assets/admin/icon1.png",
-  },
-  {
-    name: "Payments",
-    button: "Manage",
-    link: "/student-dashboard/payments",
-    illustration: "/assets/admin/icon5.png",
-  },
-];
 
 export default function Page() {
   const { userId, loading: userLoading } = useUser();
@@ -79,7 +53,7 @@ export default function Page() {
     fetchStudent();
   }, [userId]);
 
-  // check fee status for toast alerts
+  // check fee status
   useEffect(() => {
     if (!student) return;
 
@@ -100,32 +74,134 @@ export default function Page() {
 
   return (
     <div className="p-6">
-      <Analytics />
+      <p className="my-2 text-2xl">Student Dashboard</p>
 
-      <p className="mt-20 my-2 text-2xl">Profile Management</p>
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        {dashboardCards.map((card, i) => (
-          <motion.div
-            key={i}
-            whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="bg-white dark:bg-[#122031] rounded-2xl shadow-md p-6 flex flex-col justify-between text-center cursor-pointer"
-          >
-            <img
-              src={card.illustration}
-              alt={card.name}
-              className="w-full max-w-32 object-contain mb-4 mx-auto"
-            />
-            <h2 className="text-lg font-semibold text-black dark:text-white mb-3">
-              {card.name}
-            </h2>
-            <Link href={card.link}>
-              <Button className="bg-accent w-full hover:bg-accent/80">
-                {card.button}
-              </Button>
-            </Link>
-          </motion.div>
-        ))}
+        {/* Profile Card */}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          className="bg-[#FFC107] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
+        >
+          <h2 className="text-2xl text-black">
+            {loading
+              ? "Student"
+              : student?.name
+                ? student.name.split(" ").slice(0, 2).join(" ")
+                : ""}
+
+
+          </h2>
+          <p className="text-gray-900">
+            {loading ? "" : student?.userId}
+          </p>
+          <img
+            src={"/assets/dashboard/icon1.png"}
+            alt="student"
+            className="self-end w-11 h-11 opacity-100"
+          />
+
+          <Link href="/student-dashboard/profile" className="absolute bottom-0 w-full left-0">
+            <motion.div
+              whileHover={{ scale: 1.001 }}
+              className="bg-[#E5AD06] px-10"
+            >
+              <p className="flex justify-center items-center gap-1 py-2 text-gray-900 text-sm">
+                Click Here for Profile
+                <ArrowRight
+                  className="bg-black rounded-full text-yellow-50"
+                  size={14}
+                />
+              </p>
+            </motion.div>
+          </Link>
+        </motion.div>
+
+        {/* Zoom Card */}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          className="bg-[#17A2B8] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
+        >
+          <h2 className="text-2xl text-white">Zoom</h2>
+          <p className="text-white">Class Link</p>
+          <img
+            src={"/assets/dashboard/icon2.png"}
+            alt="zoom"
+            className="self-end w-11 h-11 opacity-100"
+          />
+
+          <Link href="#" className="absolute bottom-0 w-full left-0">
+            <motion.div
+              whileHover={{ scale: 1.001 }}
+              className="bg-[#1591A5] px-10"
+            >
+              <p className="flex justify-center items-center gap-1 py-2 text-white text-sm">
+                Click Here for the link
+                <ArrowRight
+                  className="bg-white rounded-full text-black"
+                  size={14}
+                />
+              </p>
+            </motion.div>
+          </Link>
+        </motion.div>
+
+        {/* Books Card */}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          className="bg-[#28A745] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
+        >
+          <h2 className="text-2xl text-white">Books</h2>
+          <p className="text-white">Library</p>
+          <img
+            src={"/assets/dashboard/icon3.png"}
+            alt="books"
+            className="self-end w-11 h-11 opacity-100"
+          />
+
+          <Link href="/library" className="absolute bottom-0 w-full left-0">
+            <motion.div
+              whileHover={{ scale: 1.001 }}
+              className="bg-[#24963E] px-10"
+            >
+              <p className="flex justify-center items-center gap-1 py-2 text-white text-sm">
+                Click Here for Library
+                <ArrowRight
+                  className="bg-white rounded-full text-black"
+                  size={14}
+                />
+              </p>
+            </motion.div>
+          </Link>
+        </motion.div>
+
+        {/* Payments Card */}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          className="bg-[#DC3545] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
+        >
+          <h2 className="text-2xl text-white">Payments</h2>
+          <p className="text-white">Payment Status</p>
+          <img
+            src={"/assets/dashboard/icon4.png"}
+            alt="payments"
+            className="self-end w-11 h-11 opacity-100"
+          />
+
+          <Link href="/student-dashboard/payments" className="absolute bottom-0 w-full left-0">
+            <motion.div
+              whileHover={{ scale: 1.001 }}
+              className="bg-[#BB2D3B] px-10"
+            >
+              <p className="flex justify-center items-center gap-1 py-2 text-white text-sm">
+                Click Here for Payment
+                <ArrowRight
+                  className="bg-white rounded-full text-black"
+                  size={14}
+                />
+              </p>
+            </motion.div>
+          </Link>
+        </motion.div>
       </div>
     </div>
   );
