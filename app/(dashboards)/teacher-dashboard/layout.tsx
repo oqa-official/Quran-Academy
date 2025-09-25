@@ -3,7 +3,7 @@
 import React from "react";
 import { ThemeProvider } from "@/components/global/theme-provider";
 import NextTopLoader from "nextjs-toploader";
-import RestrictedUsers from "@/components/pages/Admin-Dashboard/Restricted-Users";
+import RestrictedUsers from "@/components/pages/(dashboards)/Admin-Dashboard/Restricted-Users";
 import { SidebarProvider } from "../admin_dashboard/componnets/sidebar-context";
 import { Sidebar } from "../admin_dashboard/componnets/Sidebar";
 import { Header } from "../admin_dashboard/componnets/Header";

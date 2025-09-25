@@ -3,11 +3,12 @@
 import React from "react";
 import { ThemeProvider } from "@/components/global/theme-provider";
 import NextTopLoader from "nextjs-toploader";
-import RestrictedUsers from "@/components/pages/Admin-Dashboard/Restricted-Users";
+import RestrictedUsers from "@/components/pages/(dashboards)/Admin-Dashboard/Restricted-Users";
 import { SidebarProvider } from "../admin_dashboard/componnets/sidebar-context";
 import { Sidebar } from "../admin_dashboard/componnets/Sidebar";
 import { Header } from "../admin_dashboard/componnets/Header";
 import { DirtyFormProvider } from "@/context/DirtyFormContext";
+import { StudentDataProvider } from "@/components/pages/(dashboards)/Student-Dashboard/StudentDataProvider";
 
 function Student_layout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,7 +26,9 @@ function Student_layout({ children }: { children: React.ReactNode }) {
                 <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
                   <Header />
                   <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-6 2xl:p-10">
-                    {children}
+                     <StudentDataProvider>
+                      {children}
+                     </StudentDataProvider>
                   </main>
                 </div>
               </div>

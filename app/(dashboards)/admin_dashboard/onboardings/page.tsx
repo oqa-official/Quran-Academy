@@ -1,4 +1,4 @@
-import Onbaordings from '@/components/pages/Admin-Dashboard/onboardings/OnboardingPage'
+import Onbaordings from '@/components/pages/(dashboards)/Admin-Dashboard/onboardings/OnboardingPage'
 import React from 'react'
 
 function page() {

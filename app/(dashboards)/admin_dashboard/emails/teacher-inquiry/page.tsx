@@ -1,7 +1,7 @@
 
 "use client";
 
-import EmailEditor from "@/components/pages/Admin-Dashboard/email/EmailEditor";
+import EmailEditor from "@/components/pages/(dashboards)/Admin-Dashboard/email/EmailEditor";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 

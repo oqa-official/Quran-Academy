@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { toast } from "sonner";
-import AddBook from '@/components/pages/Admin-Dashboard/library/AddBook';
+import AddBook from '@/components/pages/(dashboards)/Admin-Dashboard/library/AddBook';
 import { Book } from '@/lib/types/books';
 
 

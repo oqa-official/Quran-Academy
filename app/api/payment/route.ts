@@ -2,43 +2,54 @@
 
 import { stripe } from "@/lib/utils/stripe";
 import { NextResponse } from "next/server";
-import Student from "@/models/student.model";
 import { connectToDB } from "@/lib/db/db";
+import Student from "@/models/student.model";
+import inquireModel from "@/models/inquire.model";
 
 export async function POST(req: Request) {
   try {
     await connectToDB();
+    const { parentInquiry } = await req.json();
+    console.log("recieved parent inquiry", parentInquiry)
 
-    const { studentId, fee, name, email } = await req.json();
-
-    if (!studentId || !fee || !name || !email) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (!parentInquiry) {
+      return NextResponse.json({ error: "Missing parentId" }, { status: 400 });
     }
 
-    // 1️⃣ Check if student already has a payment link
-    const student = await Student.findById(studentId);
-    if (!student) {
-      return NextResponse.json({ error: "Student not found" }, { status: 404 });
+    // 1️⃣ Find the inquiry
+    const inquiry = await inquireModel.findById(parentInquiry);
+    if (!inquiry) {
+      return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
     }
 
-    // If payment link already exists and feeStatus.paid is false, return existing link
-    if (student.paymentLink && !student.feeStatus.paid) {
-      return NextResponse.json({ url: student.paymentLink }, { status: 200 });
+    // 2️⃣ Fetch active students under this inquiry
+    const students = await Student.find({
+      parentInquiry: parentInquiry,
+      status: { $ne: "quit" },
+    });
+
+    if (!students || students.length === 0) {
+      return NextResponse.json(
+        { error: "No active students found" },
+        { status: 400 }
+      );
     }
 
-    // Stripe expects amounts in cents
-    const amount = Math.round(fee * 100);
+    // 3️⃣ Calculate total fee
+    const totalFee = students.reduce((sum, s) => sum + (s.price || 0), 0);
 
-    // 2️⃣ Create Stripe Checkout session
+    // 4️⃣ Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      customer_email: email,
+      customer_email: inquiry.email, // assume parent inquiry has email field
       line_items: [
         {
           price_data: {
             currency: "usd",
-            product_data: { name: `Fee Payment - ${name}` },
-            unit_amount: amount,
+            product_data: {
+              name: `Fee Payment for ${students.length} student(s)`,
+            },
+            unit_amount: totalFee * 100, // cents
           },
           quantity: 1,
         },
@@ -47,18 +58,18 @@ export async function POST(req: Request) {
       success_url: `${process.env.APP_URL}/student-dashboard/payments`,
       cancel_url: `${process.env.APP_URL}/student-dashboard/payments`,
       metadata: {
-        studentId, 
+        parentInquiry: inquiry._id.toString(),
+        studentIds: students.map((s) => s._id.toString()).join(","),
       },
     });
 
-    // 3️⃣ Save payment link to student
-    student.paymentLink = session.url;
-    await student.save();
+    // 5️⃣ Save link to inquiry
+    inquiry.paymentLink = session.url;
+    await inquiry.save();
 
     return NextResponse.json({ url: session.url }, { status: 200 });
-
-  } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (err: any) {
+    console.error("❌ Error creating payment link:", err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

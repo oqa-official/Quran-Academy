@@ -1,4 +1,4 @@
-import CoursesPage from '@/components/pages/Admin-Dashboard/courses/CoursesPage'
+import CoursesPage from '@/components/pages/(dashboards)/Admin-Dashboard/courses/CoursesPage'
 import React from 'react'
 
 function page() {

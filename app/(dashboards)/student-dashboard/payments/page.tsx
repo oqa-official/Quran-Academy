@@ -2,270 +2,193 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useStudentData } from "@/components/pages/(dashboards)/Student-Dashboard/StudentDataProvider";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, CheckCircle2, CreditCard } from "lucide-react";
-import { toast } from "sonner";
-import { useUser } from "@/context/UserContext";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useMemo } from "react";
 
-interface Student {
-    _id: string;
-    name: string;
-    educationMail: string;
-    userId: string;
-    email: string;
-    status: string;
-    price: number;
-    paymentLink?: string | null;
-    feeStatus: {
-        paid: boolean;
-        lastPaymentDate?: string;
-    };
+interface PaymentStatus {
+  paid: boolean;
+  lastPaymentDate: string | null;
+}
+
+interface Inquiry {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  paymentLink?: string | null;
+  paymentStatus?: PaymentStatus;
 }
 
 export default function PaymentsPage() {
-    const { userId, loading: userLoading } = useUser();
-    const [student, setStudent] = useState<Student | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [generating, setGenerating] = useState(false);
+  const { students, totalFee, loading, parentInquiry } = useStudentData() as {
+    students: any[];
+    totalFee: number;
+    loading: boolean;
+    parentInquiry: Inquiry | null;
+  };
 
-    // fetch student info
-    useEffect(() => {
-        if (!userId) {
-            setLoading(false);
-            return;
-        }
+  const [generating, setGenerating] = useState(false);
 
-        const fetchStudent = async () => {
-            try {
-                setLoading(true);
-                const res = await fetch(`/api/db/students/${userId}`);
-                if (!res.ok) throw new Error("Failed to fetch student");
-                const data = await res.json();
-                setStudent(data);
-            } catch (err) {
-                console.error(err);
-                toast.error("Failed to load student data");
-            } finally {
-                setLoading(false);
-            }
-        };
+  // ✅ Inquiry payment status
+  const inquiryPaid = parentInquiry?.paymentStatus?.paid ?? false;
+  const inquiryLastPaymentDate = parentInquiry?.paymentStatus?.lastPaymentDate
+    ? new Date(parentInquiry.paymentStatus.lastPaymentDate)
+    : null;
 
-        fetchStudent();
-    }, [userId]);
+  // ✅ Expiry check (1 month gap)
+  const isExpired = useMemo(() => {
+    if (!inquiryLastPaymentDate) return false;
+    const now = new Date();
+    const diffMonths =
+      (now.getFullYear() - inquiryLastPaymentDate.getFullYear()) * 12 +
+      (now.getMonth() - inquiryLastPaymentDate.getMonth());
+    return diffMonths >= 1;
+  }, [inquiryLastPaymentDate]);
 
-    const handleGeneratePaymentLink = async () => {
-        if (!student?._id) return;
-        setGenerating(true);
-        try {
-            const res = await fetch(`/api/payment`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    studentId: student._id,
-                    fee: student.price,
-                    email: student.email,
-                    name: student.name,
-                }),
-            });
+  if (loading) {
+    return <p className="text-center py-6">Loading payment info...</p>;
+  }
 
-            if (!res.ok) throw new Error("Failed to generate payment link");
-
-            const data = await res.json();
-
-            setStudent((prev) =>
-                prev ? { ...prev, paymentLink: data.url } : prev
-            );
-
-            toast.success("Payment link generated");
-        } catch (err) {
-            console.error(err);
-            toast.error("Failed to generate payment link");
-        } finally {
-            setGenerating(false);
-        }
-    };
-
-    if (userLoading || loading) {
-        return(
-            <div className="space-y-4">
-            <Skeleton className="w-full bg-white dark:bg-[#122031] min-h-[200px]"></Skeleton>
-            <Skeleton className="w-[80%] bg-white dark:bg-[#122031] min-h-[80px]"></Skeleton>
-            <Skeleton className="w-[50%] bg-white dark:bg-[#122031] min-h-[40px]"></Skeleton>
-            </div>
-        )
-    }
-
-    if (!student) {
-        return <p className="p-4">No student record found</p>;
-    }
-
-    // calculate expiry
-    let expired = false;
-    if (student.feeStatus.paid && student.feeStatus.lastPaymentDate) {
-        const last = new Date(student.feeStatus.lastPaymentDate);
-        const now = new Date();
-        const diffDays =
-            (now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24);
-        expired = diffDays > 30;
-    }
-
+  if (!parentInquiry || students.length === 0) {
     return (
-        <div className="">
-            <Card className="shadow-lg">
-                <CardHeader>
-                    <CardTitle className="text-3xl font-semibold font-merriweather">Payments</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                    <div className="grid md:grid-cols-2 grid-cols-1 gap-4 my-6">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Name
-                            </label>
-                            <input
-                                type="text"
-                                value={student.name}
-                                readOnly
-                                className="w-full mt-1 px-3 py-2 rounded-md border bg-gray-100 dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:outline-none cursor-not-allowed"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Email
-                            </label>
-                            <input
-                                type="text"
-                                value={student.email}
-                                readOnly
-                                className="w-full mt-1 px-3 py-2 rounded-md border bg-gray-100 dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:outline-none cursor-not-allowed"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Quran Academy Email
-                            </label>
-                            <input
-                                type="text"
-                                value={student.educationMail}
-                                readOnly
-                                className="w-full mt-1 px-3 py-2 rounded-md border bg-gray-100 dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:outline-none cursor-not-allowed"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Student ID
-                            </label>
-                            <input
-                                type="text"
-                                value={student.userId}
-                                readOnly
-                                className="w-full mt-1 px-3 py-2 rounded-md border bg-gray-100 dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:outline-none cursor-not-allowed"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Monthly Fee
-                            </label>
-                            <input
-                                type="text"
-                                value={`$${student.price}`}
-                                readOnly
-                                className="w-full mt-1 px-3 py-2 rounded-md border bg-gray-100 dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:outline-none cursor-not-allowed"
-                            />
-                        </div>
-
-                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Status
-                            </label>
-                            <input
-                                type="text"
-                                value={`${student.status}`}
-                                readOnly
-                                className="w-full mt-1 px-3 py-2 rounded-md border bg-gray-100 dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:outline-none cursor-not-allowed"
-                            />
-                        </div>
-                    </div>
-
-
-                    {/* ✅ Paid & Active */}
-                    {student.feeStatus.paid && !expired && (
-                        <div className="flex items-center gap-2 max-w-xl rounded-md p-3 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                            <CheckCircle2 className="w-5 h-5" />
-                            <span>
-                                Your fee is up to date (last paid:{" "}
-                                {new Date(
-                                    student.feeStatus.lastPaymentDate!
-                                ).toLocaleDateString()}
-                                )
-                            </span>
-                        </div>
-                    )}
-
-                    {/* ⚠️ Unpaid */}
-                    {!student.feeStatus.paid && (
-                        <div className="space-y-2">
-                            <div className="flex items-center gap-2 max-w-xl rounded-md p-3 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
-                                <AlertTriangle className="w-5 h-5" />
-                                <span>Your fee is unpaid. Please pay now.</span>
-                            </div>
-
-                            {student.paymentLink ? (
-                                <Button asChild variant="destructive" className="w-full max-w-[200px]">
-                                    <a href={student.paymentLink} target="_blank">
-                                        <CreditCard className="mr-2 w-4 h-4" /> Pay Now
-                                    </a>
-                                </Button>
-                            ) : (
-                                <Button
-                                    onClick={handleGeneratePaymentLink}
-                                    disabled={generating}
-                                    variant="destructive"
-                                    className="w-full max-w-[200px]"
-                                >
-                                    {generating ? "Generating..." : "Generate Payment Link"}
-                                </Button>
-                            )}
-                        </div>
-                    )}
-
-                    {/* ⚠️ Expired */}
-                    {student.feeStatus.paid && expired && (
-                        <div className="space-y-2">
-                            <div className="flex items-center w-full max-w-2xl gap-2 rounded-md p-3 bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
-                                <AlertTriangle className="w-5 h-5" />
-                                <span>
-                                    Your last payment has expired. Please pay again for this month.
-                                </span>
-                            </div>
-
-                            {student.paymentLink ? (
-                                <Button asChild className="w-full ">
-                                    <a href={student.paymentLink} target="_blank">
-                                        <CreditCard className="mr-2 w-4 h-4" /> Pay Now
-                                    </a>
-                                </Button>
-                            ) : (
-                                <Button
-                                    onClick={handleGeneratePaymentLink}
-                                    disabled={generating}
-                                    className="w-full max-w-md"
-                                >
-                                    {generating ? "Generating..." : "Generate Payment Link"}
-                                </Button>
-                            )}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
+      <p className="text-center py-6 text-red-500">
+        No students found for this inquiry.
+      </p>
     );
+  }
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">Payment Summary</h1>
+
+      {/* Student Table */}
+      <div className="rounded-lg border bg-white dark:bg-[#122031] shadow p-4">
+        <h2 className="text-lg font-medium mb-3">
+          Regular Sibling Students Fee Details
+        </h2>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left border-collapse">
+            <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+              <tr>
+                <th className="px-4 py-2 border">Name</th>
+                <th className="px-4 py-2 border">Educational Email</th>
+                <th className="px-4 py-2 border">User ID</th>
+                <th className="px-4 py-2 border">Status</th>
+                <th className="px-4 py-2 border text-right">Fee</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.map((s) => (
+                <tr key={s._id} className="border-t dark:border-gray-700">
+                  <td className="px-4 py-2">{s.name}</td>
+                  <td className="px-4 py-2">{s.educationMail}</td>
+                  <td className="px-4 py-2">{s.userId}</td>
+                  <td className="px-4 py-2 capitalize">{s.status}</td>
+                  <td className="px-4 py-2 text-right font-medium">
+                    ${s.price}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Total Fee */}
+      <div
+        className="flex justify-between items-center text-lg font-semibold dark:bg-[#122031]
+                bg-white p-3 rounded-md"
+      >
+        <span className="text-accent font-merriweather">Total Fee</span>
+        <span className="text-accent text-2xl font-merriweather">
+          ${totalFee}
+        </span>
+      </div>
+
+      {/* Payment Action */}
+      <div className="pt-4">
+        {inquiryPaid && inquiryLastPaymentDate && !isExpired ? (
+          <p className="text-green-600 font-medium">
+            ✅ You have already paid. Last Payment Date:{" "}
+            {inquiryLastPaymentDate.toLocaleDateString()}
+          </p>
+        ) : isExpired ? (
+          
+         <div>
+          <p className="text-red-500 mb-4">Your Last Payment has been expired</p>
+           <Button
+            onClick={async () => {
+              setGenerating(true);
+              try {
+                const res = await fetch(`/api/payment`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    parentInquiry: parentInquiry._id,
+                    regenerate: true,
+                  }),
+                });
+
+                if (!res.ok) throw new Error("Failed to create payment link");
+                const { url } = await res.json();
+
+                window.open(url, "_blank");
+              } catch (err) {
+                console.error("❌ Payment creation failed:", err);
+                alert("Failed to initiate payment.");
+              } finally {
+                setGenerating(false);
+              }
+            }}
+            disabled={generating}
+
+          >
+            {generating ? "Generating..." : "Generate New Payment Link"}
+          </Button>
+         </div>
+        ) : !inquiryPaid ? (
+          <Button
+            onClick={async () => {
+              setGenerating(true);
+              try {
+                const res = await fetch(`/api/payment`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ parentInquiry: parentInquiry._id }),
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch payment link");
+                const { url } = await res.json();
+
+                window.open(url, "_blank");
+              } catch (err) {
+                console.error("❌ Payment fetch failed:", err);
+                alert("Failed to redirect to payment.");
+              } finally {
+                setGenerating(false);
+              }
+            }}
+            disabled={generating}
+          >
+            {generating ? "Loading..." : "Pay Now"}
+          </Button>
+        ) : null}
+      </div>
+    </div>
+  );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

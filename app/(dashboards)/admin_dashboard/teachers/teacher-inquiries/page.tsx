@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import TeacherInquiriesTable from "@/components/pages/Admin-Dashboard/teachers/teacher-inquiries/TeacherInquiriesTable";
+import TeacherInquiriesTable from "@/components/pages/(dashboards)/Admin-Dashboard/teachers/teacher-inquiries/TeacherInquiriesTable";
 
 export interface TeacherInquiry {
   _id: string;

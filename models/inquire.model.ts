@@ -7,8 +7,6 @@ const InquireSchema = new mongoose.Schema(
     phone: { type: String, required: true, trim: true, unique : true },
 
 
-    totalFee: { type: Number, default: 0 },
-
     // NEW: Stripe payment link for this inquiry
     paymentLink: { type: String, default: null },
 

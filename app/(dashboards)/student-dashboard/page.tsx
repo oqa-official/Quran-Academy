@@ -1,5 +1,6 @@
 
 
+
 "use client";
 
 import { motion } from "framer-motion";
@@ -9,6 +10,16 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ArrowRight } from "lucide-react";
 
+interface PaymentStatus {
+  paid: boolean;
+  lastPaymentDate?: string;
+}
+
+interface ParentInquiry {
+  _id: string;
+  paymentStatus: PaymentStatus;
+}
+
 interface Student {
   _id: string;
   name: string;
@@ -17,10 +28,7 @@ interface Student {
   userId: string;
   status: string;
   price: number;
-  feeStatus: {
-    paid: boolean;
-    lastPaymentDate?: string;
-  };
+  parentInquiry?: ParentInquiry; // 🔑 link to parent inquiry
 }
 
 export default function Page() {
@@ -28,7 +36,7 @@ export default function Page() {
   const [student, setStudent] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // fetch student
+  // ✅ fetch student with parent inquiry
   useEffect(() => {
     if (!userId) {
       setLoading(false);
@@ -53,19 +61,21 @@ export default function Page() {
     fetchStudent();
   }, [userId]);
 
-  // check fee status
+  // ✅ check payment status via parentInquiry
   useEffect(() => {
-    if (!student) return;
+    if (!student?.parentInquiry) return;
+
+    const { paymentStatus } = student.parentInquiry;
 
     let expired = false;
-    if (student.feeStatus.paid && student.feeStatus.lastPaymentDate) {
-      const last = new Date(student.feeStatus.lastPaymentDate);
+    if (paymentStatus.paid && paymentStatus.lastPaymentDate) {
+      const last = new Date(paymentStatus.lastPaymentDate);
       const now = new Date();
       const diffDays = (now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24);
       expired = diffDays > 30;
     }
 
-    if (!student.feeStatus.paid) {
+    if (!paymentStatus.paid) {
       toast.warning("⚠ Kindly pay your monthly fee.");
     } else if (expired) {
       toast.warning("⚠ Your last payment has expired. Please pay again.");
@@ -86,21 +96,20 @@ export default function Page() {
             {loading
               ? "Student"
               : student?.name
-                ? student.name.split(" ").slice(0, 2).join(" ")
-                : ""}
-
-
+              ? student.name.split(" ").slice(0, 2).join(" ")
+              : ""}
           </h2>
-          <p className="text-gray-900">
-            {loading ? "" : student?.userId}
-          </p>
+          <p className="text-gray-900">{loading ? "" : student?.userId}</p>
           <img
             src={"/assets/dashboard/icon1.png"}
             alt="student"
             className="self-end w-11 h-11 opacity-100"
           />
 
-          <Link href="/student-dashboard/profile" className="absolute bottom-0 w-full left-0">
+          <Link
+            href="/student-dashboard/profile"
+            className="absolute bottom-0 w-full left-0"
+          >
             <motion.div
               whileHover={{ scale: 1.001 }}
               className="bg-[#E5AD06] px-10"
@@ -187,7 +196,10 @@ export default function Page() {
             className="self-end w-11 h-11 opacity-100"
           />
 
-          <Link href="/student-dashboard/payments" className="absolute bottom-0 w-full left-0">
+          <Link
+            href="/student-dashboard/payments"
+            className="absolute bottom-0 w-full left-0"
+          >
             <motion.div
               whileHover={{ scale: 1.001 }}
               className="bg-[#BB2D3B] px-10"

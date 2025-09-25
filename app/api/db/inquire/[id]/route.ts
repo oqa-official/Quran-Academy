@@ -33,20 +33,20 @@ export async function PUT(
     await connectToDB();
     const { id } = await context.params;
     const body = await req.json();
-    const { name, email, phone } = body;
 
-    if (!name || !email || !phone) {
+    // ✅ Required field check
+    if (!body.name || !body.email || !body.phone) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Name, Email, and Phone are required" },
         { status: 400 }
       );
     }
 
-    const inquire = await Inquire.findByIdAndUpdate(
-      id,
-      { name, email, phone },
-      { new: true, runValidators: true }
-    );
+    // ✅ Update with all incoming fields
+    const inquire = await Inquire.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!inquire) {
       return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
@@ -57,6 +57,7 @@ export async function PUT(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
 
 // ✅ DELETE (remove by ID)
 export async function DELETE(

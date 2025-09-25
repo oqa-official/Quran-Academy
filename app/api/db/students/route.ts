@@ -56,35 +56,6 @@ export async function DELETE() {
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 
-// ✅ Email sender function
-// async function sendStudentCredentialsEmail(student: any) {
-//   try {
-//     const client = new TransactionalEmailsApi();
-//     client.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!);
-
-//     const emailData = {
-//       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-//       to: [{ email: student.email }],
-//       subject: "Your Student Account Credentials",
-//       htmlContent: `
-//         <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-//           <h2>Welcome ${student.name}</h2>
-//           <p>Your student account has been created. Here are your credentials:</p>
-//           <p><b>Educational Email:</b> ${student.educationMail}</p>
-//           <p><b>User ID:</b> ${student.userId}</p>
-//           <p><b>Password:</b> ${student.password}</p>
-//           <p>Please keep this information safe.</p>
-//         </div>
-//       `,
-//     };
-
-//     const result = await client.sendTransacEmail(emailData);
-//   } catch (err: any) {
-//     console.warn(`⚠️ Failed to send email to ${student.email}:`, err?.response?.body || err);
-//   }
-// }
-
-
 
 
 const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];

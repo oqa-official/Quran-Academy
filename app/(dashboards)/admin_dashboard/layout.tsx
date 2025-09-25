@@ -6,7 +6,7 @@ import { SidebarProvider } from "./componnets/sidebar-context";
 import { Sidebar } from "./componnets/Sidebar";
 import { Header } from "./componnets/Header";
 import NextTopLoader from "nextjs-toploader";
-import RestrictedUsers from "@/components/pages/Admin-Dashboard/Restricted-Users";
+import RestrictedUsers from "@/components/pages/(dashboards)/Admin-Dashboard/Restricted-Users";
 import { DirtyFormProvider } from "@/context/DirtyFormContext";
 
 function Admin_layout({ children }: { children: React.ReactNode }) {

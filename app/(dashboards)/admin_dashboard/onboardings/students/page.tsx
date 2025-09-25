@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Search, RefreshCcw, Trash2, Pencil } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import EditStudentDialog from "@/components/pages/Admin-Dashboard/student/EditStudentDialog";
+import EditStudentDialog from "@/components/pages/(dashboards)/Admin-Dashboard/student/EditStudentDialog";
 import { toast } from "sonner";
 import { DataTable } from "@/components/global/data-table"; // Import the DataTable
 import { ColumnDef } from "@tanstack/react-table";
@@ -68,7 +68,7 @@ function StudentsPageContent() {
                     (student: any) => student.status === "trial"
                 );
 
-                setStudents(trialStudents);
+                setStudents(data);
             } catch (err: any) {
                 setError(err.message || "Error loading students");
             } finally {

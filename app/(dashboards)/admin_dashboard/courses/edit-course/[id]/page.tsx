@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Course, CurriculumItem } from "@/lib/types/courses";
 import { Instructor } from "@/lib/types/instructor";
-import ReviewListAdmin from "@/components/pages/Admin-Dashboard/courses/ReviewListAdmin";
+import ReviewListAdmin from "@/components/pages/(dashboards)/Admin-Dashboard/courses/ReviewListAdmin";
 import Link from "next/link";
 import { useDirtyForm } from "@/context/DirtyFormContext"; // ✅ import
 import { Skeleton } from "@/components/ui/skeleton";

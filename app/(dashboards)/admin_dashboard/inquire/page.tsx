@@ -1,4 +1,4 @@
-import InquiriesPage from '@/components/pages/Admin-Dashboard/Inquiries/InquiriesPage'
+import InquiriesPage from '@/components/pages/(dashboards)/Admin-Dashboard/Inquiries/InquiriesPage'
 import React from 'react'
 
 function page() {

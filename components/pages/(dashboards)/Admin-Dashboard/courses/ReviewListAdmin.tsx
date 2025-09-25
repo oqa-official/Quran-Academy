@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { useParams } from 'next/navigation'
-import ReviewList from '../../SingleCourse/ReviewList'
+import ReviewList from '../../../SingleCourse/ReviewList'
 
 export default function ReviewListAdmin() {
   const params = useParams()

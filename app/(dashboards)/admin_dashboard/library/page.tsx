@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import BooksInfo from '@/components/pages/Admin-Dashboard/library/BooksInfo';
+import BooksInfo from '@/components/pages/(dashboards)/Admin-Dashboard/library/BooksInfo';
 import { Book } from '@/lib/types/books';
 
 

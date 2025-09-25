@@ -1,7 +1,7 @@
 'use client';
 
-import AddInstructor from '@/components/pages/Admin-Dashboard/teachers/AddInstructor';
-import InstructorsInfo from '@/components/pages/Admin-Dashboard/teachers/InstructorsInfo';
+import AddInstructor from '@/components/pages/(dashboards)/Admin-Dashboard/teachers/AddInstructor';
+import InstructorsInfo from '@/components/pages/(dashboards)/Admin-Dashboard/teachers/InstructorsInfo';
 import { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";

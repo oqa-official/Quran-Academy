@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Course } from "@/lib/types/courses";
 import { toast } from "sonner";
-import AddCourseForm from "@/components/pages/Admin-Dashboard/courses/AddCourseForm";
+import AddCourseForm from "@/components/pages/(dashboards)/Admin-Dashboard/courses/AddCourseForm";
 
 export default function CoursesAdd() {
   const [courses, setCourses] = useState<Course[]>([]);
