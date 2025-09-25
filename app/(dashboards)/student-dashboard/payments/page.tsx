@@ -1,10 +1,10 @@
-
-
 "use client";
 
 import { useStudentData } from "@/components/pages/(dashboards)/Student-Dashboard/StudentDataProvider";
 import { Button } from "@/components/ui/button";
+import { AlertCircleIcon, Check, TicketCheckIcon } from "lucide-react";
 import { useState, useMemo } from "react";
+import { toast } from "sonner";
 
 interface PaymentStatus {
   paid: boolean;
@@ -21,11 +21,18 @@ interface Inquiry {
 }
 
 export default function PaymentsPage() {
-  const { students, totalFee, loading, parentInquiry } = useStudentData() as {
+  const {
+    students,
+    totalFee,
+    loading,
+    parentInquiry,
+    setParentInquiry, // ✅ now recognized
+  } = useStudentData() as {
     students: any[];
     totalFee: number;
     loading: boolean;
     parentInquiry: Inquiry | null;
+    setParentInquiry: (inquiry: Inquiry) => void; // <-- added type
   };
 
   const [generating, setGenerating] = useState(false);
@@ -110,85 +117,119 @@ export default function PaymentsPage() {
       {/* Payment Action */}
       <div className="pt-4">
         {inquiryPaid && inquiryLastPaymentDate && !isExpired ? (
-          <p className="text-green-600 font-medium">
-            ✅ You have already paid. Last Payment Date:{" "}
+          <p className="text-green-600 font-medium flex gap-2">
+            <Check/> You have already paid. Last Payment Date:{" "}
+            <span className="text-accent">
             {inquiryLastPaymentDate.toLocaleDateString()}
+            </span>
           </p>
-        ) : isExpired ? (
-          
-         <div>
-          <p className="text-red-500 mb-4">Your Last Payment has been expired</p>
-           <Button
-            onClick={async () => {
-              setGenerating(true);
-              try {
-                const res = await fetch(`/api/payment`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    parentInquiry: parentInquiry._id,
-                    regenerate: true,
-                  }),
-                });
+        ) : (
+          <>
+            {/* Case 1 – Payment link exists */}
+            {parentInquiry.paymentLink ? (
+              <div className="space-x-3">
+                <Button
+                  onClick={() => window.open(parentInquiry.paymentLink!, "_blank")}
+                >
+                  Pay Now
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(parentInquiry.paymentLink!);
+                    toast.success("Payment link copied to clipboard!");
+                  }}
+                >
+                  Copy Link
+                </Button>
+              </div>
+            ) : (
+              <>
+                {/* Case 2 – Expired → regenerate link */}
+                {isExpired && (
+                  <div>
+                    <p className="text-red-500 mb-4">
+                      Your Last Payment has expired
+                    </p>
+                    <Button
+                      onClick={async () => {
+                        setGenerating(true);
+                        try {
+                          const res = await fetch(`/api/payment`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              parentInquiry: parentInquiry._id,
+                              regenerate: true,
+                            }),
+                          });
 
-                if (!res.ok) throw new Error("Failed to create payment link");
-                const { url } = await res.json();
+                          if (!res.ok) throw new Error("Failed to create payment link");
+                          const { url } = await res.json();
 
-                window.open(url, "_blank");
-              } catch (err) {
-                console.error("❌ Payment creation failed:", err);
-                alert("Failed to initiate payment.");
-              } finally {
-                setGenerating(false);
-              }
-            }}
-            disabled={generating}
+                          // ✅ update context immediately
+                          setParentInquiry({
+                            ...parentInquiry,
+                            paymentLink: url,
+                          });
+                        } catch (err) {
+                          console.error("❌ Payment creation failed:", err);
+                          toast.error("Failed to initiate payment.");
+                        } finally {
+                          setGenerating(false);
+                        }
+                      }}
+                    >
+                      {generating ? "Generating..." : "Generate New Payment Link"}
+                    </Button>
+                  </div>
+                )}
 
-          >
-            {generating ? "Generating..." : "Generate New Payment Link"}
-          </Button>
-         </div>
-        ) : !inquiryPaid ? (
-          <Button
-            onClick={async () => {
-              setGenerating(true);
-              try {
-                const res = await fetch(`/api/payment`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ parentInquiry: parentInquiry._id }),
-                });
 
-                if (!res.ok) throw new Error("Failed to fetch payment link");
-                const { url } = await res.json();
 
-                window.open(url, "_blank");
-              } catch (err) {
-                console.error("❌ Payment fetch failed:", err);
-                alert("Failed to redirect to payment.");
-              } finally {
-                setGenerating(false);
-              }
-            }}
-            disabled={generating}
-          >
-            {generating ? "Loading..." : "Pay Now"}
-          </Button>
-        ) : null}
+                {/* Case 3 – First time, no link yet */}
+                {!inquiryPaid && !isExpired && !parentInquiry.paymentLink && (
+                  <div>
+                    <p className="text-red-400 my-3 flex justify-start gap-1"><AlertCircleIcon/> Kindly Pay Your Fee to Continue</p>
+                  <Button
+                    onClick={async () => {
+                      setGenerating(true);
+                      try {
+                        const res = await fetch(`/api/payment`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            parentInquiry: parentInquiry._id,
+                          }),
+                        });
+
+                        if (!res.ok) throw new Error("Failed to fetch payment link");
+                        const { url } = await res.json();
+
+                        // ✅ update context with paymentLink instead of redirecting
+                        setParentInquiry({
+                          ...parentInquiry,
+                          paymentLink: url,
+                        });
+                      } catch (err) {
+                        console.error("❌ Payment fetch failed:", err);
+                        toast.error("Failed to create payment link.");
+                      } finally {
+                        setGenerating(false);
+                      }
+                    }}
+                    disabled={generating}
+                  >
+                    {generating ? "Generating..." : "Generate Payment Link"}
+                  </Button>
+                  </div>
+                )}
+
+              </>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

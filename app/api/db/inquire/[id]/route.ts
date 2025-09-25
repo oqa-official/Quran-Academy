@@ -34,13 +34,13 @@ export async function PUT(
     const { id } = await context.params;
     const body = await req.json();
 
-    // ✅ Required field check
-    if (!body.name || !body.email || !body.phone) {
-      return NextResponse.json(
-        { error: "Name, Email, and Phone are required" },
-        { status: 400 }
-      );
-    }
+    // // ✅ Required field check
+    // if (!body.name || !body.email || !body.phone) {
+    //   return NextResponse.json(
+    //     { error: "Name, Email, and Phone are required" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // ✅ Update with all incoming fields
     const inquire = await Inquire.findByIdAndUpdate(id, body, {

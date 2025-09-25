@@ -11,7 +11,6 @@ import { generateAvailableDates, generateTimeSlots } from "@/lib/constants/timez
 
 import { PhoneInput } from "react-international-phone";
 import { toast } from "sonner";
-import "react-international-phone/style.css";
 import { useCurrency } from "@/hooks/useCurrency";
 import { roundToNearestFive } from "@/lib/validation";
 

@@ -1,220 +1,149 @@
 
 
-
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { useUser } from "@/context/UserContext";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowRight } from "lucide-react";
+import { useStudentData } from "@/components/pages/(dashboards)/Student-Dashboard/StudentDataProvider";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import StudentDashboardCards from "@/components/pages/(dashboards)/Student-Dashboard/DashboardCards";
+import { Link, Share } from "lucide-react";
 
 interface PaymentStatus {
   paid: boolean;
-  lastPaymentDate?: string;
+  lastPaymentDate: string | null;
 }
 
-interface ParentInquiry {
-  _id: string;
-  paymentStatus: PaymentStatus;
-}
-
-interface Student {
+interface Inquiry {
   _id: string;
   name: string;
   email: string;
-  educationMail: string;
-  userId: string;
-  status: string;
-  price: number;
-  parentInquiry?: ParentInquiry; // 🔑 link to parent inquiry
+  phone: string;
+  paymentLink?: string | null;
+  paymentStatus?: PaymentStatus;
+  dueDate?: string | Date | null; // 🔑 accept both string & Date
 }
 
 export default function Page() {
-  const { userId, loading: userLoading } = useUser();
-  const [student, setStudent] = useState<Student | null>(null);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const { parentInquiry, setParentInquiry } = useStudentData() as {
+    parentInquiry: Inquiry | null;
+    setParentInquiry: (inq: Inquiry) => void;
+  };
 
-  // ✅ fetch student with parent inquiry
+  const [showAlert, setShowAlert] = useState(false);
+
+  // 👉 check payment / overdue
   useEffect(() => {
-    if (!userId) {
-      setLoading(false);
-      return;
-    }
+    if (!parentInquiry) return;
 
-    const fetchStudent = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/db/students/${userId}`);
-        if (!res.ok) throw new Error("Failed to fetch student");
-        const data = await res.json();
-        setStudent(data);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load student data");
-      } finally {
-        setLoading(false);
-      }
-    };
+    const paid = parentInquiry.paymentStatus?.paid ?? false;
+    const lastPaymentDate = parentInquiry.paymentStatus?.lastPaymentDate
+      ? new Date(parentInquiry.paymentStatus.lastPaymentDate)
+      : null;
 
-    fetchStudent();
-  }, [userId]);
+    const dueDate = parentInquiry.dueDate
+      ? new Date(parentInquiry.dueDate)
+      : null;
 
-  // ✅ check payment status via parentInquiry
-  useEffect(() => {
-    if (!student?.parentInquiry) return;
-
-    const { paymentStatus } = student.parentInquiry;
-
+    const now = new Date();
     let expired = false;
-    if (paymentStatus.paid && paymentStatus.lastPaymentDate) {
-      const last = new Date(paymentStatus.lastPaymentDate);
-      const now = new Date();
-      const diffDays = (now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24);
-      expired = diffDays > 30;
+
+    // check monthly expiry (>= 1 month since last payment)
+    if (lastPaymentDate) {
+      const diffMonths =
+        (now.getFullYear() - lastPaymentDate.getFullYear()) * 12 +
+        (now.getMonth() - lastPaymentDate.getMonth());
+      if (diffMonths >= 1) expired = true;
     }
 
-    if (!paymentStatus.paid) {
-      toast.warning("⚠ Kindly pay your monthly fee.");
-    } else if (expired) {
-      toast.warning("⚠ Your last payment has expired. Please pay again.");
+    // 👉 final condition
+    if ((!paid || expired) && (!dueDate || dueDate <= now)) {
+      console.log("🔔 Showing alert: unpaid/expired and no active dueDate");
+      setShowAlert(true);
+    } else {
+      console.log("✅ Alert suppressed: payment valid OR dueDate still active");
+      setShowAlert(false);
     }
-  }, [student]);
+  }, [parentInquiry]);
+
+  // 👉 handle Pay Later
+  const handlePayLater = async () => {
+    if (!parentInquiry) return;
+
+    const newDate = new Date();
+    newDate.setDate(newDate.getDate() + 1); // only 1 day extension
+
+    try {
+      console.log("🟡 PUT /inquire → extending dueDate by 1 day", newDate);
+
+      const res = await fetch(`/api/db/inquire/${parentInquiry._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dueDate: newDate }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error("❌ API error:", res.status, errText);
+        toast.error("Failed to update due date on server.");
+        return;
+      }
+
+      const updatedInquiry = await res.json();
+      console.log("✅ Updated Inquiry:", updatedInquiry);
+
+      setParentInquiry(updatedInquiry);
+      setShowAlert(false); // dismiss immediately
+      toast.success("Payment postponed for 1 day.");
+    } catch (err) {
+      console.error("❌ Failed to set dueDate:", err);
+      toast.error("Failed to update due date.");
+    }
+  };
+
+  // 👉 handle Pay Now
+  const handlePayNow = () => {
+    router.push("/student-dashboard/payments");
+  };
+
+  // 👉 handle Share Link
+  const handleShareLink = () => {
+    if (parentInquiry?.paymentLink) {
+      navigator.clipboard.writeText(parentInquiry.paymentLink);
+      toast.success("Payment link copied to clipboard!");
+    }
+  };
 
   return (
-    <div className="p-6">
-      <p className="my-2 text-2xl">Student Dashboard</p>
+    <div className="">
+      <h1 className="text-2xl font-semibold mb-6">Student Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        {/* Profile Card */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-[#FFC107] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
-        >
-          <h2 className="text-2xl text-black">
-            {loading
-              ? "Student"
-              : student?.name
-              ? student.name.split(" ").slice(0, 2).join(" ")
-              : ""}
-          </h2>
-          <p className="text-gray-900">{loading ? "" : student?.userId}</p>
-          <img
-            src={"/assets/dashboard/icon1.png"}
-            alt="student"
-            className="self-end w-11 h-11 opacity-100"
-          />
+      {/* 🔔 Payment Alert */}
+      {showAlert && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertTitle>⚠ Payment Required</AlertTitle>
+          <AlertDescription>
+            Your monthly fee is pending or overdue. Please complete the payment
+            to avoid suspension.
+          </AlertDescription>
+          <div className="mt-3 flex gap-2">
+            <Button onClick={handlePayNow} className="hover:cursor-pointer">Pay Now</Button>
+            <Button variant="outline" onClick={handlePayLater} className="hover:bg-transparent hover:cursor-pointer">
+              Pay Later
+            </Button>
+            {parentInquiry?.paymentLink && (
+              <Button className="bg-accent text-black hover:bg-accent-hover hover:cursor-pointer" onClick={handleShareLink}>
+                Share Link <Link/>
+              </Button>
+            )}
+          </div>
+        </Alert>
+      )}
 
-          <Link
-            href="/student-dashboard/profile"
-            className="absolute bottom-0 w-full left-0"
-          >
-            <motion.div
-              whileHover={{ scale: 1.001 }}
-              className="bg-[#E5AD06] px-10"
-            >
-              <p className="flex justify-center items-center gap-1 py-2 text-gray-900 text-sm">
-                Click Here for Profile
-                <ArrowRight
-                  className="bg-black rounded-full text-yellow-50"
-                  size={14}
-                />
-              </p>
-            </motion.div>
-          </Link>
-        </motion.div>
-
-        {/* Zoom Card */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-[#17A2B8] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
-        >
-          <h2 className="text-2xl text-white">Zoom</h2>
-          <p className="text-white">Class Link</p>
-          <img
-            src={"/assets/dashboard/icon2.png"}
-            alt="zoom"
-            className="self-end w-11 h-11 opacity-100"
-          />
-
-          <Link href="#" className="absolute bottom-0 w-full left-0">
-            <motion.div
-              whileHover={{ scale: 1.001 }}
-              className="bg-[#1591A5] px-10"
-            >
-              <p className="flex justify-center items-center gap-1 py-2 text-white text-sm">
-                Click Here for the link
-                <ArrowRight
-                  className="bg-white rounded-full text-black"
-                  size={14}
-                />
-              </p>
-            </motion.div>
-          </Link>
-        </motion.div>
-
-        {/* Books Card */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-[#28A745] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
-        >
-          <h2 className="text-2xl text-white">Books</h2>
-          <p className="text-white">Library</p>
-          <img
-            src={"/assets/dashboard/icon3.png"}
-            alt="books"
-            className="self-end w-11 h-11 opacity-100"
-          />
-
-          <Link href="/library" className="absolute bottom-0 w-full left-0">
-            <motion.div
-              whileHover={{ scale: 1.001 }}
-              className="bg-[#24963E] px-10"
-            >
-              <p className="flex justify-center items-center gap-1 py-2 text-white text-sm">
-                Click Here for Library
-                <ArrowRight
-                  className="bg-white rounded-full text-black"
-                  size={14}
-                />
-              </p>
-            </motion.div>
-          </Link>
-        </motion.div>
-
-        {/* Payments Card */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-[#DC3545] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
-        >
-          <h2 className="text-2xl text-white">Payments</h2>
-          <p className="text-white">Payment Status</p>
-          <img
-            src={"/assets/dashboard/icon4.png"}
-            alt="payments"
-            className="self-end w-11 h-11 opacity-100"
-          />
-
-          <Link
-            href="/student-dashboard/payments"
-            className="absolute bottom-0 w-full left-0"
-          >
-            <motion.div
-              whileHover={{ scale: 1.001 }}
-              className="bg-[#BB2D3B] px-10"
-            >
-              <p className="flex justify-center items-center gap-1 py-2 text-white text-sm">
-                Click Here for Payment
-                <ArrowRight
-                  className="bg-white rounded-full text-black"
-                  size={14}
-                />
-              </p>
-            </motion.div>
-          </Link>
-        </motion.div>
-      </div>
+      <StudentDashboardCards />
     </div>
   );
 }

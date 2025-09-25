@@ -6,6 +6,8 @@ const InquireSchema = new mongoose.Schema(
     email: { type: String, required: true, lowercase: true, trim: true, unique:true },
     phone: { type: String, required: true, trim: true, unique : true },
 
+    dueDate : { type : Date},
+
 
     // NEW: Stripe payment link for this inquiry
     paymentLink: { type: String, default: null },

@@ -72,7 +72,7 @@ export function Sidebar({ role }: SidebarProps) {
         }
       });
     });
-  }, [pathname, navData, expandedItems]);
+  }, [pathname, navData]);
 
   // central navigation handler
   const handleNavigation = (href: string) => {
