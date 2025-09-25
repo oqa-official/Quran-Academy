@@ -29,7 +29,7 @@ async function sendReminderEmail(student: any, minutesLeft: number) {
   }
 }
 
-export async function GET() {
+export async function POST() {
   await connectToDB();
 
   const students = await Student.find({
