@@ -1,115 +1,136 @@
 
-
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useStudentData } from "@/components/pages/(dashboards)/Student-Dashboard/StudentDataProvider";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import StudentDashboardCards from "@/components/pages/(dashboards)/Student-Dashboard/DashboardCards";
-import { Link, Share } from "lucide-react";
-
-interface PaymentStatus {
-  paid: boolean;
-  lastPaymentDate: string | null;
-}
-
-interface Inquiry {
-  _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  paymentLink?: string | null;
-  paymentStatus?: PaymentStatus;
-  dueDate?: string | Date | null; // 🔑 accept both string & Date
-}
+import { Link } from "lucide-react";
 
 export default function Page() {
   const router = useRouter();
   const { parentInquiry, setParentInquiry } = useStudentData() as {
-    parentInquiry: Inquiry | null;
-    setParentInquiry: (inq: Inquiry) => void;
+    parentInquiry: any | null;
+    setParentInquiry: (inq: any) => void;
   };
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [generating, setGenerating] = useState(false);
 
-  // 👉 check payment / overdue
-  useEffect(() => {
-    if (!parentInquiry) return;
-
+  // compute status
+  const debugInfo = useMemo(() => {
+    if (!parentInquiry) return null;
+    const now = new Date();
     const paid = parentInquiry.paymentStatus?.paid ?? false;
     const lastPaymentDate = parentInquiry.paymentStatus?.lastPaymentDate
       ? new Date(parentInquiry.paymentStatus.lastPaymentDate)
       : null;
-
-    const dueDate = parentInquiry.dueDate
-      ? new Date(parentInquiry.dueDate)
+    const dueDate = parentInquiry.dueDate ? new Date(parentInquiry.dueDate) : null;
+    const extendedDueDate = parentInquiry.extendedDueDate
+      ? new Date(parentInquiry.extendedDueDate)
       : null;
 
-    const now = new Date();
-    let expired = false;
-
-    // check monthly expiry (>= 1 month since last payment)
-    if (lastPaymentDate) {
-      const diffMonths =
-        (now.getFullYear() - lastPaymentDate.getFullYear()) * 12 +
-        (now.getMonth() - lastPaymentDate.getMonth());
-      if (diffMonths >= 1) expired = true;
+    let expired = !paid;
+    if (paid && lastPaymentDate) {
+      const daysDiff = Math.floor(
+        (now.getTime() - lastPaymentDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      expired = daysDiff >= 28;
     }
 
-    // 👉 final condition
-    if ((!paid || expired) && (!dueDate || dueDate <= now)) {
-      console.log("🔔 Showing alert: unpaid/expired and no active dueDate");
-      setShowAlert(true);
-    } else {
-      console.log("✅ Alert suppressed: payment valid OR dueDate still active");
-      setShowAlert(false);
-    }
+    return {
+      now,
+      paid,
+      lastPaymentDate,
+      dueDate,
+      extendedDueDate,
+      expired,
+    };
   }, [parentInquiry]);
 
-  // 👉 handle Pay Later
+  useEffect(() => {
+    if (!parentInquiry || !debugInfo) {
+      setModalOpen(false);
+      setShowAlert(false);
+      return;
+    }
+
+    const { expired, dueDate, extendedDueDate } = debugInfo;
+    const now = new Date();
+
+    const fullyExpired = expired && extendedDueDate && extendedDueDate <= now;
+    const softExpired = expired && dueDate && dueDate <= now && (!extendedDueDate || extendedDueDate > now);
+
+    setModalOpen(Boolean(fullyExpired));
+    setShowAlert(Boolean(softExpired));
+
+    // auto-generate payment link if soft expired and no link exists
+    if (softExpired && !parentInquiry.paymentLink) {
+      (async () => {
+        setGenerating(true);
+        try {
+          const res = await fetch(`/api/payment`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ parentInquiry: parentInquiry._id }),
+          });
+          if (!res.ok) throw new Error("Failed to create payment link");
+          const { url } = await res.json();
+          setParentInquiry({ ...parentInquiry, paymentLink: url });
+          toast.success("Payment link generated successfully.");
+        } catch (err) {
+          console.error("Payment link generation failed:", err);
+          toast.error("Failed to generate payment link.");
+        } finally {
+          setGenerating(false);
+        }
+      })();
+    }
+  }, [parentInquiry, debugInfo, setParentInquiry]);
+
+  // 👉 handlers
+  const handlePayNow = () => {
+    if (parentInquiry?.paymentLink) {
+      window.open(parentInquiry.paymentLink, "_blank");
+    } else {
+      router.push("/student-dashboard/payments");
+    }
+  };
+
   const handlePayLater = async () => {
     if (!parentInquiry) return;
-
     const newDate = new Date();
-    newDate.setDate(newDate.getDate() + 1); // only 1 day extension
+    newDate.setDate(newDate.getDate() + 1);
 
     try {
-      console.log("🟡 PUT /inquire → extending dueDate by 1 day", newDate);
-
       const res = await fetch(`/api/db/inquire/${parentInquiry._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dueDate: newDate }),
       });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        console.error("❌ API error:", res.status, errText);
-        toast.error("Failed to update due date on server.");
-        return;
-      }
-
+      if (!res.ok) throw new Error("Failed to update due date");
       const updatedInquiry = await res.json();
-      console.log("✅ Updated Inquiry:", updatedInquiry);
-
       setParentInquiry(updatedInquiry);
-      setShowAlert(false); // dismiss immediately
+      setShowAlert(false);
       toast.success("Payment postponed for 1 day.");
     } catch (err) {
-      console.error("❌ Failed to set dueDate:", err);
+      console.error("PayLater failed:", err);
       toast.error("Failed to update due date.");
     }
   };
 
-  // 👉 handle Pay Now
-  const handlePayNow = () => {
-    router.push("/student-dashboard/payments");
-  };
-
-  // 👉 handle Share Link
   const handleShareLink = () => {
     if (parentInquiry?.paymentLink) {
       navigator.clipboard.writeText(parentInquiry.paymentLink);
@@ -117,33 +138,79 @@ export default function Page() {
     }
   };
 
+  const handleBlockingPayNow = async () => {
+    if (!parentInquiry) return;
+
+    if (parentInquiry.paymentLink) {
+      window.location.href = parentInquiry.paymentLink;
+      return;
+    }
+
+    setGenerating(true);
+    try {
+      const res = await fetch("/api/payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ parentInquiry: parentInquiry._id }),
+      });
+      if (!res.ok) throw new Error("Failed to create payment link");
+      const { url } = await res.json();
+      setParentInquiry({ ...parentInquiry, paymentLink: url });
+      window.location.href = url;
+    } catch (err) {
+      console.error("Failed to create payment link:", err);
+      toast.error("Failed to generate payment link.");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   return (
-    <div className="">
+    <div>
       <h1 className="text-2xl font-semibold mb-6">Student Dashboard</h1>
 
-      {/* 🔔 Payment Alert */}
+      {/* 🔒 Blocking modal */}
+      <Dialog open={modalOpen} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-lg dark:bg-[#122031]">
+          <DialogHeader>
+            <DialogTitle>Please make the payments to continue</DialogTitle>
+            <DialogDescription>
+              Your subscription is fully expired. You must complete the payment to proceed.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-6">
+            <Button onClick={handleBlockingPayNow} className="w-full" disabled={generating}>
+              
+              {generating ? "Generating..." : "Pay Now"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ⚠️ Soft expired alert */}
       {showAlert && (
         <Alert variant="destructive" className="mb-6">
           <AlertTitle>⚠ Payment Required</AlertTitle>
           <AlertDescription>
-            Your monthly fee is pending or overdue. Please complete the payment
-            to avoid suspension.
+            Your monthly fee is pending or overdue. Please complete the payment to avoid suspension.
           </AlertDescription>
           <div className="mt-3 flex gap-2">
-            <Button onClick={handlePayNow} className="hover:cursor-pointer">Pay Now</Button>
-            <Button variant="outline" onClick={handlePayLater} className="hover:bg-transparent hover:cursor-pointer">
+            <Button onClick={handlePayNow} disabled={generating}>
+              {generating ? "Generating..." : "Pay Now"}
+            </Button>
+            <Button variant="outline" className="hover:bg-gray-100" onClick={handlePayLater}>
               Pay Later
             </Button>
             {parentInquiry?.paymentLink && (
-              <Button className="bg-accent text-black hover:bg-accent-hover hover:cursor-pointer" onClick={handleShareLink}>
-                Share Link <Link/>
+              <Button className="bg-accent hover:bg-accent-hover text-black" onClick={handleShareLink}>
+                Share Link <Link />
               </Button>
             )}
           </div>
         </Alert>
       )}
 
-      <StudentDashboardCards />
+      <StudentDashboardCards meetingLinkActive={!modalOpen} />
     </div>
   );
 }

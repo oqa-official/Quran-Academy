@@ -59,6 +59,19 @@ export async function PUT(
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ✅ DELETE (remove by ID)
 export async function DELETE(
   _: Request,
@@ -68,6 +81,18 @@ export async function DELETE(
     await connectToDB();
     const { id } = await context.params;
 
+    // 1️⃣ Check if any students belong to this inquiry
+    const { default: Student } = await import("@/models/student.model");
+    const studentCount = await Student.countDocuments({ parentInquiry: id });
+
+    if (studentCount > 0) {
+      return NextResponse.json(
+        { error: "Inquiry Cannot delete inquiry: it still has students assigned." },
+        { status: 400 }
+      );
+    }
+
+    // 2️⃣ Safe to delete
     const inquire = await Inquire.findByIdAndDelete(id);
     if (!inquire) {
       return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });

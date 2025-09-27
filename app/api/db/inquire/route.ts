@@ -3,6 +3,29 @@ import Inquire from "@/models/inquire.model";
 import { NextResponse } from "next/server";
 
 
+
+
+// DELETE all students
+export async function DELETE() {
+  try {
+    await connectToDB();
+    const inquiry = await Inquire.deleteMany({});
+    return NextResponse.json({ success: true, message: "All Inquiry deleted" });
+  } catch (error) {
+    console.error("Error deleting students:", error);
+    return NextResponse.json({ success: false, error: "Failed to delete Inquiries" }, { status: 500 });
+  }
+}
+
+
+
+
+
+
+
+
+
+
 // lib/email/inquiry.ts
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";

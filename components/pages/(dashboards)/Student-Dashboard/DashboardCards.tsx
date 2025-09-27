@@ -27,7 +27,11 @@ interface Student {
   parentInquiry?: ParentInquiry; // 🔑 link to parent inquiry
 }
 
-export default function StudentDashboardCards() {
+interface StudentDashboardCardsProps {
+  meetingLinkActive: boolean;
+}
+
+export default function StudentDashboardCards({ meetingLinkActive }: StudentDashboardCardsProps) {
   const { userId, loading: userLoading } = useUser();
   const [student, setStudent] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
@@ -107,8 +111,9 @@ export default function StudentDashboardCards() {
 
         {/* Zoom Card */}
         <motion.div
+
           whileHover={{ scale: 1.02 }}
-          className="bg-[#17A2B8] relative min-h-[160px] flex flex-col p-5 rounded-md cursor-pointer shadow-md hover:shadow-lg transition-shadow"
+          className={`bg-[#17A2B8] ${!meetingLinkActive && "opacity-50 cursor-not-allowed"} relative min-h-[160px] flex flex-col p-5 rounded-md  shadow-md hover:shadow-lg transition-shadow`}
         >
           <h2 className="text-2xl text-white">Zoom</h2>
           <p className="text-white">Class Link</p>
@@ -118,7 +123,7 @@ export default function StudentDashboardCards() {
             className="self-end w-14 h-14 opacity-100 mb-5"
           />
 
-          <Link href="#" className="absolute bottom-0 w-full left-0">
+          <Link href="#" className={`absolute bottom-0 w-full ${meetingLinkActive ? "cursor-pointer" : "cursor-not-allowed"} left-0`}>
             <motion.div
               whileHover={{ scale: 1.001 }}
               className="bg-[#1591A5] px-10"

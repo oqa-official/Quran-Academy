@@ -157,6 +157,11 @@ function StudentsPageContent() {
             header: "Edu Email",
         },
         {
+            accessorKey: "password",
+            enableGlobalFilter: true,
+            header: "Password",
+        },
+        {
             accessorKey: "preferredStartTime",
             header: "Preferred Time",
         },
@@ -260,7 +265,7 @@ function StudentsPageContent() {
     return (
         <div className="bg-white dark:bg-[#122031] rounded-xl shadow-md md:p-4 max-w-[90vw]   md:max-w-[80vw]">
             <div className="flex items-center justify-between mb-4">
-                <h1 className="text-2xl font-semibold">Students</h1>
+                <h1 className="text-2xl font-semibold">Regular Students</h1>
                 <div className="flex gap-2">
                     {inquireId && (
                         <Button variant="outline" onClick={handleResetFilter}>

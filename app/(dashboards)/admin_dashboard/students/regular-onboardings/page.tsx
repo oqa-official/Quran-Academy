@@ -4,7 +4,7 @@ import React from 'react'
 function page() {
   return (
     <div className=' min-h-screen'>
-      <Onbaordings trial={true}/>
+      <Onbaordings trial={false}/>
     </div>
   )
 }

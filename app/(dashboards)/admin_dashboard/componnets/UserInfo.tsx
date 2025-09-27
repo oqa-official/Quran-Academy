@@ -72,10 +72,10 @@ export function UserInfo() {
   // Determine dashboard link based on role
   const dashboardLink =
     role === "admin"
-      ? "/admin_dashboard/profile"
+      ? "/admin_dashboard"
       : role === "student"
-      ? "/student-dashboard/profile"
-      : "/teacher-dashboard/profile";
+      ? "/student-dashboard"
+      : "/teacher-dashboard";
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen} >

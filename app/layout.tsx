@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Merriweather } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner"
-import "./globals.css";
+import "./globals.css"
 import { OfferPopup } from "@/components/global/OfferPopup";
 import LayoutWrapper from "@/components/global/LayoutWrapper";
 

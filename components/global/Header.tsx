@@ -74,11 +74,7 @@ export default function Header() {
             </Link>
 
             :
-            // <Link href={'/auth/login'}>
-            //   <span className="border-r-2 border-l-2 px-3 flex items-center justify-center gap-2 hover:scale-[1.01] transition-transform">
-            //     <img src={"/assets/global/user.jpg"} alt="user" className="w-8 h-8 rounded-full" /> Dashboard
-            //   </span>
-            // </Link>
+          
 
             <div>
               <UserInfo/>

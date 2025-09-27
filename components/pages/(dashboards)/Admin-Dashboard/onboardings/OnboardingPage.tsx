@@ -28,8 +28,17 @@ interface Inquire {
   studentCount?: number;
 }
 
-export default function Onbaordings() {
+interface OnboardingsProps {
+  trial: boolean;
+}
+
+export default function Onbaordings({ trial }: OnboardingsProps) {
+  const link = trial
+    ? "/admin_dashboard/onboardings/students?inquire="
+    : "/admin_dashboard/students?inquire=";
+
   const [inquiries, setInquiries] = useState<Inquire[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -37,7 +46,7 @@ export default function Onbaordings() {
     const fetchInquiries = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/api/db/inquire/with-students");
+        const res = await fetch(`/api/db/inquire/with-students?status=${trial ? "trial" : "non-trial"}`);
         if (!res.ok) throw new Error("Failed to fetch inquiries");
         const data: Inquire[] = await res.json();
 
@@ -55,15 +64,20 @@ export default function Onbaordings() {
   }, []);
 
 
-  const handleDelete = async (id: string) => {
-    try {
-      const res = await fetch(`/api/db/inquire/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete inquiry");
-      setInquiries((prev) => prev.filter((inq) => inq._id !== id));
-    } catch (err: any) {
-      setError(err.message || "Delete failed");
-    }
-  };
+const handleDelete = async (id: string, studentCount: number) => {
+  if (studentCount > 0) {
+    setError("❌ You cannot delete this inquiry because it still has students assigned.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/db/inquire/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error("Failed to delete inquiry");
+    setInquiries((prev) => prev.filter((inq) => inq._id !== id));
+  } catch (err: any) {
+    setError(err.message || "Delete failed");
+  }
+};
 
   const columns: ColumnDef<Inquire>[] = [
     {
@@ -100,7 +114,7 @@ export default function Onbaordings() {
       header: "Details",
       cell: ({ row }) => (
         <Link
-          href={`/admin_dashboard/onboardings/students?inquire=${row.original._id}`}
+          href={`${link}${row.original._id}`}
           className="text-primary hover:underline flex items-center gap-1"
         >
           <Eye className="w-4 h-4" /> View
@@ -129,7 +143,7 @@ export default function Onbaordings() {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                onClick={() => handleDelete(row.original._id)}
+                 onClick={() => handleDelete(row.original._id, row.original.studentCount ?? 0)}
                 className="bg-red-600 hover:bg-red-700 text-white"
               >
                 Delete
@@ -146,7 +160,7 @@ export default function Onbaordings() {
   return (
     <div className="bg-white dark:bg-[#122031] md:p-4 border-1 rounded-md">
       <div className=" rounded-xl  max-md:h-[100vh] overflow-hidden max-md:max-w-[85vw] ">
-        <h1 className="text-2xl font-semibold mb-4">Onboardings</h1>
+        <h1 className="text-2xl font-semibold mb-4">{trial ? "Trial Onboardings" : "Regular Onboardings"}</h1>
         {error && <p className="text-red-500 mb-3">{error}</p>}
         {loading ? (
           <div className="rounded-md border border-border bg-background mt-4">

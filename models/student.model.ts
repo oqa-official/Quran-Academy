@@ -19,6 +19,7 @@ const StudentSchema = new mongoose.Schema(
 
     timezone: { type: String, required: true },
     preferredStartTime: { type: String }, // e.g. "18:00"
+    preferredStartDate: { type: Date, required: false },
 
     // Days they take classes: ["Mon", "Wed", "Fri"]
     classDays: {

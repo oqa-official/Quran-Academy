@@ -7,6 +7,7 @@ const InquireSchema = new mongoose.Schema(
     phone: { type: String, required: true, trim: true, unique : true },
 
     dueDate : { type : Date},
+    extendedDueDate: {type : Date },
 
 
     // NEW: Stripe payment link for this inquiry

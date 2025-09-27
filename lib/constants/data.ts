@@ -172,18 +172,19 @@ export const NAV_DATA_ADMIN: NavSection[] = [
       },
       { title: "Inquire", url: "/admin_dashboard/inquire", icon: MailOpen },
        {
-        title: "Onboardings",
-        icon: MailOpen,
-        items: [
-          { title: "Onboarded Inquiries", url: "/admin_dashboard/onboardings", icon: User },
-          { title: "View Students", url: "/admin_dashboard/onboardings/students", icon: User },
-        ],
-      },
-      {
-        title: "Students",
+        title: "Trial",
         icon: User,
         items: [
-          { title: "View All", url: "/admin_dashboard/students", icon: User },
+          { title: "Onboardings", url: "/admin_dashboard/onboardings", icon: User },
+          { title: "Students", url: "/admin_dashboard/onboardings/students", icon: User },
+        ],
+      },
+        {
+        title: "Regular",
+        icon: User,
+        items: [
+          { title: "Onboardings", url: "/admin_dashboard/students/regular-onboardings", icon: User },
+          { title: "Students", url: "/admin_dashboard/students", icon: User },
         ],
       },
 

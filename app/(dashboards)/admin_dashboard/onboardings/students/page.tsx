@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Search, RefreshCcw, Trash2, Pencil } from "lucide-react";
+import {  RefreshCcw, Trash2, Pencil } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import EditStudentDialog from "@/components/pages/(dashboards)/Admin-Dashboard/student/EditStudentDialog";
 import { toast } from "sonner";
@@ -68,7 +68,7 @@ function StudentsPageContent() {
                     (student: any) => student.status === "trial"
                 );
 
-                setStudents(data);
+                setStudents(trialStudents);
             } catch (err: any) {
                 setError(err.message || "Error loading students");
             } finally {
@@ -151,6 +151,11 @@ function StudentsPageContent() {
             accessorKey: "educationMail",
             enableGlobalFilter: true,
             header: "Edu Email",
+        },
+         {
+            accessorKey: "password",
+            enableGlobalFilter: true,
+            header: "Password",
         },
 
         {
@@ -266,7 +271,7 @@ function StudentsPageContent() {
                     {inquireId && (
                         <Button variant="outline" onClick={handleResetFilter}>
                             <RefreshCcw className="w-4 h-4 mr-2" /> Reset Filter
-                        </Button>
+                        </Button> 
                     )}
                 </div>
             </div>

@@ -18,6 +18,8 @@ interface Inquiry {
   phone: string;
   paymentLink?: string | null;
   paymentStatus?: PaymentStatus;
+  dueDate?: string | null;
+  extendedDueDate?: string | null;
 }
 
 export default function PaymentsPage() {
@@ -39,6 +41,11 @@ export default function PaymentsPage() {
 
   // ✅ Inquiry payment status
   const inquiryPaid = parentInquiry?.paymentStatus?.paid ?? false;
+
+  const inquiryExtendedDueDate = parentInquiry?.extendedDueDate
+    ? new Date(parentInquiry.extendedDueDate)
+    : null;
+
   const inquiryLastPaymentDate = parentInquiry?.paymentStatus?.lastPaymentDate
     ? new Date(parentInquiry.paymentStatus.lastPaymentDate)
     : null;
@@ -117,17 +124,27 @@ export default function PaymentsPage() {
       {/* Payment Action */}
       <div className="pt-4">
         {inquiryPaid && inquiryLastPaymentDate && !isExpired ? (
-          <p className="text-green-600 font-medium flex gap-2">
-            <Check/> You have already paid. Last Payment Date:{" "}
+          <p className="text-gray-900 dark:text-gray-300 font-medium flex gap-2">
+            <Check /> Fee for this month has been paid. Next Due Date is{" "}
             <span className="text-accent">
-            {inquiryLastPaymentDate.toLocaleDateString()}
+              {parentInquiry.extendedDueDate &&
+                new Date(parentInquiry.extendedDueDate).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+
             </span>
+
           </p>
         ) : (
           <>
             {/* Case 1 – Payment link exists */}
             {parentInquiry.paymentLink ? (
               <div className="space-x-3">
+                 <p className="text-red-500 mb-4">
+                      Your Last Payment has expired
+                    </p>
                 <Button
                   onClick={() => window.open(parentInquiry.paymentLink!, "_blank")}
                 >
@@ -190,38 +207,38 @@ export default function PaymentsPage() {
                 {/* Case 3 – First time, no link yet */}
                 {!inquiryPaid && !isExpired && !parentInquiry.paymentLink && (
                   <div>
-                    <p className="text-red-400 my-3 flex justify-start gap-1"><AlertCircleIcon/> Kindly Pay Your Fee to Continue</p>
-                  <Button
-                    onClick={async () => {
-                      setGenerating(true);
-                      try {
-                        const res = await fetch(`/api/payment`, {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({
-                            parentInquiry: parentInquiry._id,
-                          }),
-                        });
+                    <p className="text-red-400 my-3 flex justify-start gap-1"><AlertCircleIcon /> Kindly Pay Your Fee to Continue</p>
+                    <Button
+                      onClick={async () => {
+                        setGenerating(true);
+                        try {
+                          const res = await fetch(`/api/payment`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              parentInquiry: parentInquiry._id,
+                            }),
+                          });
 
-                        if (!res.ok) throw new Error("Failed to fetch payment link");
-                        const { url } = await res.json();
+                          if (!res.ok) throw new Error("Failed to fetch payment link");
+                          const { url } = await res.json();
 
-                        // ✅ update context with paymentLink instead of redirecting
-                        setParentInquiry({
-                          ...parentInquiry,
-                          paymentLink: url,
-                        });
-                      } catch (err) {
-                        console.error("❌ Payment fetch failed:", err);
-                        toast.error("Failed to create payment link.");
-                      } finally {
-                        setGenerating(false);
-                      }
-                    }}
-                    disabled={generating}
-                  >
-                    {generating ? "Generating..." : "Generate Payment Link"}
-                  </Button>
+                          // ✅ update context with paymentLink instead of redirecting
+                          setParentInquiry({
+                            ...parentInquiry,
+                            paymentLink: url,
+                          });
+                        } catch (err) {
+                          console.error("❌ Payment fetch failed:", err);
+                          toast.error("Failed to create payment link.");
+                        } finally {
+                          setGenerating(false);
+                        }
+                      }}
+                      disabled={generating}
+                    >
+                      {generating ? "Generating..." : "Generate Payment Link"}
+                    </Button>
                   </div>
                 )}
 
