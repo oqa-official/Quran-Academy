@@ -1,28 +1,53 @@
 import { connectToDB } from "@/lib/db/db";
 import { NextResponse } from "next/server";
 import Inquire from "@/models/inquire.model";
+import studentModel from "@/models/student.model";
 
 
 
-// ✅ GET by ID
+// ✅ GET by ID with trial/non-trial filter
 export async function GET(
-  _: Request,
+  req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDB();
     const { id } = await context.params;
-    const inquire = await Inquire.findById(id);
 
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get("status"); // "trial" | "non-trial" | null
+
+    // 🟢 Build filter condition
+    const matchStage =
+      status === "trial"
+        ? { status: "trial" }
+        : status === "non-trial"
+        ? { status: { $ne: "trial" } }
+        : {}; // default: all students
+
+    // ✅ Fetch inquiry
+    const inquire = await Inquire.findById(id);
     if (!inquire) {
       return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
     }
 
-    return NextResponse.json(inquire, { status: 200 });
+    // ✅ Count related students (with filter)
+    const studentCount = await studentModel.countDocuments({
+      parentInquiry: id,
+      ...matchStage,
+    });
+
+    // ✅ Return normalized object
+    return NextResponse.json(
+      { ...inquire.toObject(), studentCount },
+      { status: 200 }
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+
 
 // ✅ PUT (update by ID)
 export async function PUT(
@@ -34,13 +59,6 @@ export async function PUT(
     const { id } = await context.params;
     const body = await req.json();
 
-    // // ✅ Required field check
-    // if (!body.name || !body.email || !body.phone) {
-    //   return NextResponse.json(
-    //     { error: "Name, Email, and Phone are required" },
-    //     { status: 400 }
-    //   );
-    // }
 
     // ✅ Update with all incoming fields
     const inquire = await Inquire.findByIdAndUpdate(id, body, {
