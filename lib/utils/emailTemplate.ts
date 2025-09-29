@@ -372,6 +372,263 @@ export const fallbackTemplates = {
     `,
   },
 
+  class_reminder: {
+  subject: "Reminder: Your class starts in {{time}}",
+  bodyHtml: `
+   <!DOCTYPE html>
+<html lang="en" style="margin:0; padding:0;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Class Reminder</title>
+    <style type="text/css">
+      /* Reset CSS */
+      body {
+        margin: 0;
+        padding: 0;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      table, td {
+        border-collapse: collapse;
+      }
+      img {
+        border: 0;
+        line-height: 100%;
+        outline: none;
+        text-decoration: none;
+        -ms-interpolation-mode: bicubic;
+      }
+
+      /* Mobile-specific styles */
+      @media only screen and (max-width: 620px) {
+        .main-wrapper {
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        .content-table {
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        .content-padding {
+          padding: 20px !important;
+        }
+        .cta-button {
+          /* Ensures the button table takes full width on mobile */
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        .cta-button a {
+          width: 80% !important; /* Make the button link wider on small screens */
+          display: block;
+          text-align: center;
+          padding: 15px 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin:0; padding:0; background-color:#ce9a06; font-family:Arial, sans-serif;">
+    <!-- Wrapper -->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+      <tr>
+        <td align="center" style="padding:20px 0; background-color:#ce9a06;">
+          <!-- Header -->
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_FiuEvVd-cPQAgyUEW7lKPSwlAf2XttphZxZR-B5qT6aIXXsKN5G-3kJoVu4RwdaOMis&usqp=CAU"
+            alt="Quran Academy Logo"
+            width="60"
+            style="display:block; border-radius:50%; margin:0 auto; width:60px; height:auto;"
+          />
+          <h1 style="color:#ffffff; margin:10px 0 0 0; font-size:24px;">Online Quran Academy</h1>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="padding:20px;">
+          <!-- Main Content -->
+          <table
+            role="presentation"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            width="100%"
+            class="content-table"
+            style="max-width:600px; background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);"
+          >
+            <tr>
+              <td class="content-padding" style="padding:30px; text-align:left; color:#333333; font-size:16px; line-height:1.5;">
+                <h2 style="color:#004d40; margin-top:0;">Assalamu Alaikum {{name}},</h2>
+
+                <p>This is a friendly reminder that your scheduled Quran class is about to begin.</p>
+                
+                <p style="font-size: 18px; font-weight: bold; color: #ce9a06; margin: 15px 0;">Your class starts in: {{time}}</p>
+
+               
+
+                <p style="margin-top:20px;">We look forward to seeing you in class! JazakAllahu Khairan for your commitment.</p>
+
+                <p style="margin-top:30px;">BarakAllahu Feek,<br><b>Online Quran Academy Team</b></p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <!-- Footer -->
+      <tr>
+        <td align="center" style="padding:20px; background-color:#ce9a06; color:#ffffff; font-size:12px;">
+          <p style="margin:0;">© 2025 Online Quran Academy. All rights reserved.</p>
+          <p style="margin:5px 0 0 0;">This email was sent by Online Quran Academy.</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+  `,
+},
+
+fee_reminder: {
+  subject: "Fee Reminder: Kindly clear your dues by {{extendedDueDate}}",
+  bodyHtml: `
+    <p>Assalamu Alaikum {{name}},</p>
+    <p>This is a kind reminder that your fee was due on <strong>{{dueDate}}</strong>.</p>
+    <p>Please ensure the payment is made before <strong>{{extendedDueDate}}</strong>.</p>
+    <p>If the payment is not received by then, your class links will be disabled.</p>
+    <p>BarakAllahu Feek,<br/>Online Quran Academy</p>
+  `,
+},
+onBoarding_reminder:{
+    subject: "{{name}} Complete your onboarding process Now!!",
+  bodyHtml: `
+   <!DOCTYPE html>
+<html lang="en" style="margin:0; padding:0;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inquiry Onboarding Follow-up</title>
+    <style type="text/css">
+      /* Reset CSS */
+      body {
+        margin: 0;
+        padding: 0;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      table, td {
+        border-collapse: collapse;
+      }
+      img {
+        border: 0;
+        line-height: 100%;
+        outline: none;
+        text-decoration: none;
+        -ms-interpolation-mode: bicubic;
+      }
+
+      /* Mobile-specific styles */
+      @media only screen and (max-width: 620px) {
+        .main-wrapper {
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        .content-table {
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        .content-padding {
+          padding: 20px !important;
+        }
+        .cta-button {
+          /* Ensures the button table takes full width on mobile */
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        .cta-button a {
+          width: 80% !important; /* Make the button link wider on small screens */
+          display: block;
+          text-align: center;
+          padding: 15px 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin:0; padding:0; background-color:#ce9a06; font-family:Arial, sans-serif;">
+    <!-- Wrapper -->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+      <tr>
+        <td align="center" style="padding:20px 0; background-color:#ce9a06;">
+          <!-- Header -->
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_FiuEvVd-cPQAgyUEW7lKPSwlAf2XttphZxZR-B5qT6aIXXsKN5G-3kJoVu4RwdaOMis&usqp=CAU"
+            alt="Quran Academy Logo"
+            width="60"
+            style="display:block; border-radius:50%; margin:0 auto; width:60px; height:auto;"
+          />
+          <h1 style="color:#ffffff; margin:10px 0 0 0; font-size:24px;">Online Quran Academy</h1>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="padding:20px;">
+          <!-- Main Content -->
+          <table
+            role="presentation"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            width="100%"
+            class="content-table"
+            style="max-width:600px; background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);"
+          >
+            <tr>
+              <td class="content-padding" style="padding:30px; text-align:left; color:#333333; font-size:16px; line-height:1.5;">
+                <h2 style="color:#004d40; margin-top:0;">Assalamu Alaikum {{name}},</h2>
+
+                <p>We're delighted you've shown interest in the Online Quran Academy!</p>
+                
+                <p>We have successfully received your inquiry and are excited for you to start your journey with us.</p>
+                
+                <p style="font-size: 18px; font-weight: bold; color: #ce9a06; margin: 15px 0;">
+                  Complete your onboarding process now to start your Free Trial!
+                </p>
+
+                <p>Click the button below to complete the final steps and gain access to your first class:</p>
+
+                <!-- CTA Button Table -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 25px 0;" align="center">
+                  <tr>
+                    <td align="center" class="cta-button">
+                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center">
+                        <tr>
+                          <td align="center" style="border-radius: 4px; background: #004d40; padding: 0;">
+                            <!-- {{onboardingLink}} is a placeholder for the actual onboarding URL -->
+                            <a href="{{onboardingLink}}" target="_blank" style="color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold; display: inline-block; padding: 12px 25px; border-radius: 4px;">
+                              Start Onboarding Now
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin-top:20px;">We can't wait to welcome you to the Academy. JazakAllahu Khairan.</p>
+
+                <p style="margin-top:30px;">BarakAllahu Feek,<br><b>Online Quran Academy Team</b></p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <!-- Footer -->
+      <tr>
+        <td align="center" style="padding:20px; background-color:#ce9a06; color:#ffffff; font-size:12px;">
+          <p style="margin:0;">© 2025 Online Quran Academy. All rights reserved.</p>
+          <p style="margin:5px 0 0 0;">This email was sent by Online Quran Academy.</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+  `,
+}
 
 };
 
