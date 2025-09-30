@@ -6,55 +6,64 @@ import Student from "@/models/student.model";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import inquireModel from "@/models/inquire.model";
-import { generateBulkCredentials, generateEducationMail, generateEducationMailFromUserId, generatePassword, generateSequentialIdsAndMails, generateStudentCredentials, generateUserId } from "@/lib/utils/studentUtils";
-// import { generatePassword, generateStudentEducationMail, generateStudentUserId } from "@/lib/utils/studentUtils";
+import { generateBulkCredentials, generateStudentCredentials } from "@/lib/utils/studentUtils";
+import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
+import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 
+const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
+const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
 
-
-
-
-// ✅ GET students (all or filtered by parentInquiry)
-export async function GET(request: Request) {
+async function sendStudentCredentialsWhatsApp(student: {
+  name: string;        // goes to {{1}}
+  phone: string;       // must be in +92... format
+  userId: string;   // goes to {{2}}
+  educationMail: string; // goes to {{3}}
+  password: string;    // goes to {{4}}
+}) {
   try {
-    await connectToDB();
+    const res = await fetch(
+      `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: student.phone,
+          type: "template",
+          template: {
+            name: "student_onboarded_2025", // ✅ must match EXACT name in WhatsApp manager
+            language: { code: "en" },       // use "en" if your template is approved in English
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  { type: "text", text: student.name },         // {{1}}
+                  { type: "text", text: student.userId },    // {{2}}
+                  { type: "text", text: student.educationMail },// {{3}}
+                  { type: "text", text: student.password },     // {{4}}
+                ],
+              },
+            ],
+          },
+        }),
+      }
+    );
 
-    // extract query param
-    const { searchParams } = new URL(request.url);
-    const inquireId = searchParams.get("inquire");
-
-    let query = {};
-    if (inquireId) {
-      query = { parentInquiry: inquireId }; // filter by parentInquiry
+    const data = await res.json();
+    if (!res.ok) {
+      console.warn("⚠️ Failed to send WhatsApp to", student.phone, data);
+    } else {
+      console.log("✅ WhatsApp sent to", student.phone);
     }
-
-    const students = await Student.find(query)
-      .populate("course", "title")
-      .sort({ serialNumber: -1 });
-
-    return NextResponse.json(students, { status: 200 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (err: any) {
+    console.warn("⚠️ WhatsApp error:", err.message);
   }
 }
 
 
-
-// DELETE all students (Extremely Dangerous API || Should only be used within development)
-// export async function DELETE() {
-//   try {
-//     await connectToDB();
-//     const students = await Student.deleteMany({});
-//     return NextResponse.json({ success: true, message: "All students deleted" });
-//   } catch (error) {
-//     console.error("Error deleting students:", error);
-//     return NextResponse.json({ success: false, error: "Failed to delete students" }, { status: 500 });
-//   }
-// }
-
-
-
-import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
-import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 
 
 
@@ -92,6 +101,12 @@ const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
     console.log("✅ Student email sent successfully:", student.email);
   } catch (err: any) {
     console.warn(`⚠️ Failed to send email to ${student.email}:`, err?.response?.body || err);
+  }
+}
+
+async function sendBulkStudentWhatsApps(students: any[]) {
+  for (const student of students) {
+    sendStudentCredentialsWhatsApp(student); // don’t await
   }
 }
 
@@ -180,6 +195,7 @@ export async function POST(req: Request) {
       }
 
       sendBulkStudentEmails(created);
+      sendBulkStudentWhatsApps(created);
 
       return NextResponse.json(created, { status: 201 });
     }
@@ -255,6 +271,7 @@ export async function POST(req: Request) {
     }
 
     sendStudentCredentialsEmail(student);
+    sendStudentCredentialsWhatsApp(student); // 👈 add this
 
     return NextResponse.json(student, { status: 201 });
   } catch (error: any) {
@@ -262,3 +279,64 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ✅ GET students (all or filtered by parentInquiry)
+export async function GET(request: Request) {
+  try {
+    await connectToDB();
+
+    // extract query param
+    const { searchParams } = new URL(request.url);
+    const inquireId = searchParams.get("inquire");
+
+    let query = {};
+    if (inquireId) {
+      query = { parentInquiry: inquireId }; // filter by parentInquiry
+    }
+
+    const students = await Student.find(query)
+      .populate("course", "title")
+      .sort({ serialNumber: -1 });
+
+    return NextResponse.json(students, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+
+
+// DELETE all students (Extremely Dangerous API || Should only be used within development)
+// export async function DELETE() {
+//   try {
+//     await connectToDB();
+//     const students = await Student.deleteMany({});
+//     return NextResponse.json({ success: true, message: "All students deleted" });
+//   } catch (error) {
+//     console.error("Error deleting students:", error);
+//     return NextResponse.json({ success: false, error: "Failed to delete students" }, { status: 500 });
+//   }
+// }

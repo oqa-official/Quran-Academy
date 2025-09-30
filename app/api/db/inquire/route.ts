@@ -2,36 +2,17 @@ import { connectToDB } from "@/lib/db/db";
 import Inquire from "@/models/inquire.model";
 import { NextResponse } from "next/server";
 
-
-
-
-// DELETE all students
-export async function DELETE() {
-  try {
-    await connectToDB();
-    const inquiry = await Inquire.deleteMany({});
-    return NextResponse.json({ success: true, message: "All Inquiry deleted" });
-  } catch (error) {
-    console.error("Error deleting students:", error);
-    return NextResponse.json({ success: false, error: "Failed to delete Inquiries" }, { status: 500 });
-  }
-}
+const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
+const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
 
 
 
 
 
-
-
-
-
-
-// lib/email/inquiry.ts
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 
 const REQUIRED_FIELDS = ["name", "link"];
-
 async function sendInquiryEmail(user: any) {
   try {
     const client = new TransactionalEmailsApi();
@@ -66,19 +47,6 @@ async function sendInquiryEmail(user: any) {
   }
 }
 
-
-
-
-// ✅ GET all inquiries
-export async function GET() {
-  try {
-    await connectToDB();
-    const inquires = await Inquire.find().sort({ createdAt: -1 });
-    return NextResponse.json(inquires, { status: 200 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}
 
 
 export async function POST(req: Request) {
@@ -120,8 +88,49 @@ export async function POST(req: Request) {
       link: onboardingLink,
     });
 
+
+
     return NextResponse.json(inquire, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ✅ GET all inquiries
+export async function GET() {
+  try {
+    await connectToDB();
+    const inquires = await Inquire.find().sort({ createdAt: -1 });
+    return NextResponse.json(inquires, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+
+
+
+
+// // DELETE all students
+// export async function DELETE() {
+//   try {
+//     await connectToDB();
+//     const inquiry = await Inquire.deleteMany({});
+//     return NextResponse.json({ success: true, message: "All Inquiry deleted" });
+//   } catch (error) {
+//     console.error("Error deleting students:", error);
+//     return NextResponse.json({ success: false, error: "Failed to delete Inquiries" }, { status: 500 });
+//   }
+// }
