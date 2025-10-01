@@ -53,6 +53,8 @@ async function sendReminderEmail(student: any, minutesLeft: number) {
   }
 }
 
+
+
 export async function POST() {
   await connectToDB();
 

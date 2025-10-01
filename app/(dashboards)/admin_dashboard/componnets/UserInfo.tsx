@@ -83,8 +83,8 @@ export function UserInfo() {
         <span className="sr-only">My Account</span>
         <figure className="flex items-center gap-3">
           <Image
-            src="/assets/global/user.jpg"
-            className="size-8 rounded-full"
+            src="/assets/home/avatar_3.png"
+            className="size-7 rounded-sm"
             alt="Avatar"
             width={100}
             height={100}
@@ -111,8 +111,8 @@ export function UserInfo() {
 
         <figure className="flex items-center gap-2.5 px-5 py-3.5">
           <Image
-            src="/assets/global/user.jpg"
-            className="size-8 rounded-full"
+            src="/assets/home/avatar_3.png"
+            className="size-8 rounded-sm"
             alt="Avatar"
             width={100}
             height={100}

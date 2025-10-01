@@ -9,6 +9,7 @@ import { useUser } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ArrowRight } from "lucide-react";
+import MeetingCardWrapper from "./MeetingCardWrapper";
 
 
 interface ParentInquiry {
@@ -80,8 +81,8 @@ export default function StudentDashboardCards({ meetingLinkActive }: StudentDash
             {loading
               ? "Student"
               : student?.name
-              ? student.name.split(" ").slice(0, 2).join(" ")
-              : ""}
+                ? student.name.split(" ").slice(0, 2).join(" ")
+                : ""}
           </h2>
           <p className="text-gray-900">{loading ? "" : student?.userId}</p>
           <img
@@ -110,34 +111,35 @@ export default function StudentDashboardCards({ meetingLinkActive }: StudentDash
         </motion.div>
 
         {/* Zoom Card */}
-        <motion.div
+        <MeetingCardWrapper>
+          <div>
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className={`bg-[#17A2B8] ${!meetingLinkActive && "opacity-50 cursor-not-allowed"} relative min-h-[160px] flex flex-col p-5 rounded-md shadow-md hover:shadow-lg transition-shadow`}
+          >
+            <h2 className="text-2xl text-white">Zoom</h2>
+            <p className="text-white">Class Link</p>
+            <img
+              src={"/assets/dashboard/icon2.png"}
+              alt="zoom"
+              className="self-end w-14 h-14 opacity-100 mb-5"
+            />
 
-          whileHover={{ scale: 1.02 }}
-          className={`bg-[#17A2B8] ${!meetingLinkActive && "opacity-50 cursor-not-allowed"} relative min-h-[160px] flex flex-col p-5 rounded-md  shadow-md hover:shadow-lg transition-shadow`}
-        >
-          <h2 className="text-2xl text-white">Zoom</h2>
-          <p className="text-white">Class Link</p>
-          <img
-            src={"/assets/dashboard/icon2.png"}
-            alt="zoom"
-            className="self-end w-14 h-14 opacity-100 mb-5"
-          />
-
-          <Link href="#" className={`absolute bottom-0 w-full ${meetingLinkActive ? "cursor-pointer" : "cursor-not-allowed"} left-0`}>
-            <motion.div
-              whileHover={{ scale: 1.001 }}
-              className="bg-[#1591A5] px-10"
+            <Link
+              href="#"
+              className={`absolute bottom-0 w-full ${meetingLinkActive ? "cursor-pointer" : "cursor-not-allowed"} left-0`}
             >
-              <p className="flex justify-center items-center gap-1 py-2 text-white text-sm">
-                Click Here for the link
-                <ArrowRight
-                  className="bg-white rounded-full text-black"
-                  size={14}
-                />
-              </p>
-            </motion.div>
-          </Link>
-        </motion.div>
+              <motion.div whileHover={{ scale: 1.001 }} className="bg-[#1591A5] px-10">
+                <p className="flex justify-center items-center gap-1 py-2 text-white text-sm">
+                  Click Here for the link
+                  <ArrowRight className="bg-white rounded-full text-black" size={14} />
+                </p>
+              </motion.div>
+            </Link>
+          </motion.div>
+          </div>
+        </MeetingCardWrapper>
+
 
         {/* Books Card */}
         <motion.div
