@@ -18,17 +18,17 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
         },
         body: JSON.stringify({
           messaging_product: "whatsapp",
-          to: user.phone, // remove "+" for prod
+          to: user.phone, // number like 92300..., no +
           type: "template",
           template: {
-            name: "onboarding_reminder", // ✅ use your approved template name
+            name: "onboarding_reminder", // ✅ approved template name
             language: { code: "en" },
             components: [
               {
                 type: "body",
                 parameters: [
-                  { type: "text", text: user.name }, // {{1}}
-                  { type: "text", text: "BarakAllahu Feek, OQA Team" }, // {{2}}
+                  { type: "text", text: user.name },     // {{1}}
+                  { type: "text", text: user.link },     // {{2}} full URL
                 ],
               },
               {
@@ -38,10 +38,11 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
                 parameters: [
                   {
                     type: "text",
-                    text: user.link.split("/").pop()!,
+                    text: user.link.split("/").pop()!,   // {{1}} just the ID
                   },
                 ],
               },
+
             ],
           },
         }),
@@ -58,6 +59,7 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
     console.warn("⚠️ WhatsApp error:", err.message);
   }
 }
+
 
 
 
@@ -137,11 +139,11 @@ export async function POST(req: Request) {
     const onboardingLink = `https://quran-academy-online.vercel.app/onboarding/${inquire._id}`;
 
     // 🔹 Fire email independently (non-blocking)
-    // sendInquiryEmail({
-    //   name: inquire.name,
-    //   email: inquire.email,
-    //   link: onboardingLink,
-    // });
+    sendInquiryEmail({
+      name: inquire.name,
+      email: inquire.email,
+      link: onboardingLink,
+    });
 
     sendInquiryWhatsApp({
       name: inquire.name,
