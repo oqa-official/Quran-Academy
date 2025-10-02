@@ -6,9 +6,13 @@ import { toast } from "sonner";
 import { InstructorForm } from "@/lib/types/instructor";
 import { validateImageFile } from "@/lib/validation";
 import { useDirtyForm } from "@/context/DirtyFormContext";
+import { PhoneInput } from "react-international-phone";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = "Quran_Academy";
+
+// 1. Define the default country code for the dirty check
+const DEFAULT_COUNTRY_CODE = "+44"; // Matches defaultCountry="gb" in PhoneInput
 
 export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) {
   const [form, setForm] = useState<InstructorForm>({
@@ -17,8 +21,8 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
     about: "",
     qualifications: "",
     email: "",
-    number: "",
-    emergencyNumber: "",
+    number: "", // This will become "+44" shortly after render
+    emergencyNumber: "", // This will also become "+44" shortly after render
   });
 
   const [file, setFile] = useState<File | null>(null);
@@ -26,12 +30,28 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
   const [loading, setLoading] = useState(false);
 
   // 🟢 dirty form context
-  const { setDirty} = useDirtyForm();
+  const { setDirty } = useDirtyForm();
 
   // mark dirty whenever form changes
   useEffect(() => {
-    const isFormDirty =
-      Object.values(form).some((val) => val.trim() !== "") || file !== null;
+    // Check if any *non-phone* field is dirty
+    const otherFieldsDirty = [
+      form.name,
+      form.designation,
+      form.about,
+      form.qualifications,
+      form.email,
+    ].some((val) => val.trim() !== "");
+
+    // Check if the phone fields are dirty (i.e., not just the default country code)
+    const phoneFieldsDirty =
+      (form.number !== "" && form.number !== DEFAULT_COUNTRY_CODE) ||
+      (form.emergencyNumber !== "" && form.emergencyNumber !== DEFAULT_COUNTRY_CODE);
+
+    // The form is dirty if any other field is filled, a file is selected, or a phone field has
+    // more than just the default country code.
+    const isFormDirty = otherFieldsDirty || phoneFieldsDirty || file !== null;
+
     setDirty(isFormDirty);
   }, [form, file, setDirty]);
 
@@ -131,74 +151,94 @@ export default function AddInstructor({ onSuccess }: { onSuccess: () => void }) 
       className="p-6 rounded-lg space-y-2 grid grid-cols-1 md:grid-cols-2 gap-1"
     >
       {/* Name */}
-      <input
-        type="text"
-        placeholder="Name"
-        required
-        className="w-full p-2 border rounded"
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-      />
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Full Name</p>
+        <input
+          type="text"
+          placeholder="Name"
+          required
+          className="w-full p-2 border rounded"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+      </div>
 
       {/* Designation */}
-      <input
-        type="text"
-        placeholder="Designation"
-        required
-        className="w-full p-2 border rounded"
-        value={form.designation}
-        onChange={(e) => setForm({ ...form, designation: e.target.value })}
-      />
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Designation</p>
+        <input
+          type="text"
+          placeholder="Designation"
+          required
+          className="w-full p-2 border rounded"
+          value={form.designation}
+          onChange={(e) => setForm({ ...form, designation: e.target.value })}
+        />
+      </div>
 
       {/* Email */}
-      <input
-        type="email"
-        placeholder="Email"
-        required
-        className="w-full p-2 border rounded"
-        value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-      />
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Email Address</p>
+        <input
+          type="email"
+          placeholder="Email"
+          required
+          className="w-full p-2 border rounded"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+        />
+      </div>
 
-      {/* Number */}
-      <input
-        type="text"
-        placeholder="Phone Number"
-        required
-        className="w-full p-2 border rounded"
-        value={form.number}
-        onChange={(e) => setForm({ ...form, number: e.target.value })}
-      />
+      {/* Number (PhoneInput) */}
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Phone Number</p>
+        <PhoneInput
+          defaultCountry="gb"
+          preferredCountries={["us", "gb", "ca", "au"]}
+          value={form.number}
+          onChange={(phone) => setForm({ ...form, number: phone })}
+          inputClassName="w-full p-2 rounded-sm bg-transparent outline-none! text-gray-900 dark:text-gray-300! dark:bg-transparent!"
+          className="bg-transparent h-10 border border-none! dark:border-gray-700 dark:bg-transparent"
+        />
+      </div>
 
-      {/* Emergency Contact */}
-      <input
-        type="text"
-        placeholder="Emergency Contact Number"
-        className="w-full p-2 border rounded md:col-span-2"
-        value={form.emergencyNumber}
-        onChange={(e) =>
-          setForm({ ...form, emergencyNumber: e.target.value })
-        }
-      />
+      {/* Emergency Contact (PhoneInput) */}
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Emergency Contact Number</p>
+        <PhoneInput
+          defaultCountry="gb"
+          preferredCountries={["us", "gb", "ca", "au"]}
+          value={form.emergencyNumber}
+          onChange={(phone) => setForm({ ...form, emergencyNumber: phone })}
+          inputClassName="w-full p-2 rounded-sm bg-transparent outline-none! text-gray-900 dark:text-gray-300! dark:bg-transparent!"
+          className="bg-transparent h-10"
+        />
+      </div>
 
       {/* About */}
-      <textarea
-        placeholder="About"
-        required
-        className="w-full md:col-span-2 p-2 border rounded min-h-[100px]"
-        value={form.about}
-        onChange={(e) => setForm({ ...form, about: e.target.value })}
-      />
+      <div className="md:col-span-2">
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">About (Bio)</p>
+        <textarea
+          placeholder="About"
+          required
+          className="w-full p-2 border rounded min-h-[100px]"
+          value={form.about}
+          onChange={(e) => setForm({ ...form, about: e.target.value })}
+        />
+      </div>
 
       {/* Qualifications */}
-      <textarea
-        placeholder="Qualifications (one per line)"
-        className="w-full p-2 border rounded min-h-[100px] md:col-span-2"
-        value={form.qualifications}
-        onChange={(e) =>
-          setForm({ ...form, qualifications: e.target.value })
-        }
-      />
+      <div className="md:col-span-2">
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Qualifications (one per line)</p>
+        <textarea
+          placeholder="Qualifications (one per line)"
+          className="w-full p-2 border rounded min-h-[100px]"
+          value={form.qualifications}
+          onChange={(e) =>
+            setForm({ ...form, qualifications: e.target.value })
+          }
+        />
+      </div>
 
       {/* Image Upload */}
       <div className="flex flex-col justify-start gap-2 md:col-span-2">
