@@ -3,26 +3,26 @@ import { NextResponse } from "next/server";
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
-// 👇 Your recipient data
+// 👇 UPDATED RECIPIENTS: Only need data for the 2 body fields and the dynamic button link
 const testRecipients = [
   { 
     name: "Ahmad", 
     phone: "+923091403454", 
-    educationMail: "ahmad.student@oqa.com", 
-    extraField3: "Student ID: S-50034", 
-    extraText: "Password: TempP123" 
+    // {{1}} = name, {{2}} = footer text, Dynamic URL parameter
+    onboardingLinkToken: "user12345", // This will be the dynamic part of the button URL
   }, 
   { 
     name: "Ali", 
     phone: "+923104558187", 
-    educationMail: "ali.student@oqa.com", 
-    extraField3: "Instructor ID: T-87654",
-    extraText: "Click link to set password." 
+    onboardingLinkToken: "user67890",
   },
 ];
 
 export async function POST() {
   const results: any[] = [];
+  
+  // Base URL for the dynamic button link (the fixed part)
+  const BASE_ONBOARDING_URL = "https://www.youroqa.com/start-trial/";
 
   for (const recipient of testRecipients) {
     
@@ -40,20 +40,13 @@ export async function POST() {
             to: recipient.phone,
             type: "template",
             template: {
-              // IMPORTANT: Using the latest template name from your last request. 
-              // Verify this is the exact, case-sensitive, approved name.
-              name: "student_onboarded_2025", 
+              name: "onboarding_reminder", // 👈 NEW TEMPLATE NAME
               language: { code: "en" }, 
               components: [
                 
-                // 🛑 NEW: HEADER COMPONENT (for static text Header)
-                // If the Header is present in the template, it sometimes must be defined here.
-                {
-                  type: "header",
-                  // No 'parameters' array is needed here since your header has no {{variables}}
-                },
+                // Static Header/Footer components removed for a cleaner payload
                 
-                // **BODY COMPONENT** - Sends all 4 dynamic fields
+                // **BODY COMPONENT** - Sends 2 dynamic fields
                 {
                   type: "body",
                   parameters: [
@@ -62,28 +55,29 @@ export async function POST() {
                       type: "text",
                       text: recipient.name, 
                     },
-                    // Field 2: {{2}} (Educational Mail)
+                    // Field 2: {{2}} (The text *after* the button text)
                     {
                       type: "text",
-                      text: recipient.educationMail, 
-                    },
-                    // Field 3: {{3}} (Extra Field 3)
-                    {
-                      type: "text",
-                      text: recipient.extraField3, 
-                    },
-                    // Field 4: {{4}} (Extra Text)
-                    {
-                      type: "text",
-                      text: recipient.extraText, 
+                      // This field is usually for a personalized closing line or contact info
+                      text: "BarakAllahu Feek, OQA Team", 
                     },
                   ],
                 },
 
-                // 🛑 NEW: FOOTER COMPONENT (for static text Footer)
+                // 🛑 NEW: BUTTONS COMPONENT 
+                // This component passes the dynamic part of the URL/phone number.
                 {
-                    type: "footer"
-                    // No 'parameters' array is needed here since your footer has no {{variables}}
+                    type: "button",
+                    sub_type: "url", // Assuming the button is a Call-to-Action (URL) button
+                    index: 0, // This is the index of the button (0 for the first button)
+                    parameters: [
+                        {
+                            type: "text",
+                            // This text completes the URL defined in the template: 
+                            // e.g., "https://www.youroqa.com/start-trial/{{1}}" 
+                            text: recipient.onboardingLinkToken,
+                        },
+                    ],
                 }
                 
               ],

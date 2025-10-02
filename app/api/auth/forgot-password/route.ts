@@ -7,6 +7,60 @@ import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo
 import { getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 import { fallbackTemplates } from "@/lib/utils/emailTemplate";
 
+
+
+
+
+const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
+const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
+
+async function sendRecoverAccountWhatsApp(user: any, role: string) {
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: user.phone, // ✅ must be WhatsApp-enabled number
+          type: "template",
+          template: {
+            name: "recover_account", // 👈 your approved template name
+            language: { code: "en" },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  { type: "text", text: user.name },        // {{1}}
+                  { type: "text", text: user.userId },      // {{2}}
+                  { type: "text", text: user.educationMail }, // {{3}}
+                  { type: "text", text: user.password },    // {{4}}
+                ],
+              },
+            ],
+          },
+        }),
+      }
+    );
+
+    const data = await res.json();
+    if (!res.ok) {
+      console.warn("⚠️ Failed to send WhatsApp recover account:", data);
+    } else {
+      console.log("✅ WhatsApp recover account sent:", data);
+    }
+  } catch (err: any) {
+    console.error("⚠️ WhatsApp error:", err.message);
+  }
+}
+
+
+
+
 export async function POST(req: Request) {
   try {
     await connectToDB();
@@ -42,7 +96,7 @@ export async function POST(req: Request) {
 
     // Required fields
     const requiredFields = ["name", "email", "userId", "password"];
-    
+
 
     // ✅ 1. Fetch DB template
     let template = await getEmailTemplate("forgot_password");
@@ -81,6 +135,9 @@ export async function POST(req: Request) {
 
 
     await client.sendTransacEmail(emailData);
+    if (user.phone) {
+      await sendRecoverAccountWhatsApp(user, role);
+    }
 
     return NextResponse.json(
       { message: "Recovery email sent successfully", role },

@@ -7,6 +7,63 @@ import { NextResponse } from "next/server";
 
 const REQUIRED_FIELDS = ["name", "dueDate", "extendedDueDate"];
 
+const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
+const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
+
+async function sendFeeReminderWhatsApp(inquire: any) {
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: inquire.phone, // ✅ must be WhatsApp-enabled number
+          type: "template",
+          template: {
+            name: "fee_reminder", // 👈 your approved template name
+            language: { code: "en" },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  { type: "text", text: inquire.name }, // {{1}}
+                  { 
+                    type: "text", 
+                    text: new Date(inquire.dueDate).toLocaleDateString("en-US") 
+                  }, // {{2}}
+                  { 
+                    type: "text", 
+                    text: inquire.extendedDueDate 
+                      ? new Date(inquire.extendedDueDate).toLocaleDateString("en-US")
+                      : "N/A" 
+                  }, // {{3}}
+                ],
+              },
+            ],
+          },
+        }),
+      }
+    );
+
+    const data = await res.json();
+    if (!res.ok) {
+      console.warn("⚠️ Failed to send WhatsApp fee reminder:", data);
+    } else {
+      console.log("✅ WhatsApp fee reminder sent:", data);
+    }
+  } catch (err: any) {
+    console.error("⚠️ WhatsApp error:", err.message);
+  }
+}
+
+
+
+
 async function sendFeeReminderEmail(inquire: any) {
   try {
     const client = new TransactionalEmailsApi();
@@ -83,6 +140,8 @@ export async function POST() {
     if (studentCount > 0) {
       try {
         await sendFeeReminderEmail(inquire);
+        await sendFeeReminderWhatsApp(inquire); // 👈 added here
+
         sentCount++;
 
         results.push({

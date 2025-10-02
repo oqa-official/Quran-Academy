@@ -65,7 +65,7 @@ const PersonalVerificationStep: React.FC<Props> = ({ formData, setFormData, erro
 
       <div className="flex flex-col w-full md:col-span-1">
         <label className="block mb-2 text-gray-700">
-          Student&apos;s Number
+          Whatsapp&apos;s Number
         </label>
         <PhoneInput
           defaultCountry="us"

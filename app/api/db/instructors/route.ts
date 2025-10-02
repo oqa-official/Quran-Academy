@@ -17,11 +17,61 @@ export async function GET() {
 }
 
 
+const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
+const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
+
+async function sendTeacherAddedWhatsApp(user: any) {
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: user.number, // ✅ Instructor's WhatsApp number
+          type: "template",
+          template: {
+            name: "teacher_added", // 👈 must match the approved template name
+            language: { code: "en" },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  { type: "text", text: user.name },          // {{1}}
+                  { type: "text", text: user.userId },        // {{2}}
+                  { type: "text", text: user.educationMail }, // {{3}}
+                  { type: "text", text: user.password },      // {{4}}
+                ],
+              },
+            ],
+          },
+        }),
+      }
+    );
+
+    const data = await res.json();
+    if (!res.ok) {
+      console.warn("⚠️ Failed to send WhatsApp teacher_added:", data);
+    } else {
+      console.log("✅ WhatsApp teacher_added sent:", data);
+    }
+  } catch (err: any) {
+    console.error("⚠️ WhatsApp error (teacher_added):", err.message);
+  }
+}
+
+
+
+
 
 
 const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
 
- async function sendInstructorCredentialsEmail(user: any) {
+async function sendInstructorCredentialsEmail(user: any) {
   try {
     const client = new TransactionalEmailsApi();
     client.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!);
@@ -90,6 +140,9 @@ export async function POST(req: Request) {
 
     // ✅ Send email independently (do not block API response)
     sendInstructorCredentialsEmail(newInstructor);
+    if (newInstructor.number) {
+      sendTeacherAddedWhatsApp(newInstructor);
+    }
 
     return NextResponse.json(newInstructor, { status: 201 });
   } catch (error: any) {

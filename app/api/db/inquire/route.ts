@@ -6,6 +6,59 @@ const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
 
 
+async function sendInquiryWhatsApp(user: { name: string; phone: string; link: string }) {
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: user.phone, // remove "+" for prod
+          type: "template",
+          template: {
+            name: "onboarding_reminder", // ✅ use your approved template name
+            language: { code: "en" },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  { type: "text", text: user.name }, // {{1}}
+                  { type: "text", text: "BarakAllahu Feek, OQA Team" }, // {{2}}
+                ],
+              },
+              {
+                type: "button",
+                sub_type: "url",
+                index: 0,
+                parameters: [
+                  {
+                    type: "text",
+                    text: user.link.split("/").pop()!,
+                  },
+                ],
+              },
+            ],
+          },
+        }),
+      }
+    );
+
+    const data = await res.json();
+    if (!res.ok) {
+      console.warn("⚠️ Failed to send WhatsApp:", data);
+    } else {
+      console.log("✅ WhatsApp sent:", data);
+    }
+  } catch (err: any) {
+    console.warn("⚠️ WhatsApp error:", err.message);
+  }
+}
+
 
 
 
@@ -40,6 +93,8 @@ async function sendInquiryEmail(user: any) {
       subject,
       htmlContent,
     };
+
+
 
     await client.sendTransacEmail(emailData);
   } catch (err: any) {
@@ -82,9 +137,15 @@ export async function POST(req: Request) {
     const onboardingLink = `https://quran-academy-online.vercel.app/onboarding/${inquire._id}`;
 
     // 🔹 Fire email independently (non-blocking)
-    sendInquiryEmail({
+    // sendInquiryEmail({
+    //   name: inquire.name,
+    //   email: inquire.email,
+    //   link: onboardingLink,
+    // });
+
+    sendInquiryWhatsApp({
       name: inquire.name,
-      email: inquire.email,
+      phone: inquire.phone,
       link: onboardingLink,
     });
 
