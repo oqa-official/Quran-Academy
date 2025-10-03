@@ -1,24 +1,34 @@
-
-
 // app/api/db/students/route.ts
 import { connectToDB } from "@/lib/db/db";
 import Student from "@/models/student.model";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import inquireModel from "@/models/inquire.model";
-import { generateBulkCredentials, generateStudentCredentials } from "@/lib/utils/studentUtils";
-import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
-import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
+import {
+  generateBulkCredentials,
+  generateStudentCredentials,
+} from "@/lib/utils/studentUtils";
+import {
+  TransactionalEmailsApi,
+  TransactionalEmailsApiApiKeys,
+} from "@getbrevo/brevo";
+import {
+  fallbackTemplates,
+  getEmailTemplate,
+  renderTemplate,
+  validateTemplate,
+} from "@/lib/utils/emailTemplate";
 
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
 
+/* ------------------ WHATSAPP ------------------ */
 async function sendStudentCredentialsWhatsApp(student: {
-  name: string;        // goes to {{1}}
-  phone: string;       // must be in +92... format
-  userId: string;   // goes to {{2}}
-  educationMail: string; // goes to {{3}}
-  password: string;    // goes to {{4}}
+  name: string;
+  phone: string;
+  userId: string;
+  educationMail: string;
+  password: string;
 }) {
   try {
     const res = await fetch(
@@ -34,16 +44,16 @@ async function sendStudentCredentialsWhatsApp(student: {
           to: student.phone,
           type: "template",
           template: {
-            name: "student_onboarded_2025", // ✅ must match EXACT name in WhatsApp manager
-            language: { code: "en" },       // use "en" if your template is approved in English
+            name: "student_onboarded_2025",
+            language: { code: "en" },
             components: [
               {
                 type: "body",
                 parameters: [
-                  { type: "text", text: student.name },         // {{1}}
-                  { type: "text", text: student.userId },    // {{2}}
-                  { type: "text", text: student.educationMail },// {{3}}
-                  { type: "text", text: student.password },     // {{4}}
+                  { type: "text", text: student.name },
+                  { type: "text", text: student.userId },
+                  { type: "text", text: student.educationMail },
+                  { type: "text", text: student.password },
                 ],
               },
             ],
@@ -54,7 +64,7 @@ async function sendStudentCredentialsWhatsApp(student: {
 
     const data = await res.json();
     if (!res.ok) {
-      console.warn("⚠️ Failed to send WhatsApp to", student.phone, data);
+      console.warn("⚠️ Failed WhatsApp to", student.phone, data);
     } else {
       console.log("✅ WhatsApp sent to", student.phone);
     }
@@ -63,13 +73,13 @@ async function sendStudentCredentialsWhatsApp(student: {
   }
 }
 
-
-
-
-
+/* ------------------ EMAIL ------------------ */
 const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
 
- async function sendStudentCredentialsEmail(student: any) {
+async function sendStudentCredentialsEmail(
+  student: any,
+  recipientEmail: string
+) {
   try {
     const client = new TransactionalEmailsApi();
     client.setApiKey(
@@ -77,75 +87,75 @@ const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
       process.env.BREVO_API_KEY!
     );
 
-    // 1. Fetch DB template
     let dbTemplate = await getEmailTemplate("student_created");
 
-    // 2. If missing or invalid, fallback
     if (!dbTemplate || !validateTemplate(dbTemplate.bodyHtml, REQUIRED_FIELDS)) {
       console.warn("⚠️ student_added template missing/invalid → using fallback");
       dbTemplate = fallbackTemplates.student_added;
     }
 
-    // 3. Render template with dynamic values
     const subject = renderTemplate(dbTemplate.subject, student);
     const htmlContent = renderTemplate(dbTemplate.bodyHtml, student);
 
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: student.email }],
+      to: [{ email: recipientEmail }],
       subject,
       htmlContent,
     };
 
     await client.sendTransacEmail(emailData);
-    console.log("✅ Student email sent successfully:", student.email);
+    console.log("✅ Student email sent successfully:", recipientEmail);
   } catch (err: any) {
-    console.warn(`⚠️ Failed to send email to ${student.email}:`, err?.response?.body || err);
+    console.warn(
+      `⚠️ Failed to send email to ${recipientEmail}:`,
+      err?.response?.body || err
+    );
   }
 }
 
-async function sendBulkStudentWhatsApps(students: any[]) {
-  for (const student of students) {
-    sendStudentCredentialsWhatsApp(student); // don’t await
+/* ------------------ HELPERS ------------------ */
+async function notifyParentIfDifferent(student: any, parentInquiryId: string) {
+  const parent = await inquireModel
+    .findById(parentInquiryId)
+    .lean<{ email?: string; phone?: string }>();
+
+  if (!parent) return;
+
+  const parentEmail = parent.email;
+  const parentPhone = parent.phone;
+
+  if (parentEmail && parentEmail !== student.email) {
+    await sendStudentCredentialsEmail(student, parentEmail);
+  }
+
+  if (parentPhone && parentPhone !== student.phone) {
+    await sendStudentCredentialsWhatsApp({ ...student, phone: parentPhone });
   }
 }
 
-
-
-// ✅ Bulk email sender
-async function sendBulkStudentEmails(students: any[]) {
-  for (const student of students) {
-    sendStudentCredentialsEmail(student); // don't await to avoid blocking
-  }
-}
-
-
-
-
+/* ------------------ POST HANDLER ------------------ */
 export async function POST(req: Request) {
   try {
     await connectToDB();
     const body = await req.json();
 
-    // Utility to calculate due dates
     function getDueDates(preferredStartDate?: string) {
-      if (!preferredStartDate) return { dueDate: null, extendedDueDate: null };
+      if (!preferredStartDate)
+        return { dueDate: null, extendedDueDate: null };
 
       const start = new Date(preferredStartDate);
-
       const dueDate = new Date(start);
       dueDate.setDate(start.getDate() + 5);
-
       const extendedDueDate = new Date(start);
       extendedDueDate.setDate(start.getDate() + 7);
 
       return { dueDate, extendedDueDate };
     }
 
-    // 🟢 Case 1: Bulk insert
+    /* -------- BULK INSERT -------- */
     if (body.students && Array.isArray(body.students)) {
       const { parentInquiry, students } = body;
-
       if (!parentInquiry || students.length === 0) {
         return NextResponse.json(
           { error: "parentInquiry and students[] are required" },
@@ -172,7 +182,6 @@ export async function POST(req: Request) {
         trialClasses: { assigned: 3, completed: 0 },
         feeStatus: { paid: false },
 
-        // auto-generated
         serialNumber: autoGenerated[idx].serialNumber,
         userId: autoGenerated[idx].userId,
         educationMail: autoGenerated[idx].educationMail,
@@ -181,26 +190,28 @@ export async function POST(req: Request) {
 
       const created = await Student.insertMany(docs);
 
-      // ✅ Update ParentInquiry with dueDate based on the *first student’s* preferredStartDate
       const firstWithDate = students.find((s: any) => s.preferredStartDate);
       if (firstWithDate) {
         const { dueDate, extendedDueDate } = getDueDates(
           firstWithDate.preferredStartDate
         );
-
         await inquireModel.findByIdAndUpdate(parentInquiry, {
           dueDate,
           extendedDueDate,
         });
       }
 
-      sendBulkStudentEmails(created);
-      sendBulkStudentWhatsApps(created);
+      for (const student of created) {
+        const studentData = student.toObject();
+        sendStudentCredentialsEmail(studentData, studentData.email);
+        sendStudentCredentialsWhatsApp(studentData);
+        notifyParentIfDifferent(studentData, parentInquiry);
+      }
 
       return NextResponse.json(created, { status: 201 });
     }
 
-    // 🟢 Case 2: Single student
+    /* -------- SINGLE STUDENT -------- */
     const {
       name,
       email,
@@ -251,8 +262,6 @@ export async function POST(req: Request) {
       status: "trial",
       trialClasses: { assigned: 3, completed: 0 },
       feeStatus: { paid: false },
-
-      // auto-generated
       serialNumber,
       userId,
       educationMail,
@@ -261,7 +270,6 @@ export async function POST(req: Request) {
 
     await student.save();
 
-    // ✅ Update ParentInquiry with due dates
     if (preferredStartDate) {
       const { dueDate, extendedDueDate } = getDueDates(preferredStartDate);
       await inquireModel.findByIdAndUpdate(parentInquiry, {
@@ -270,8 +278,10 @@ export async function POST(req: Request) {
       });
     }
 
-    sendStudentCredentialsEmail(student);
-    sendStudentCredentialsWhatsApp(student); 
+    const studentData = student.toObject();
+    sendStudentCredentialsEmail(studentData, studentData.email);
+    sendStudentCredentialsWhatsApp(studentData);
+    notifyParentIfDifferent(studentData, parentInquiry);
 
     return NextResponse.json(student, { status: 201 });
   } catch (error: any) {
@@ -279,12 +289,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
-
-
-
-
-
 
 
 

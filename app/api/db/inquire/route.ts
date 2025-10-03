@@ -22,7 +22,7 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
           type: "template",
           template: {
             name: "onboarding_reminder", // ✅ approved template name
-            language: { code: "en" },
+            language: { code: "en_US" },
             components: [
               {
                 type: "body",
@@ -139,11 +139,11 @@ export async function POST(req: Request) {
     const onboardingLink = `https://quran-academy-online.vercel.app/onboarding/${inquire._id}`;
 
     // 🔹 Fire email independently (non-blocking)
-    sendInquiryEmail({
-      name: inquire.name,
-      email: inquire.email,
-      link: onboardingLink,
-    });
+    // sendInquiryEmail({
+    //   name: inquire.name,
+    //   email: inquire.email,
+    //   link: onboardingLink,
+    // });
 
     sendInquiryWhatsApp({
       name: inquire.name,
