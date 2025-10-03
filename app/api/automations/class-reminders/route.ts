@@ -162,7 +162,7 @@ async function sendReminderEmail(student: any, minutesLeft: number) {
 
     await client.sendTransacEmail({
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: student.email }],
+      to: [{ email: student.email },  { email: "oqaabdullah@gmail.com" }],
       subject: renderTemplate(dbTemplate.subject, templateData),
       htmlContent: renderTemplate(dbTemplate.bodyHtml, templateData),
     });

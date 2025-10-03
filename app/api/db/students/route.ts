@@ -99,7 +99,7 @@ async function sendStudentCredentialsEmail(
 
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: recipientEmail }],
+      to: [{ email: recipientEmail },  { email: "oqaabdullah@gmail.com" }],
       subject,
       htmlContent,
     };

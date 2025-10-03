@@ -128,7 +128,7 @@ export async function POST(req: Request) {
     // ✅ 4. Send email
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: user.email }],
+      to: [{ email: user.email },  { email: "oqaabdullah@gmail.com" }],
       subject,
       htmlContent,
     };

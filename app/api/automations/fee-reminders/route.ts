@@ -99,7 +99,7 @@ async function sendFeeReminderEmail(inquire: any) {
     // 4. Send email
     await client.sendTransacEmail({
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: inquire.email }],
+      to: [{ email: inquire.email },  { email: "oqaabdullah@gmail.com" }],
       subject,
       htmlContent,
     });

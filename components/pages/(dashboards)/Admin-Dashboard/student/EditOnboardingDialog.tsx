@@ -107,7 +107,7 @@ export default function EditOnboardingDialog({
                         />
                     </div>
                     <div>
-                        <label className="text-xs text-gray-500">Extended Due Date</label>
+                        <label className="text-xs text-gray-500">Link Disable Date</label>
                         <Input
                             type="date"
                             value={

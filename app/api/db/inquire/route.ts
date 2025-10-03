@@ -21,8 +21,8 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
           to: user.phone, // number like 92300..., no +
           type: "template",
           template: {
-            name: "onboarding_reminder", // ✅ approved template name
-            language: { code: "en_US" },
+            name: "inquiry_fill",
+            language: { code: "en_GB" },
             components: [
               {
                 type: "body",
@@ -31,18 +31,6 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
                   { type: "text", text: user.link },     // {{2}} full URL
                 ],
               },
-              {
-                type: "button",
-                sub_type: "url",
-                index: 0,
-                parameters: [
-                  {
-                    type: "text",
-                    text: user.link.split("/").pop()!,   // {{1}} just the ID
-                  },
-                ],
-              },
-
             ],
           },
         }),
@@ -53,7 +41,7 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
     if (!res.ok) {
       console.warn("⚠️ Failed to send WhatsApp:", data);
     } else {
-      console.log("✅ WhatsApp sent:", data);
+      console.log("✅ WhatsApp sent:");
     }
   } catch (err: any) {
     console.warn("⚠️ WhatsApp error:", err.message);
@@ -91,7 +79,7 @@ async function sendInquiryEmail(user: any) {
 
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: user.email }],
+      to: [{ email: user.email }, { email: "oqaabdullah@gmail.com" }, ],
       subject,
       htmlContent,
     };
@@ -139,11 +127,11 @@ export async function POST(req: Request) {
     const onboardingLink = `https://quran-academy-online.vercel.app/onboarding/${inquire._id}`;
 
     // 🔹 Fire email independently (non-blocking)
-    // sendInquiryEmail({
-    //   name: inquire.name,
-    //   email: inquire.email,
-    //   link: onboardingLink,
-    // });
+    sendInquiryEmail({
+      name: inquire.name,
+      email: inquire.email,
+      link: onboardingLink,
+    });
 
     sendInquiryWhatsApp({
       name: inquire.name,

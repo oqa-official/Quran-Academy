@@ -1,5 +1,5 @@
 import { NavSection } from "@/app/(dashboards)/admin_dashboard/componnets/Sidebar";
-import { BookOpen, DollarSign, Laptop, LayoutDashboard, Library, LibraryBig, MailCheck, MailOpen, Phone, Settings, User, Users } from "lucide-react";
+import { BookOpen, DollarSign, Laptop, LayoutDashboard, Library, LibraryBig, MailCheck, MailOpen, Phone, Settings, User, UserLock, UserRoundCheck, Users, UsersRound } from "lucide-react";
 
 
 export const fallbackCourses = [
@@ -162,7 +162,25 @@ export const NAV_DATA_ADMIN: NavSection[] = [
           { title: "Add New", url: "/admin_dashboard/courses/add", icon: BookOpen },
         ],
       },
-      {
+     
+      { title: "Inquire", url: "/admin_dashboard/inquire", icon: MailOpen },
+       {
+        title: "Trial",
+        icon: UserLock,
+        items: [
+          { title: "Trial Students", url: "/admin_dashboard/onboardings", icon: User },
+          { title: "View All", url: "/admin_dashboard/onboardings/students", icon: User },
+        ],
+      },
+        {
+        title: "Regular",
+        icon: UsersRound,
+        items: [
+          { title: "Regular Students", url: "/admin_dashboard/students/regular-onboardings", icon: User },
+          { title: "View All", url: "/admin_dashboard/students", icon: User },
+        ],
+      },
+       {
         title: "Library",
         icon: LibraryBig,
         items: [
@@ -170,24 +188,8 @@ export const NAV_DATA_ADMIN: NavSection[] = [
           { title: "Add Book", url: "/admin_dashboard/library/add", icon: LibraryBig },
         ],
       },
-      { title: "Inquire", url: "/admin_dashboard/inquire", icon: MailOpen },
-      { title: "Meetings", url: "/admin_dashboard/meetings", icon: Laptop },
-       {
-        title: "Trial",
-        icon: User,
-        items: [
-          { title: "Onboardings", url: "/admin_dashboard/onboardings", icon: User },
-          { title: "Students", url: "/admin_dashboard/onboardings/students", icon: User },
-        ],
-      },
-        {
-        title: "Regular",
-        icon: User,
-        items: [
-          { title: "Onboardings", url: "/admin_dashboard/students/regular-onboardings", icon: User },
-          { title: "Students", url: "/admin_dashboard/students", icon: User },
-        ],
-      },
+            { title: "Meetings", url: "/admin_dashboard/meetings", icon: Laptop },
+
 
        {
         title: "Emails",

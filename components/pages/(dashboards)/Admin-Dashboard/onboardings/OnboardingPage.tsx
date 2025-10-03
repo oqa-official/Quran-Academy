@@ -30,6 +30,7 @@ interface Inquire {
   email: string;
   phone: string;
   createdAt: string;
+  extendedDueDate: string;
   studentCount?: number;
 }
 
@@ -114,9 +115,9 @@ export default function Onboardings({ trial }: OnboardingsProps) {
     { accessorKey: "email", header: "Email", enableGlobalFilter: true },
     { accessorKey: "phone", header: "Phone", enableSorting: false },
     {
-      accessorKey: "createdAt",
-      header: "Date",
-      cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
+      accessorKey: "extendedDueDate",
+      header: "Link Disable Date",
+      cell: ({ row }) => new Date(row.original.extendedDueDate).toLocaleDateString(),
     },
     {
       accessorKey: "studentCount",
