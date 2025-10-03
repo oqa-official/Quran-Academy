@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { PhoneInput } from "react-international-phone";
 
 interface Onboarding {
     _id: string;
@@ -42,33 +43,33 @@ export default function EditOnboardingDialog({
         setForm((prev) => ({ ...prev, [field]: value }));
     };
 
-   const handleSave = async () => {
-  // 🛑 1. Check if form is unchanged
-  if (JSON.stringify(form) === JSON.stringify(onboarding)) {
-    toast.info("No changes detected")
-    onClose()
-    return
-  }
+    const handleSave = async () => {
+        // 🛑 1. Check if form is unchanged
+        if (JSON.stringify(form) === JSON.stringify(onboarding)) {
+            toast.info("No changes detected")
+            onClose()
+            return
+        }
 
-  setLoading(true)
-  try {
-    const res = await fetch(`/api/db/inquire/${form._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    })
-    if (!res.ok) throw new Error("Failed to update onboarding")
-    const updated = await res.json()
-    toast.success("Onboarding updated successfully")
-    onSaved(updated)
-    onClose()
-  } catch (err) {
-    toast.error("Update failed")
-    onClose()
-  } finally {
-    setLoading(false)
-  }
-}
+        setLoading(true)
+        try {
+            const res = await fetch(`/api/db/inquire/${form._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+            })
+            if (!res.ok) throw new Error("Failed to update onboarding")
+            const updated = await res.json()
+            toast.success("Onboarding updated successfully")
+            onSaved(updated)
+            onClose()
+        } catch (err) {
+            toast.error("Update failed")
+            onClose()
+        } finally {
+            setLoading(false)
+        }
+    }
 
 
     return (
@@ -95,9 +96,14 @@ export default function EditOnboardingDialog({
                     </div>
                     <div>
                         <label className="text-xs text-gray-500">Phone</label>
-                        <Input
-                            value={form.phone || ""}
-                            onChange={(e) => handleChange("phone", e.target.value)}
+                        <PhoneInput
+                            defaultCountry="gb"
+                            preferredCountries={["us", "gb", "ca", "au"]}
+                            value={form.phone}
+                            required
+                            onChange={(phone) => setForm({ ...form, phone: phone })}
+                            inputClassName="w-full p-2 rounded-sm bg-transparent outline-none! text-gray-900 dark:text-gray-300! dark:bg-transparent!"
+                            className="bg-transparent h-10 border border-none! dark:border-gray-700 dark:bg-transparent"
                         />
                     </div>
                     <div>

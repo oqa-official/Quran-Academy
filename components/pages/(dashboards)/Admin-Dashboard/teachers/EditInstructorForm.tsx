@@ -5,6 +5,7 @@ import { CircleX, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { validateImageFile } from "@/lib/validation";
 import { useDirtyForm } from "@/context/DirtyFormContext";
+import { PhoneInput } from "react-international-phone";
 
 export interface Instructor {
   _id: string;
@@ -196,24 +197,28 @@ export default function EditInstructorForm({
             {/* Number */}
             <div>
               <label className="text-xs text-gray-500">Phone Number</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded"
+              <PhoneInput
+                defaultCountry="gb"
+                preferredCountries={["us", "gb", "ca", "au"]}
                 value={form.number}
-                onChange={(e) => setForm({ ...form, number: e.target.value })}
+                required
+                onChange={(phone) => setForm({ ...form, number: phone })}
+                inputClassName="w-full p-2 rounded-sm bg-transparent outline-none! text-gray-900 dark:text-gray-300! dark:bg-transparent!"
+                className="bg-transparent h-10 border border-none! dark:border-gray-700 dark:bg-transparent"
               />
             </div>
 
             {/* Emergency Number */}
             <div>
               <label className="text-xs text-gray-500">Emergency Number</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded"
+               <PhoneInput
+                defaultCountry="gb"
+                preferredCountries={["us", "gb", "ca", "au"]}
                 value={form.emergencyNumber}
-                onChange={(e) =>
-                  setForm({ ...form, emergencyNumber: e.target.value })
-                }
+                required
+                onChange={(phone) => setForm({ ...form, emergencyNumber: phone })}
+                inputClassName="w-full p-2 rounded-sm bg-transparent outline-none! text-gray-900 dark:text-gray-300! dark:bg-transparent!"
+                className="bg-transparent h-10 border border-none! dark:border-gray-700 dark:bg-transparent"
               />
             </div>
 

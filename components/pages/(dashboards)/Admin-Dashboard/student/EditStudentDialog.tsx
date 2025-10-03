@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import TimezoneSelect from "react-timezone-select";
 import { generateTimeSlots } from "@/lib/constants/timezones";
 import { useTheme } from "next-themes";
+import { PhoneInput } from "react-international-phone";
 
 export default function EditStudentDialog({
   student,
@@ -149,10 +150,15 @@ export default function EditStudentDialog({
             <label className="text-xs text-start text-gray-500 mb-1">
               Number
             </label>
-            <Input
-              value={form.phone || ""}
-              onChange={(e) => handleChange("phone", e.target.value)}
-              placeholder="Phone"
+
+            <PhoneInput
+              defaultCountry="gb"
+              preferredCountries={["us", "gb", "ca", "au"]}
+              value={form.phone}
+              required
+              onChange={(phone) => setForm({ ...form, phone: phone })}
+              inputClassName="w-full p-2 rounded-sm bg-transparent outline-none! text-gray-900 dark:text-gray-300! dark:bg-transparent!"
+              className="bg-transparent h-10 border border-none! dark:border-gray-700 dark:bg-transparent"
             />
           </div>
 

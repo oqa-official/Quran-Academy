@@ -66,10 +66,6 @@ export default function OnboardingPage() {
     setLoading(false);
   }
 };
-
-
-
-
     return (
         <div className="relative min-h-screen flex justify-center items-center">
             {/* Background Overlay */}

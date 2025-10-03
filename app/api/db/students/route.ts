@@ -194,8 +194,8 @@ export async function POST(req: Request) {
         });
       }
 
-      sendBulkStudentEmails(created);
-      sendBulkStudentWhatsApps(created);
+      // sendBulkStudentEmails(created);
+      // sendBulkStudentWhatsApps(created);
 
       return NextResponse.json(created, { status: 201 });
     }
@@ -270,8 +270,8 @@ export async function POST(req: Request) {
       });
     }
 
-    sendStudentCredentialsEmail(student);
-    sendStudentCredentialsWhatsApp(student); // 👈 add this
+    // sendStudentCredentialsEmail(student);
+    // sendStudentCredentialsWhatsApp(student); 
 
     return NextResponse.json(student, { status: 201 });
   } catch (error: any) {

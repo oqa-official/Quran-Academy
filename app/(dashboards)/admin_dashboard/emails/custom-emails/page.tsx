@@ -119,7 +119,6 @@ export default function CustomEmails() {
       toast.success(
         `Emails sent successfully! (${data?.results?.length || 0})`
       );
-      router.push("/admin_dashboard");
     } catch (err: any) {
       console.error("❌ handleSend error:", err);
       toast.error(err.message || "Failed to send emails");

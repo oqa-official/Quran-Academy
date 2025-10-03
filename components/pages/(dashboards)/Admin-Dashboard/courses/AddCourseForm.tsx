@@ -175,105 +175,148 @@ export default function AddCourseForm({ onSuccess }: AddCourseFormProps) {
       onSubmit={handleSubmit}
       className="space-y-4 w-full bg-gray-50 dark:bg-[#122031] p-4 rounded-md"
     >
-      <input
-        type="text"
-        name="title"
-        placeholder="Course Title"
-        className="border p-2 w-full"
-        value={form.title || ""}
-        onChange={handleInput}
-        required
-      />
-
-      <input
-        type="text"
-        name="duration"
-        placeholder="Duration (e.g. 6 weeks)"
-        className="border p-2 w-full"
-        value={form.duration || ""}
-        onChange={handleInput}
-        required
-      />
-
-      <input
-        type="number"
-        name="price"
-        placeholder="Price"
-        className="border p-2 w-full"
-        value={form.price || ""}
-        onChange={handleInput}
-        required
-      />
-
-      <select
-        name="instructor"
-        value={form.instructor || ""}
-        onChange={handleInput}
-        className="border p-2 w-full dark:bg-[#122031]"
-        required
-      >
-        <option value="">Select Instructor</option>
-        {instructors.map((inst) => (
-          <option key={inst._id} value={inst._id}>
-            {inst.name}
-          </option>
-        ))}
-      </select>
-
-      <label className="ms-1 text-gray-400">Choose Course Banner Image</label>
-      <div className="flex justify-start items-center gap-2 w-full p-2 border rounded">
-        <UploadCloud />
+      {/* Course Title */}
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Course Title*</p>
         <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
+          type="text"
+          name="title"
+          placeholder="Course Title"
+          className="border p-2 w-full"
+          value={form.title || ""}
+          onChange={handleInput}
+          required
         />
       </div>
-      {previewUrl && (
-        <img src={previewUrl} alt="Preview" className="h-32 mt-2 rounded" />
-      )}
 
-      <div className="bg-white dark:bg-[#091b30] rounded-md p-5">
-        <p className="ms-1 my-1">Course Overview</p>
-        <textarea
-          name="summary"
-          placeholder="Course Summary"
+      {/* Course Duration */}
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Course Duration*</p>
+        <input
+          type="text"
+          name="duration"
+          placeholder="Duration (e.g. 6 weeks)"
           className="border p-2 w-full"
-          value={form.overview?.summary || ""}
+          value={form.duration || ""}
           onChange={handleInput}
+          required
         />
+      </div>
 
-        <textarea
-          name="whatYouLearn"
-          placeholder="What You'll Learn"
+      {/* Price */}
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Price ($)*</p>
+        <input
+          type="number"
+          name="price"
+          placeholder="Price"
           className="border p-2 w-full"
-          value={form.overview?.whatYouLearn || ""}
+          value={form.price || ""}
           onChange={handleInput}
+          required
         />
+      </div>
 
-        <textarea
-          name="whoFor"
-          placeholder="Who is this course for?"
-          className="border p-2 w-full"
-          value={form.overview?.whoFor || ""}
+      {/* Instructor */}
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Select Instructor*</p>
+        <select
+          name="instructor"
+          value={form.instructor || ""}
           onChange={handleInput}
-        />
+          className="border p-2 w-full dark:bg-[#122031]"
+          required
+        >
+          <option value="">Select Instructor</option>
+          {instructors.map((inst) => (
+            <option key={inst._id} value={inst._id}>
+              {inst.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
-        <textarea
-          name="requirements"
-          placeholder="Requirements"
-          className="border p-2 w-full"
-          value={form.overview?.requirements || ""}
-          onChange={handleInput}
-        />
+      {/* Image Upload */}
+      <div>
+        <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Course Banner Image*</p>
+        <div className="flex justify-start items-center gap-2 w-full p-2 border rounded">
+          <UploadCloud />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            required
+          />
+        </div>
+        {previewUrl && (
+          <img src={previewUrl} alt="Preview" className="h-32 mt-2 rounded" />
+        )}
+      </div>
 
-        <textarea
-          name="certification"
-          placeholder="Certification Details"
-          className="border p-2 w-full"
-          value={form.overview?.certification || ""}
-          onChange={handleInput}
-        />
+      {/* Course Overview Section */}
+      <div className="bg-white dark:bg-[#091b30] rounded-md p-5 space-y-3">
+        {/* Section Header */}
+        <p className="ms-1 my-1 font-semibold text-gray-700 dark:text-gray-300">Course Overview Details</p>
+
+        {/* Course Summary */}
+        <div>
+          <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Course Summary</p>
+          <textarea
+            name="summary"
+            placeholder="Course Summary"
+            className="border p-2 w-full"
+            value={form.overview?.summary || ""}
+            onChange={handleInput}
+          />
+        </div>
+
+        {/* What You'll Learn */}
+        <div>
+          <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">What You'll Learn</p>
+          <textarea
+            name="whatYouLearn"
+            placeholder="What You'll Learn"
+            className="border p-2 w-full"
+            value={form.overview?.whatYouLearn || ""}
+            onChange={handleInput}
+          />
+        </div>
+
+        {/* Who is this course for? */}
+        <div>
+          <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Who is this course for?</p>
+          <textarea
+            name="whoFor"
+            placeholder="Who is this course for?"
+            className="border p-2 w-full"
+            value={form.overview?.whoFor || ""}
+            onChange={handleInput}
+          />
+        </div>
+
+        {/* Requirements */}
+        <div>
+          <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Requirements</p>
+          <textarea
+            name="requirements"
+            placeholder="Requirements"
+            className="border p-2 w-full"
+            value={form.overview?.requirements || ""}
+            onChange={handleInput}
+          />
+        </div>
+
+        {/* Certification Details */}
+        <div>
+          <p className="text-[10px] text-gray-600 dark:text-gray-400 ms-1">Certification Details</p>
+          <textarea
+            name="certification"
+            placeholder="Certification Details"
+            className="border p-2 w-full"
+            value={form.overview?.certification || ""}
+            onChange={handleInput}
+          />
+        </div>
       </div>
 
       {error && <p className="text-red-500">{error}</p>}

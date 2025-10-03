@@ -146,6 +146,23 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newInstructor, { status: 201 });
   } catch (error: any) {
+     if (error.code === 11000 && error.keyPattern) {
+      // Find the field that caused the duplicate key error
+      const field = Object.keys(error.keyPattern)[0]; 
+
+      let errorMessage = "Instructor already exists.";
+      
+      if (field === 'email') {
+        errorMessage = "Email address already exists.";
+      } else if (field === 'number') {
+        errorMessage = "Phone number already exists.";
+      } else if (field === 'userId') {
+        errorMessage = "An internal user ID conflict occurred. Please try again.";
+      }
+      // Add other unique fields (e.g., 'educationMail') if needed
+
+      return NextResponse.json({ error: errorMessage }, { status: 409 }); // 409 Conflict status
+    }
     console.error("❌ Error in POST /api/db/instructors:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

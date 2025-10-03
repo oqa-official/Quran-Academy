@@ -6,7 +6,7 @@ import { useDirtyForm } from "@/context/DirtyFormContext";
 import { useRouter } from "next/navigation";
 import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
-import "prismjs/themes/prism.css"; // or prism-okaidia.css for dark
+import "prismjs/themes/prism.css"; 
 
 type EmailEditorProps = {
   template: {
@@ -62,7 +62,6 @@ export default function EmailEditor({ template, requiredFields }: EmailEditorPro
 
       toast.success("Template updated successfully!");
       setDirty(false);
-      router.push("/admin_dashboard"); // ✅ redirect after save
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "Failed to update template");
