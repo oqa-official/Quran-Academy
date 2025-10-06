@@ -13,6 +13,25 @@ export async function GET() {
 }
 
 
+// DELETE all students (Extremely Dangerous API || Should only be used within development)
+// ✅ DELETE all meetings
+// export async function DELETE() {
+//   try {
+//     await connectToDB();
+//     await meetingModel.deleteMany({});
+//     return NextResponse.json(
+//       { success: true, message: "All meetings deleted" },
+//       { status: 200 }
+//     );
+//   } catch (error: any) {
+//     console.error("Error deleting meetings:", error);
+//     return NextResponse.json(
+//       { success: false, error: error.message || "Failed to delete meetings" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
 
 
 
@@ -42,59 +61,53 @@ async function getAccessToken() {
   return response.json();
 }
 
+
+const WHEREBY_API_KEY = process.env.WHEREBY_API_KEY!;
+const WHEREBY_API_URL = "https://api.whereby.dev/v1/meetings";
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    // 1. Get access token
-    const { access_token } = await getAccessToken();
-
-    // 2. Create meeting on Zoom
-    const zoomResponse = await fetch(
-      `https://api.zoom.us/v2/users/me/meetings`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          topic: body.topic || "Quran Class",
-          type: 2, // Scheduled meeting
-          start_time: body.startTime || new Date().toISOString(),
-          duration: body.duration || 45,
-          settings: {
-            join_before_host: true,
-          },
-        }),
-      }
-    );
-
-    if (!zoomResponse.ok) {
-      const errorData = await zoomResponse.json();
-      throw new Error(errorData.message || "Zoom API Error");
-    }
-
-    const zoomData = await zoomResponse.json();
-
-    // 3. Store in DB
     await connectToDB();
 
-    const newMeeting = await meetingModel.create({
-      topic: zoomData.topic,
-      zoomId: zoomData.id,
-      joinUrl: zoomData.join_url,
-      startTime: zoomData.start_time,
-      duration: zoomData.duration,
-      password: zoomData.password,
-      createdBy: body.createdBy || "admin", // optional field if you want
+    // 1. Create a new meeting using Whereby API
+    const wherebyRes = await fetch(WHEREBY_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${WHEREBY_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        endDate: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 1-hour meeting
+        roomMode: "group",
+        fields: ["hostRoomUrl", "meetingId", "roomUrl"],
+      }),
     });
 
-    // 4. Return stored meeting
+    if (!wherebyRes.ok) {
+      const text = await wherebyRes.text();
+      throw new Error(`Whereby API error: ${text}`);
+    }
+
+    const wherebyData = await wherebyRes.json();
+
+    // 2. Save meeting to MongoDB
+    const newMeeting = await meetingModel.create({
+      zoomId: wherebyData.meetingId, // reusing zoomId field
+      topic: body.topic || "Quran Class",
+      startTime: new Date(),
+      duration: 60,
+      joinUrl: wherebyData.roomUrl,
+      startUrl: wherebyData.hostRoomUrl,
+      createdBy: body.createdBy || "admin",
+    });
+
+    // 3. Return the stored meeting
     return NextResponse.json(newMeeting, { status: 201 });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Something went wrong" },
+      { error: error.message || "Failed to create Whereby meeting" },
       { status: 500 }
     );
   }
