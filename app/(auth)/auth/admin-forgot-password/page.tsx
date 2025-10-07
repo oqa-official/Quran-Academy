@@ -1,15 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import Turnstile from "react-turnstile";
 
 export default function ForgotPasswordPage() {
-  const [identifier, setIdentifier] = useState(""); // userId or educationMail
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [identifier, setIdentifier] = useState("");
   const [loading, setLoading] = useState(false);
+  const [cooldown, setCooldown] = useState<number>(0);
+
+  // ✅ Check cooldown from localStorage on load
+  useEffect(() => {
+    const cooldownTimestamp = localStorage.getItem("admin-forgot-cooldown");
+    if (cooldownTimestamp) {
+      const remaining = Math.max(
+        0,
+        parseInt(cooldownTimestamp) - Date.now()
+      );
+      if (remaining > 0) {
+        setCooldown(Math.ceil(remaining / 1000));
+      } else {
+        localStorage.removeItem("admin-forgot-cooldown");
+      }
+    }
+  }, []);
+
+  // ✅ Countdown effect
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const interval = setInterval(() => {
+      setCooldown((prev) => {
+        if (prev <= 1) {
+          localStorage.removeItem("admin-forgot-cooldown");
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [cooldown]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (cooldown > 0) {
+      toast.error(`Please wait ${cooldown} seconds before trying again.`);
+      return;
+    }
+
+    if (!captchaVerified) {
+      toast.error("Please verify the captcha before submitting.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -23,10 +69,13 @@ export default function ForgotPasswordPage() {
 
       if (!res.ok) throw new Error(data.error || "Something went wrong");
 
-      // ✅ Show response from API in toast
-      toast.success(
-        `${data.message}`
-      );
+      toast.success(`${data.message}`);
+
+      // ✅ Set cooldown (5 minutes)
+      const delay = 5 * 60 * 1000;
+      const expireAt = Date.now() + delay;
+      localStorage.setItem("admin-forgot-cooldown", expireAt.toString());
+      setCooldown(delay / 1000);
     } catch (err: any) {
       toast.error(err.message || "Failed to recover account.");
     } finally {
@@ -58,11 +107,26 @@ export default function ForgotPasswordPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || cooldown > 0}
             className="w-full py-2 px-4 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50"
           >
-            {loading ? "Processing..." : "Recover Account"}
+            {loading
+              ? "Processing..."
+              : cooldown > 0
+              ? `Wait ${cooldown}s before trying again`
+              : "Recover Account"}
           </button>
+
+          <div className="flex justify-center items-start">
+            <Turnstile
+              sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+              theme="light"
+              size="normal"
+              onVerify={() => setCaptchaVerified(true)}
+              onError={() => setCaptchaVerified(false)}
+              onExpire={() => setCaptchaVerified(false)}
+            />
+          </div>
         </form>
 
         <p className="mt-4 text-gray-600 text-sm">

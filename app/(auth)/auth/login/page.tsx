@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useUser } from "@/context/UserContext";
 import { Eye, EyeOff } from "lucide-react";
+import Turnstile from "react-turnstile";
+
 
 export default function LoginPage() {
 
@@ -34,6 +36,7 @@ export default function LoginPage() {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -43,6 +46,11 @@ export default function LoginPage() {
     e.preventDefault();
     if (!form.educationMail || !form.password) {
       toast.error("Both fields are required");
+      return;
+    }
+
+    if (!captchaVerified) {
+      toast.error("Please verify the captcha before login");
       return;
     }
 
@@ -87,7 +95,7 @@ export default function LoginPage() {
     }
   };
 
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="relative min-h-screen flex justify-center items-center px-2">
       {/* 🔹 Background Overlay */}
@@ -130,7 +138,7 @@ export default function LoginPage() {
             />
           </div>
 
-         
+
 
           <div className="flex flex-col justify-center items-start w-full">
             <label className="text-start text-gray-500 text-xs mb-1">
@@ -156,6 +164,8 @@ export default function LoginPage() {
             </div>
           </div>
 
+         
+
           <button
             type="submit"
             disabled={loading}
@@ -163,6 +173,17 @@ export default function LoginPage() {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
+
+          <div className="flex justify-start items-start">
+           <Turnstile
+            sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+            theme="light"
+            size="normal"
+            onVerify={() => setCaptchaVerified(true)}
+            onError={() => setCaptchaVerified(false)}
+            onExpire={() => setCaptchaVerified(false)}
+          />
+         </div>
         </form>
 
         {/* Register Link */}

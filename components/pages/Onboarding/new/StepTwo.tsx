@@ -21,8 +21,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import Turnstile from "react-turnstile";
+import { toast } from "sonner";
+
 
 export default function StepTwo({ formData, setFormData, goBack, handleSubmit, loading }: any) {
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   const emptyStudent = () => ({
     name: "",
     email: "",
@@ -93,6 +97,11 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
     );
 
   const saveAndSubmit = () => {
+    if (!captchaVerified) {
+      toast.error("Please complete verification before submitting.");
+      return;
+    }
+
     const updatedForm = {
       ...formData,
       students,
@@ -175,6 +184,18 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
         )}
       </div>
 
+      <div className="flex justify-start mt-4">
+        <Turnstile
+          theme="light"
+          size="normal"
+          sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+          onVerify={() => setCaptchaVerified(true)}
+          onError={() => setCaptchaVerified(false)}
+          onExpire={() => setCaptchaVerified(false)}
+        />
+      </div>
+
+
       <div className="flex justify-between items-center mt-6">
         <button onClick={goBack} className="px-4 py-2 bg-gray-400 text-white rounded-md">
           Back
@@ -188,7 +209,7 @@ export default function StepTwo({ formData, setFormData, goBack, handleSubmit, l
             className={`px-4 py-2 rounded-md text-white ${isFormValid ? "bg-primary hover:bg-accent" : "bg-primary opacity-90 cursor-not-allowed"
               }`}
           >
-            {loading? "Submitting..."  : "Submit"}
+            {loading ? "Submitting..." : "Submit"}
           </button>
 
         </div>

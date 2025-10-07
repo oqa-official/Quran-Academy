@@ -7,8 +7,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useUser } from "@/context/UserContext";
 import { Eye, EyeOff } from "lucide-react";
+import Turnstile from "react-turnstile";
 
 export default function LoginPage() {
+    const [captchaVerified, setCaptchaVerified] = useState(false);
   const { setUser, role } = useUser();
   const router = useRouter();
 
@@ -43,6 +45,10 @@ export default function LoginPage() {
     e.preventDefault();
     if (!form.educationMail || !form.password) {
       toast.error("Both fields are required");
+      return;
+    }
+     if (!captchaVerified) {
+      toast.error("Please verify the captcha before login");
       return;
     }
 
@@ -161,6 +167,17 @@ export default function LoginPage() {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
+
+          <div className="flex justify-start items-start">
+           <Turnstile
+            sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+            theme="light"
+            size="normal"
+            onVerify={() => setCaptchaVerified(true)}
+            onError={() => setCaptchaVerified(false)}
+            onExpire={() => setCaptchaVerified(false)}
+          />
+          </div>
         </form>
 
         {/* Register Link */}

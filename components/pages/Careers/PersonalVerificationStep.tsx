@@ -2,6 +2,7 @@
 
 import React from "react";
 import { PhoneInput } from "react-international-phone";
+import Turnstile from "react-turnstile";
 import { toast } from "sonner";
 
 interface Props {
@@ -141,17 +142,17 @@ const PersonalVerificationStep: React.FC<Props> = ({ formData, setFormData, erro
       </div>
 
       {/* Captcha */}
-      <div>
-        <input
-          type="checkbox"
-          className="h-4 w-4"
-          id="captcha"
-          checked={formData.captcha}
-          onChange={(e) => setFormData({ ...formData, captcha: e.target.checked })}
+      <div className="mt-4 flex flex-col justify-center">
+        <Turnstile
+          theme="light"
+          sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+          onVerify={() => setFormData({ ...formData, captcha: true })}
+          onError={() => setFormData({ ...formData, captcha: false })}
+          onExpire={() => setFormData({ ...formData, captcha: false })}
         />
-        <label htmlFor="captcha" className="ml-2">I’m not a robot</label>
-        {errors.captcha && <p className="text-red-500 text-sm">{errors.captcha}</p>}
+        {errors.captcha && <p className="text-red-500 text-sm -mt-1 text-start">{errors.captcha}</p>}
       </div>
+
     </div>
   );
 };
