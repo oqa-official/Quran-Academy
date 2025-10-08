@@ -1,5 +1,5 @@
 import { NavSection } from "@/app/(dashboards)/admin_dashboard/componnets/Sidebar";
-import { BookOpen, DollarSign, Laptop, LayoutDashboard, Library, LibraryBig, MailCheck, MailOpen, Phone, Settings, User, UserLock, UserRoundCheck, Users, UsersRound } from "lucide-react";
+import { BookOpen, DollarSign, DollarSignIcon, Laptop, LayoutDashboard, Library, LibraryBig, MailCheck, MailOpen, Phone, Settings, User, UserLock, UserRoundCheck, Users, UsersRound } from "lucide-react";
 
 
 export const fallbackCourses = [
@@ -180,6 +180,7 @@ export const NAV_DATA_ADMIN: NavSection[] = [
           { title: "View All", url: "/admin_dashboard/students", icon: User },
         ],
       },
+       { title: "Fee Status", url: "/admin_dashboard/fee-status", icon: DollarSignIcon },
        {
         title: "Library",
         icon: LibraryBig,

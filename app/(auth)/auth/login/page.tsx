@@ -26,7 +26,7 @@ export default function LoginPage() {
     }
     if (role === 'student') {
       router.push("/student-dashboard")
-      return
+      return 
     }
   }
 

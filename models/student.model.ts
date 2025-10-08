@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 import "@/models/inquire.model";
+import "@/models/instructor.model";
 import "@/models/course.model"; 
 
 const StudentSchema = new mongoose.Schema(
   {
     parentInquiry: { type: mongoose.Schema.Types.ObjectId, ref: "Inquire" },
+    teacherAssigned: { type: mongoose.Schema.Types.ObjectId, ref: "Instructor" },
 
     name: { type: String, required: true },
     email: { type: String, required: true, lowercase: true},

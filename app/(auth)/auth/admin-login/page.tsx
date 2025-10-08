@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -10,32 +9,24 @@ import { Eye, EyeOff } from "lucide-react";
 import Turnstile from "react-turnstile";
 
 export default function LoginPage() {
-    const [captchaVerified, setCaptchaVerified] = useState(false);
   const { setUser, role } = useUser();
   const router = useRouter();
 
-  if(role){
-    if(role === 'admin'){
-      router.push("/admin_dashboard")
-      return
-    }
-
-    if(role === 'instructor'){
-      router.push("/")
-      return
-    }
-    if(role === 'student'){
-      router.push("/")
-      return
+  // ✅ If already logged in, redirect based on role
+  if (role) {
+    if (role === "admin") {
+      router.push("/admin_dashboard");
+      return;
     }
   }
-
 
   const [form, setForm] = useState({
     educationMail: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -43,11 +34,13 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!form.educationMail || !form.password) {
       toast.error("Both fields are required");
       return;
     }
-     if (!captchaVerified) {
+
+    if (!captchaVerified) {
       toast.error("Please verify the captcha before login");
       return;
     }
@@ -71,7 +64,6 @@ export default function LoginPage() {
       toast.success("Login successful!");
       setUser(data._id, data.role);
 
-      // 🔹 Role-based redirect on frontend
       switch (data.role) {
         case "admin":
           router.push("/admin_dashboard");
@@ -83,7 +75,7 @@ export default function LoginPage() {
           router.push("/student-dashboard");
           break;
         default:
-          router.push("/"); // fallback
+          router.push("/");
       }
     } catch (err: any) {
       toast.error("Something went wrong");
@@ -93,7 +85,6 @@ export default function LoginPage() {
     }
   };
 
-      const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="relative min-h-screen flex justify-center items-center px-2">
       {/* 🔹 Background Overlay */}
@@ -136,7 +127,7 @@ export default function LoginPage() {
             />
           </div>
 
-         <div className="flex flex-col justify-center items-start w-full">
+          <div className="flex flex-col justify-center items-start w-full">
             <label className="text-start text-gray-500 text-xs mb-1">
               Your Password
             </label>
@@ -160,6 +151,9 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* 🧠 Turnstile Captcha */}
+         
+
           <button
             type="submit"
             disabled={loading}
@@ -168,22 +162,25 @@ export default function LoginPage() {
             {loading ? "Logging in..." : "Login"}
           </button>
 
-          <div className="flex justify-start items-start">
-           <Turnstile
-            sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-            theme="light"
-            size="normal"
-            onVerify={() => setCaptchaVerified(true)}
-            onError={() => setCaptchaVerified(false)}
-            onExpire={() => setCaptchaVerified(false)}
-          />
+           <div className="flex justify-center items-start w-full">
+            <Turnstile
+              sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+              theme="light"
+              size="normal"
+              onVerify={() => setCaptchaVerified(true)}
+              onError={() => setCaptchaVerified(false)}
+              onExpire={() => setCaptchaVerified(false)}
+            />
           </div>
         </form>
 
-        {/* Register Link */}
+        {/* Forgot Link */}
         <p className="mt-4 text-gray-600 text-sm">
-         Forgot your password?{" "}
-          <Link href="/auth/admin-forgot-password" className="text-accent hover:underline">
+          Forgot your password?{" "}
+          <Link
+            href="/auth/admin-forgot-password"
+            className="text-accent hover:underline"
+          >
             Click Here
           </Link>
         </p>
