@@ -4,6 +4,8 @@ import Student from "@/models/student.model";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import inquireModel from "@/models/inquire.model";
+import instructorModel from "@/models/instructor.model";
+
 import {
   generateBulkCredentials,
   generateStudentCredentials,
@@ -323,6 +325,8 @@ export async function GET(request: Request) {
 
     const students = await Student.find(query)
       .populate("course", "title")
+      .populate("teacherAssigned", "name")
+      .populate("parentInquiry", "dueDate extendedDueDate paymentStatus paymentLink")
       .sort({ serialNumber: -1 });
 
     return NextResponse.json(students, { status: 200 });

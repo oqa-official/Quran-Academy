@@ -25,7 +25,15 @@ import LoadingSkeleton from "@/components/pages/(dashboards)/Admin-Dashboard/loa
 
 interface Student {
     _id: string;
-    parentInquiry: string;
+     parentInquiry: {
+    _id: string;
+    dueDate: string | null;
+    extendedDueDate: string | null;
+    paymentStatus?: {
+      paid: boolean;
+      lastPaymentDate?: string;
+    };
+  };
     name: string;
     email: string;
     phone: string;
@@ -216,18 +224,13 @@ function StudentsPageContent() {
                 );
             },
         }
-        ,
-        {
-            accessorKey: "feeStatus.paid",
-            header: "Fee Paid",
-            cell: ({ row }) => (row.original.feeStatus.paid ? "Yes" : "No"),
-        },
+       ,
          {
             accessorKey: "parentInquiry",
             header: "Parent Inquiry",
             cell: ({ row }) => (
                 <Link
-                    href={`/admin_dashboard/onboardings?inquire=${row.original.parentInquiry}`}
+                    href={`/admin_dashboard/onboardings?inquire=${row.original.parentInquiry._id}`}
                 >
                     <Button size="sm" variant="outline">
                         View
