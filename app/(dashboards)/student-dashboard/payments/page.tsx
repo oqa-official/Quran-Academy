@@ -2,9 +2,10 @@
 
 import { useStudentData } from "@/components/pages/(dashboards)/Student-Dashboard/StudentDataProvider";
 import { Button } from "@/components/ui/button";
-import { AlertCircleIcon, Check, TicketCheckIcon } from "lucide-react";
+import { AlertCircleIcon, Check } from "lucide-react";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface PaymentStatus {
   paid: boolean;
@@ -41,6 +42,7 @@ export default function PaymentsPage() {
 
   // ✅ Inquiry payment status
   const inquiryPaid = parentInquiry?.paymentStatus?.paid ?? false;
+  console.log("inquiry------id===========", parentInquiry?._id)
 
   const inquiryExtendedDueDate = parentInquiry?.extendedDueDate
     ? new Date(parentInquiry.extendedDueDate)
@@ -122,13 +124,14 @@ export default function PaymentsPage() {
       </div>
 
       {/* Payment Action */}
-      <div className="pt-4">
+      <div className="pt-1">
         {inquiryPaid && inquiryLastPaymentDate && !isExpired ? (
-          <p className="text-gray-900 dark:text-gray-300 font-medium flex gap-2">
-            <Check /> Fee for this month has been paid. Next Due Date is{" "}
-            <span className="text-accent">
-              {parentInquiry.extendedDueDate &&
-                new Date(parentInquiry.extendedDueDate).toLocaleDateString("en-GB", {
+          
+          <p className="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 p-3 rounded-md flex items-center gap-2 text-sm">
+            <Check /> Your Next Due Date is{" "}
+            <span className="text-black dark:text-accent">
+              {parentInquiry.dueDate &&
+                new Date(parentInquiry.dueDate).toLocaleDateString("en-GB", {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
@@ -143,7 +146,7 @@ export default function PaymentsPage() {
             {parentInquiry.paymentLink ? (
               <div className="space-x-3">
                  <p className="text-red-500 mb-4">
-                      Your Last Payment has expired
+                      Kindly Pay your fee to continue
                     </p>
                 <Button
                   onClick={() => window.open(parentInquiry.paymentLink!, "_blank")}
@@ -157,8 +160,13 @@ export default function PaymentsPage() {
                     toast.success("Payment link copied to clipboard!");
                   }}
                 >
-                  Copy Link
+                  Copy Stripe Link
                 </Button>
+                 <Link href="/student-dashboard/payments/wise">
+              <Button variant="outline" className="bg-[#285902] dark:bg-[#9bda6b] hover:bg-[#2a3b1d] dark:hover:bg-[#719158] text-white dark:text-black">
+                Pay Via Wise
+              </Button>
+            </Link>
               </div>
             ) : (
               <>

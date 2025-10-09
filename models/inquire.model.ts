@@ -12,7 +12,6 @@ const InquireSchema = new mongoose.Schema(
 
     // NEW: Stripe payment link for this inquiry
     paymentLink: { type: String, default: null },
-    wisepaymentLink: { type: String, default: null },
 
     // NEW: Payment status
     paymentStatus: {

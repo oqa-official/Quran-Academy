@@ -13,24 +13,6 @@ export async function GET() {
 }
 
 
-// DELETE all students (Extremely Dangerous API || Should only be used within development)
-// ✅ DELETE all meetings
-// export async function DELETE() {
-//   try {
-//     await connectToDB();
-//     await meetingModel.deleteMany({});
-//     return NextResponse.json(
-//       { success: true, message: "All meetings deleted" },
-//       { status: 200 }
-//     );
-//   } catch (error: any) {
-//     console.error("Error deleting meetings:", error);
-//     return NextResponse.json(
-//       { success: false, error: error.message || "Failed to delete meetings" },
-//       { status: 500 }
-//     );
-//   }
-// }
 
 
 

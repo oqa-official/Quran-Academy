@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import StudentDashboardCards from "@/components/pages/(dashboards)/Student-Dashboard/DashboardCards";
-import { Link } from "lucide-react";
+import {  Link2 } from "lucide-react";
+import Link from "next/link";
 
 export default function Page() {
   const router = useRouter();
@@ -170,7 +171,7 @@ export default function Page() {
       <h1 className="text-2xl font-semibold mb-6">Student Dashboard</h1>
 
       {/* 🔒 Blocking modal */}
-      <Dialog open={modalOpen} onOpenChange={() => {}}>
+      <Dialog open={modalOpen} onOpenChange={() => { }}>
         <DialogContent className="sm:max-w-lg dark:bg-[#122031]">
           <DialogHeader>
             <DialogTitle>Please make the payments to continue</DialogTitle>
@@ -180,7 +181,7 @@ export default function Page() {
           </DialogHeader>
           <DialogFooter className="mt-6">
             <Button onClick={handleBlockingPayNow} className="w-full" disabled={generating}>
-              
+
               {generating ? "Generating..." : "Pay Now"}
             </Button>
           </DialogFooter>
@@ -201,11 +202,18 @@ export default function Page() {
             <Button variant="outline" className="hover:bg-gray-100" onClick={handlePayLater}>
               Pay Later
             </Button>
+
             {parentInquiry?.paymentLink && (
               <Button className="bg-accent hover:bg-accent-hover text-black" onClick={handleShareLink}>
-                Share Link <Link />
+                Share Link <Link2 />
               </Button>
             )}
+
+            <Link href="/student-dashboard/payments/wise">
+              <Button variant="outline" className="bg-[#285902] dark:bg-[#9bda6b] hover:bg-[#2a3b1d] dark:hover:bg-[#719158] text-white dark:text-black">
+                Pay Via Wise
+              </Button>
+            </Link>
           </div>
         </Alert>
       )}

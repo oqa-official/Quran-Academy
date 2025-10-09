@@ -1,22 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import { useUser } from "@/context/UserContext";
@@ -25,9 +7,9 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 interface StudentData {
   parentInquiry: any | null;
   students: any[];
-  
+
   totalFee: number;
-  
+
   loading: boolean;
   refreshData: () => Promise<void>;
   setParentInquiry: (inquiry: any) => void;
@@ -55,7 +37,11 @@ export function StudentDataProvider({ children }: { children: React.ReactNode })
       // 2. Get siblings (excluding quit)
       const siblingsRes = await fetch(
         `/api/db/students?inquire=${student.parentInquiry._id}`
-      );
+        , {
+          headers: {
+            "x-internal-key": process.env.NEXT_PUBLIC_INTERNAL_API_KEY!,
+          },
+        });
       let siblings = await siblingsRes.json();
       siblings = siblings.filter((s: any) => s.status !== "quit");
 
