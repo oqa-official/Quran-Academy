@@ -24,7 +24,11 @@ function StudentsPageContent() {
     const fetchStudents = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/api/db/students");
+        const res = await fetch("/api/db/students", {
+          headers: {
+            "x-internal-key": process.env.NEXT_PUBLIC_INTERNAL_API_KEY!,
+          },
+        });;
         if (!res.ok) throw new Error("Failed to fetch students");
         const data = await res.json();
         const filtered = data.filter((s: Student) => s.status !== "quit");
@@ -43,7 +47,11 @@ function StudentsPageContent() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const res = await fetch("/api/db/instructors");
+        const res = await fetch("/api/db/instructors", {
+          headers: {
+            "x-internal-key": process.env.NEXT_PUBLIC_INTERNAL_API_KEY!,
+          }
+        });
         if (!res.ok) throw new Error("Failed to fetch teachers");
         const data = await res.json();
         setTeachers(data);
@@ -61,7 +69,7 @@ function StudentsPageContent() {
     return (
       original.teacherAssigned !== student.teacherAssigned ||
       original.parentInquiry.extendedDueDate !==
-        student.parentInquiry.extendedDueDate
+      student.parentInquiry.extendedDueDate
     );
   };
 
@@ -106,24 +114,24 @@ function StudentsPageContent() {
       );
 
       setDirty(false);
-      toast.success(`✅ Saved: ${student.name}`);
+      toast.success(` Saved: ${student.name}`);
     } catch (error: any) {
       console.error(error);
-      toast.error("❌ Failed to save student/inquiry");
+      toast.error(" Failed to save student/inquiry");
     }
   };
 
   return (
     <div className="bg-white dark:bg-[#122031] rounded-xl shadow-md md:p-4 max-w-[90vw] md:max-w-[80vw]">
-         <div className="flex items-center justify-between mb-4">
-                <h1 className="text-2xl font-semibold">Students Fee Details</h1>
-            </div>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold">Students Fee Details</h1>
+      </div>
       {error && <p className="text-red-500 mb-3">{error}</p>}
 
       {loading ? (
         <LoadingSkeleton />
       ) : (
-         <DataTable
+        <DataTable
           columns={fee_columns({
             teachers,
             onSave: handleSave,

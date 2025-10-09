@@ -266,7 +266,11 @@ export default function EditCourseForm() {
       try {
         const [courseRes, instructorsRes] = await Promise.all([
           axios.get(`/api/db/courses/${id}`),
-          axios.get(`/api/db/instructors`),
+          axios.get(`/api/db/instructors`, {
+             headers: {
+            "x-internal-key": process.env.NEXT_PUBLIC_INTERNAL_API_KEY!,
+          }
+          }),
         ]);
         setCourse(courseRes.data);
         setInitialCourse(courseRes.data); // ✅ save initial copy

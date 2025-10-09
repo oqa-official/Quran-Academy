@@ -6,8 +6,13 @@ import { generateInstructorEducationMail, generateInstructorPassword, generateIn
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 
 // ✅ GET all instructors
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const authHeader = request.headers.get("x-internal-key");
+    if (authHeader !== process.env.NEXT_PUBLIC_INTERNAL_API_KEY) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await connectToDB();
     const instructors = await Instructor.find();
     return NextResponse.json(instructors, { status: 200 });
@@ -91,7 +96,7 @@ async function sendInstructorCredentialsEmail(user: any) {
 
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: user.email }, {email : "oqaabdullah@gmail.com"}],
+      to: [{ email: user.email }, { email: "oqaabdullah@gmail.com" }],
       subject,
       htmlContent,
     };
@@ -146,12 +151,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newInstructor, { status: 201 });
   } catch (error: any) {
-     if (error.code === 11000 && error.keyPattern) {
+    if (error.code === 11000 && error.keyPattern) {
       // Find the field that caused the duplicate key error
-      const field = Object.keys(error.keyPattern)[0]; 
+      const field = Object.keys(error.keyPattern)[0];
 
       let errorMessage = "Instructor already exists.";
-      
+
       if (field === 'email') {
         errorMessage = "Email address already exists.";
       } else if (field === 'number') {

@@ -51,7 +51,11 @@ export default function AddCourseForm({ onSuccess }: AddCourseFormProps) {
   useEffect(() => {
     async function fetchInstructors() {
       try {
-        const res = await fetch("/api/db/instructors");
+        const res = await fetch("/api/db/instructors", {
+          headers: {
+            "x-internal-key": process.env.NEXT_PUBLIC_INTERNAL_API_KEY!,
+          }
+        });
         if (!res.ok) throw new Error("Failed to fetch instructors");
         const data = await res.json();
         setInstructors(data);

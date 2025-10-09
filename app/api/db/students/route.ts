@@ -309,19 +309,22 @@ export async function POST(req: Request) {
 
 
 
-// ✅ GET students (all or filtered by parentInquiry)
+
 export async function GET(request: Request) {
   try {
+    // 🔒 Verify internal secret header
+    const authHeader = request.headers.get("x-internal-key");
+    if (authHeader !== process.env.NEXT_PUBLIC_INTERNAL_API_KEY) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await connectToDB();
 
-    // extract query param
     const { searchParams } = new URL(request.url);
     const inquireId = searchParams.get("inquire");
 
     let query = {};
-    if (inquireId) {
-      query = { parentInquiry: inquireId }; // filter by parentInquiry
-    }
+    if (inquireId) query = { parentInquiry: inquireId };
 
     const students = await Student.find(query)
       .populate("course", "title")
@@ -334,6 +337,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
 
 
 

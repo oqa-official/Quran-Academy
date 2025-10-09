@@ -67,7 +67,11 @@ function StudentsPageContent() {
                 let url = "/api/db/students";
                 if (inquireId) url += `?inquire=${inquireId}`;
 
-                const res = await fetch(url);
+                const res = await fetch(url, {
+                    headers: {
+                        "x-internal-key": process.env.NEXT_PUBLIC_INTERNAL_API_KEY!,
+                    },
+                });
                 if (!res.ok) throw new Error("Failed to fetch students");
 
                 const data = await res.json();

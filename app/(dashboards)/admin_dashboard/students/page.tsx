@@ -25,15 +25,15 @@ import LoadingSkeleton from "@/components/pages/(dashboards)/Admin-Dashboard/loa
 
 interface Student {
     _id: string;
-     parentInquiry: {
-    _id: string;
-    dueDate: string | null;
-    extendedDueDate: string | null;
-    paymentStatus?: {
-      paid: boolean;
-      lastPaymentDate?: string;
+    parentInquiry: {
+        _id: string;
+        dueDate: string | null;
+        extendedDueDate: string | null;
+        paymentStatus?: {
+            paid: boolean;
+            lastPaymentDate?: string;
+        };
     };
-  };
     name: string;
     email: string;
     phone: string;
@@ -67,7 +67,11 @@ function StudentsPageContent() {
                 let url = "/api/db/students";
                 if (inquireId) url += `?inquire=${inquireId}`;
 
-                const res = await fetch(url);
+                const res = await fetch(url, {
+                    headers: {
+                        "x-internal-key": process.env.NEXT_PUBLIC_INTERNAL_API_KEY!,
+                    },
+                });;;
                 if (!res.ok) throw new Error("Failed to fetch students");
 
                 const data = await res.json();
@@ -224,7 +228,7 @@ function StudentsPageContent() {
             },
         }
         ,
-       
+
         {
             accessorKey: "parentInquiry",
             header: "Parent Inquiry",
@@ -292,7 +296,7 @@ function StudentsPageContent() {
             {error && <p className="text-red-500 mb-3">{error}</p>}
 
             {loading ? (
-               <LoadingSkeleton/>
+                <LoadingSkeleton />
             ) : (
                 <DataTable columns={columns} data={students} searchPlaceholder="Search" />
             )}
