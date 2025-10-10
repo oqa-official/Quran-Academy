@@ -50,7 +50,7 @@ export function shouldSendReminder(student: any): { send: boolean; minutesLeft: 
 
   // ✅ Send if today is a class day AND between 5–30 minutes away
   const send =
-    student.classDays.includes(today) && diffMinutes <= 30 && diffMinutes >= 5;
+    student.classDays.includes(today) && diffMinutes <= 25 && diffMinutes >= 5;
 
   return { send, minutesLeft: diffMinutes };
 }

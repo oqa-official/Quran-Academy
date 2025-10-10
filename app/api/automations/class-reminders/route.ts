@@ -53,7 +53,7 @@ async function sendClassReminderWhatsApp(student: any, minutesLeft: number) {
 }
 
 // ------------------ Parent WhatsApp Reminder ------------------
-async function sendParentClassReminderWhatsApp(parent: any, minutesLeft: number) {
+async function sendParentClassReminderWhatsApp(parent: any, minutesLeft: number, student: any,) {
   if (!parent?.phone) {
     console.warn(`⚠️ No parent phone for ${parent?.name}`);
     return;
@@ -78,7 +78,7 @@ async function sendParentClassReminderWhatsApp(parent: any, minutesLeft: number)
               {
                 type: "body",
                 parameters: [
-                  { type: "text", text: parent.name },      
+                  { type: "text", text: student.name },      
                   { type: "text", text: `${minutesLeft} minutes` }, 
                 ],
               },
@@ -118,7 +118,7 @@ async function sendParentReminderEmail(parent: any, student: any, minutesLeft: n
     }
 
     const templateData = {
-      name: parent.name,
+      name: student.name,
       student: student.name,
       time: `${minutesLeft} minutes`,
     };
@@ -210,7 +210,7 @@ export async function POST() {
         // Parent reminders
         if (student.parentInquiry) {
           await sendParentReminderEmail(student.parentInquiry, student, minutesLeft);
-          await sendParentClassReminderWhatsApp(student.parentInquiry, minutesLeft);
+          await sendParentClassReminderWhatsApp(student.parentInquiry, minutesLeft, student);
         }
 
         sentCount++;

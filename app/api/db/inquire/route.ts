@@ -1,6 +1,7 @@
 import { connectToDB } from "@/lib/db/db";
 import Inquire from "@/models/inquire.model";
 import { NextResponse } from "next/server";
+import CommunicationLog from "@/models/communicationLogModel";
 
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
@@ -41,7 +42,13 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
     if (!res.ok) {
       console.warn("⚠️ Failed to send WhatsApp:", data);
     } else {
-      console.log("✅ WhatsApp sent:");
+       createCommunicationLog({
+        receiverName: user.name,
+        receiverNumber: user.phone,
+        receiverType: "parent",
+        channel: "whatsapp",
+        messageType: "inquiry-fill",
+      });
     }
   } catch (err: any) {
     console.warn("⚠️ WhatsApp error:", err.message);
@@ -54,6 +61,7 @@ async function sendInquiryWhatsApp(user: { name: string; phone: string; link: st
 
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
+import { createCommunicationLog } from "@/lib/utils/communication-log-creator";
 
 const REQUIRED_FIELDS = ["name", "link"];
 async function sendInquiryEmail(user: any) {
@@ -83,10 +91,15 @@ async function sendInquiryEmail(user: any) {
       subject,
       htmlContent,
     };
-
-
-
     await client.sendTransacEmail(emailData);
+    createCommunicationLog({
+      receiverName: user.name,
+      receiverEmail: user.email,
+      receiverType: "parent",
+      channel: "email",
+      messageType: "inquiry-fill",
+    });
+    
   } catch (err: any) {
     console.warn("⚠️ Failed to send inquiry email:", err?.response?.body || err);
   }
