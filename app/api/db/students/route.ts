@@ -341,7 +341,7 @@ export async function GET(request: Request) {
 
 
 
-// DELETE all students (Extremely Dangerous API || Should only be used within development)
+// DELETE all students 
 // export async function DELETE() {
 //   try {
 //     await connectToDB();

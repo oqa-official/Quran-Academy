@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import StudentDashboardCards from "@/components/pages/(dashboards)/Student-Dashboard/DashboardCards";
-import {  Link2 } from "lucide-react";
+import { Link2 } from "lucide-react";
 import Link from "next/link";
 
 export default function Page() {
@@ -180,10 +180,18 @@ export default function Page() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-6">
-            <Button onClick={handleBlockingPayNow} className="w-full" disabled={generating}>
+            <div className="flex flex-col gap-2 w-full">
+              <Button onClick={handleBlockingPayNow} className="w-full" disabled={generating}>
+                {generating ? "Generating..." : "Pay with Stripe"}
+              </Button>
 
-              {generating ? "Generating..." : "Pay Now"}
-            </Button>
+              <Link href={"/student-dashboard/payments/wise"}>
+                <Button className="w-full bg-accent hover:bg-accent-hover">
+                  {"Pay with Wise"}
+                </Button>
+              </Link>
+            </div>
+
           </DialogFooter>
         </DialogContent>
       </Dialog>
