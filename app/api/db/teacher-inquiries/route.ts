@@ -4,6 +4,7 @@ import teacherInquiryModel from "@/models/teacher-inquiry.model"
 // lib/email/teacherInquiry.ts
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
+import { createCommunicationLog } from "@/lib/utils/communication-log-creator";
 
 
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
@@ -33,13 +34,7 @@ async function sendCareerRequestWhatsApp(user: any) {
                   { type: "text", text: user.name }, // {{1}}
                 ],
               },
-              // ✅ Optional: only if your approved template button expects a parameter
-              // {
-              //   type: "button",
-              //   sub_type: "url",
-              //   index: 0,
-              //   parameters: [{ type: "text", text: "12345" }],
-              // },
+            
             ],
           },
         }),
@@ -50,7 +45,13 @@ async function sendCareerRequestWhatsApp(user: any) {
     if (!res.ok) {
       console.warn("⚠️ Failed to send WhatsApp career_request:", data);
     } else {
-      console.log("✅ WhatsApp career_request sent:", data);
+      createCommunicationLog({
+        receiverName: user.name,
+        receiverNumber: user.phone,
+        receiverType: "user",
+        channel: "whatsapp",
+        messageType: "career-request",
+      });
     }
   } catch (err: any) {
     console.error("⚠️ WhatsApp error (career_request):", err.message);
@@ -86,12 +87,21 @@ async function sendTeacherInquiryEmail(user: any) {
 
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: user.email }, { email: "oqaabdullah@gmail.com" }],
+      to: [{ email: user.email }, 
+        { email: "oqaabdullah@gmail.com" }
+      ],
       subject,
       htmlContent,
     };
 
     await client.sendTransacEmail(emailData);
+    createCommunicationLog({
+      receiverName: user.name,
+      receiverEmail: user.email,
+      receiverType: "user",
+      channel: "email",
+      messageType: "career-request",
+    });
   } catch (err: any) {
     console.warn("⚠️ Failed to send teacher inquiry email:", err?.response?.body || err);
   }

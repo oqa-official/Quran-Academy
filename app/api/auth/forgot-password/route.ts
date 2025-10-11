@@ -6,6 +6,7 @@ import Instructor from "@/models/instructor.model";
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import { getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 import { fallbackTemplates } from "@/lib/utils/emailTemplate";
+import { createCommunicationLog } from "@/lib/utils/communication-log-creator";
 
 
 
@@ -51,7 +52,13 @@ async function sendRecoverAccountWhatsApp(user: any, role: string) {
     if (!res.ok) {
       console.warn("⚠️ Failed to send WhatsApp recover account:", data);
     } else {
-      console.log("✅ WhatsApp recover account sent:", data);
+      createCommunicationLog({
+        receiverName: user.name,
+        receiverNumber: user.phone,
+        receiverType: role as "student" | "teacher",
+        channel: "whatsapp",
+        messageType: "forgot-password",
+      });
     }
   } catch (err: any) {
     console.error("⚠️ WhatsApp error:", err.message);
@@ -128,7 +135,9 @@ export async function POST(req: Request) {
     // ✅ 4. Send email
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: user.email },  { email: "oqaabdullah@gmail.com" }],
+      to: [{ email: user.email },  
+        { email: "oqaabdullah@gmail.com" }
+      ],
       subject,
       htmlContent,
     };
@@ -138,7 +147,13 @@ export async function POST(req: Request) {
     if (user.phone) {
       await sendRecoverAccountWhatsApp(user, role);
     }
-
+    createCommunicationLog({
+      receiverName: user.name,
+      receiverEmail: user.email,
+      receiverType: role as "student" | "teacher",
+      channel: "email",
+      messageType: "forgot-password",
+    });
     return NextResponse.json(
       { message: "Recovery email sent successfully", role },
       { status: 200 }

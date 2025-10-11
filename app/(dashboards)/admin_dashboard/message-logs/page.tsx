@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
@@ -12,23 +14,28 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon, X } from "lucide-react";
+import { format } from "date-fns";
 
 type CommunicationLog = {
   _id: string;
   receiverName?: string;
   receiverEmail?: string;
   receiverNumber?: string;
-  receiverType: "student" | "parent" | "teacher";
+  receiverType: "student" | "parent" | "teacher" | "user";
   channel: "whatsapp" | "email";
   messageType:
-    | "fee-reminder"
-    | "class-reminder"
-    | "onboarding-reminder"
-    | "inquiry-fill"
-    | "student-created"
-    | "teacher-created"
-    | "forgot-password"
-    | "career-request";
+  | "fee-reminder"
+  | "class-reminder"
+  | "onboarding-reminder"
+  | "inquiry-fill"
+  | "student-created"
+  | "teacher-created"
+  | "forgot-password"
+  | "career-request";
   sentAt: string;
 };
 
@@ -51,8 +58,11 @@ function CommunicationLogsContent() {
     | "career-request"
   >("all");
   const [receiverType, setReceiverType] = useState<
-    "all" | "student" | "parent" | "teacher"
+    "all" | "student" | "parent" | "teacher" | "user"
   >("all");
+
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -62,7 +72,24 @@ function CommunicationLogsContent() {
       params.append("channel", channel);
       if (messageType !== "all") params.append("messageType", messageType);
       if (receiverType !== "all") params.append("receiverType", receiverType);
+     if (selectedDate) {
+  // Start of selected date (local)
+  const startOfDay = new Date(selectedDate);
+  startOfDay.setHours(0, 0, 0, 0);
 
+  // End of selected date (local)
+  const endOfDay = new Date(selectedDate);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  // Send both in ISO (will auto convert to UTC but range stays correct)
+  params.append("start", startOfDay.toISOString());
+  params.append("end", endOfDay.toISOString());
+}
+
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      params.append("timezone", userTimezone);
+
+      console.log("📅 Fetching logs with params:", params.toString());
       const res = await fetch(`/api/logs/communication-log?${params.toString()}`);
       const data = await res.json();
 
@@ -79,20 +106,25 @@ function CommunicationLogsContent() {
 
   useEffect(() => {
     fetchLogs();
-  }, [channel, messageType, receiverType]);
+  }, [channel, messageType, receiverType, selectedDate]);
 
   // Helpers
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+const formatDate = (dateString: string) => {
+  // Convert to Date
+  const date = new Date(dateString);
+
+  // Format in the user's local timezone automatically
+  return date.toLocaleString(undefined, {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // user's system TZ
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
 
   const chipColor = (type: string) => {
     const map: Record<string, string> = {
@@ -118,19 +150,19 @@ function CommunicationLogsContent() {
 
     ...(channel === "email"
       ? [
-          {
-            accessorKey: "receiverEmail",
-            header: "Email",
-            cell: ({ row }: any) => row.original.receiverEmail || "-",
-          },
-        ]
+        {
+          accessorKey: "receiverEmail",
+          header: "Email",
+          cell: ({ row }: any) => row.original.receiverEmail || "-",
+        },
+      ]
       : [
-          {
-            accessorKey: "receiverNumber",
-            header: "Number",
-            cell: ({ row }: any) => row.original.receiverNumber || "-",
-          },
-        ]),
+        {
+          accessorKey: "receiverNumber",
+          header: "Number",
+          cell: ({ row }: any) => row.original.receiverNumber || "-",
+        },
+      ]),
 
     {
       accessorKey: "receiverType",
@@ -172,23 +204,23 @@ function CommunicationLogsContent() {
       ),
     },
     {
-      accessorKey: "sentAt",
-      header: "Sent At",
-      cell: ({ row }) => (
-        <span className="text-gray-500 dark:text-gray-400">
-          {formatDate(row.original.sentAt)}
-        </span>
-      ),
-    },
+  accessorKey: "sentAt",
+  header: "Sent At",
+  cell: ({ row }) => (
+    <span className="text-gray-500 dark:text-gray-400">
+      {formatDate(row.original.sentAt)}
+    </span>
+  ),
+},
   ];
 
   return (
     <div className="bg-white dark:bg-[#122031] rounded-xl shadow-md md:p-4 max-w-[90vw] md:max-w-[80vw]">
+        <h2 className="text-2xl font-medium mb-4 mx-3">Messages Logs</h2>
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
-        <h1 className="text-2xl font-semibold">Communication Logs</h1>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 px-2">
           {/* Channel */}
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium">Channel:</label>
@@ -246,7 +278,7 @@ function CommunicationLogsContent() {
             <label className="text-sm font-medium">Recipient:</label>
             <Select
               value={receiverType}
-              onValueChange={(v: "all" | "student" | "parent" | "teacher") =>
+              onValueChange={(v: "all" | "student" | "parent" | "teacher" | "user") =>
                 setReceiverType(v)
               }
             >
@@ -258,8 +290,48 @@ function CommunicationLogsContent() {
                 <SelectItem value="student">Student</SelectItem>
                 <SelectItem value="parent">Parent</SelectItem>
                 <SelectItem value="teacher">Teacher</SelectItem>
+                <SelectItem value="user">Users</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* ✅ Sent Date Filter */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium">Sent Date:</label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-[160px] justify-between dark:bg-[#0b1620]"
+                >
+                  {selectedDate ? (
+                    format(selectedDate, "dd MMM yyyy")
+                  ) : (
+                    <span>Select date</span>
+                  )}
+                  <CalendarIcon className="h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-2" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate || undefined}
+                  required={false}
+                  onSelect={(date) => setSelectedDate(date ?? null)}
+                  disabled={(date) => date > new Date()} // 🔒 Disable future dates
+                />
+                {selectedDate && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2 w-full text-xs"
+                    onClick={() => setSelectedDate(null)}
+                  >
+                    <X className="w-3 h-3 mr-1" /> Clear Filter
+                  </Button>
+                )}
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </div>

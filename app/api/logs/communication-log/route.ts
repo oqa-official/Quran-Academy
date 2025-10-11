@@ -27,7 +27,6 @@ export async function POST(req: Request) {
       messageType,
     });
 
-    console.log("[CommunicationLog] ✅ New log created:", log);
 
     return NextResponse.json({ success: true, data: log }, { status: 201 });
   } catch (error: any) {
@@ -38,32 +37,55 @@ export async function POST(req: Request) {
 
 
 
+
 export async function GET(req: Request) {
   try {
     await connectToDB();
 
-    // Parse query parameters
     const { searchParams } = new URL(req.url);
-    const channel = searchParams.get("channel"); // email | whatsapp
-    const receiverType = searchParams.get("receiverType"); // student | parent | teacher
-    const messageType = searchParams.get("messageType"); // fee-reminder | ...
+    const channel = searchParams.get("channel");
+    const dateStr = searchParams.get("sentDate");
+    const receiverType = searchParams.get("receiverType");
+    const messageType = searchParams.get("messageType");
 
-    // Build dynamic filter
     const filter: any = {};
     if (channel && channel !== "all") filter.channel = channel;
     if (receiverType && receiverType !== "all") filter.receiverType = receiverType;
     if (messageType && messageType !== "all") filter.messageType = messageType;
 
-    // Fetch filtered logs
-    const logs = await CommunicationLog.find(filter)
-      .sort({ createdAt: -1 })
-      .lean();
+    const start = searchParams.get("start");
+    const end = searchParams.get("end");
+
+    if (start && end) {
+      filter.sentAt = { $gte: new Date(start), $lte: new Date(end) };
+    }
+
+
+    const logs = await CommunicationLog.find(filter).sort({ createdAt: -1 }).lean();
 
     console.log(`[CommunicationLog] ✅ Retrieved ${logs.length} logs with filters`, filter);
-
     return NextResponse.json({ success: true, data: logs }, { status: 200 });
   } catch (error: any) {
     console.error("[CommunicationLog] ❌ Error fetching logs:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+
+
+
+
+
+
+
+
+// export async function DELETE() {
+//   try {
+//     await connectToDB();
+//     const logs = await CommunicationLog.deleteMany({});
+//     return NextResponse.json({ success: true, message: "All Logs deleted" });
+//   } catch (error) {
+//     console.error("Error deleting Logs:", error);
+//     return NextResponse.json({ success: false, error: "Failed to delete Logs" }, { status: 500 });
+//   }
+// }

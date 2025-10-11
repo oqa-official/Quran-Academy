@@ -11,7 +11,7 @@ export async function createCommunicationLog({
   receiverName: string;
   receiverEmail?: string;
   receiverNumber?: string;
-  receiverType: "student" | "parent" | "teacher" | "inquiry";
+  receiverType: "student" | "parent" | "teacher" | "user";
   channel: "email" | "whatsapp";
     messageType: "fee-reminder" | "class-reminder" | "onboarding-reminder" | "inquiry-fill" | "student-created" | "teacher-created" | "forgot-password" | "career-request";
 }) {

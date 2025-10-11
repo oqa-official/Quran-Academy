@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { toast } from "sonner";
+import WisePaymentCard from "./WisePaymentCard";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
 const UPLOAD_PRESET = "Quran_Academy";
@@ -279,11 +280,16 @@ export default function WisePaymentSection() {
                 <p>Your previous Wise payment was rejected. Please upload a new screenshot.</p>
               </div>
             )}
+            <div className="flex flex-col-reverse md:gap-10 md:flex-row-reverse w-full justify-between items-start">
 
-            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="md:w-[50%]">
+                <WisePaymentCard />
+              </div>
+
+            <form onSubmit={handleSubmit} className="rounded-xl p-5 shadow-md space-y-3 mt-4 bg-gray-100 dark:bg-[#0e1b1f] h-full  w-full md:max-w-[50%]">
               <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <UploadCloud className="w-4 h-4 text-accent" />
-                Upload your Wise payment screenshot below (max 1MB).
+                Upload your Wise payment screenshot below (max size 1 MB).
               </p>
 
               <div className="flex items-center gap-2 mt-2 p-2 border rounded bg-gray-50 dark:bg-gray-800">
@@ -310,6 +316,8 @@ export default function WisePaymentSection() {
                 {uploading ? "Submitting..." : "Submit Screenshot"}
               </Button>
             </form>
+                        </div>
+
           </>
         )}
       </div>

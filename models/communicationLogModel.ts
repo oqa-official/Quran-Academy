@@ -5,12 +5,12 @@ export interface ICommunicationLog extends Document {
   receiverName?: string;
   receiverEmail?: string;
   receiverNumber?: string;
-  receiverType: "student" | "parent" | "teacher";
+  receiverType: "student" | "parent" | "teacher" | "user";
   channel: "whatsapp" | "email";
   messageType: "fee-reminder" | "class-reminder" | "onboarding-reminder" | "inquiry-fill" | "student-created" | "teacher-created" | "forgot-password" | "career-request";
   sentAt: Date;
 }
-
+ 
 const communicationLogSchema = new Schema<ICommunicationLog>(
   {
     receiverName: { type: String },
@@ -18,7 +18,7 @@ const communicationLogSchema = new Schema<ICommunicationLog>(
     receiverNumber: { type: String },
     receiverType: {
       type: String,
-      enum: ["student", "parent", "teacher"],
+      enum: ["student", "parent", "teacher", "user"],
       required: true,
     },
     channel: {

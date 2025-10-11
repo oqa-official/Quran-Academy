@@ -1,4 +1,5 @@
 import { connectToDB } from "@/lib/db/db";
+import { createCommunicationLog } from "@/lib/utils/communication-log-creator";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 import Inquire from "@/models/inquire.model";
 import Student from "@/models/student.model";
@@ -54,7 +55,13 @@ async function sendFeeReminderWhatsApp(inquire: any) {
     if (!res.ok) {
       console.warn("⚠️ Failed to send WhatsApp fee reminder:", data);
     } else {
-      console.log("✅ WhatsApp fee reminder sent:", data);
+      createCommunicationLog({
+        receiverName: inquire.name,
+        receiverNumber: inquire.phone,
+        receiverType: "parent",
+        channel: "whatsapp",
+        messageType: "fee-reminder",
+      });
     }
   } catch (err: any) {
     console.error("⚠️ WhatsApp error:", err.message);
@@ -99,12 +106,20 @@ async function sendFeeReminderEmail(inquire: any) {
     // 4. Send email
     await client.sendTransacEmail({
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: inquire.email },  { email: "oqaabdullah@gmail.com" }],
+      to: [{ email: inquire.email },  
+        // { email: "oqaabdullah@gmail.com" }
+      ],
       subject,
       htmlContent,
     });
 
-    console.log(`📧 Fee reminder sent to ${inquire.email}`);
+    createCommunicationLog({
+      receiverName: inquire.name,
+      receiverEmail: inquire.email,
+      receiverType: "parent",
+      channel: "email",
+      messageType: "fee-reminder",
+    });
   } catch (err: any) {
     console.warn(
       `⚠️ Failed to send fee reminder to ${inquire.email}:`,

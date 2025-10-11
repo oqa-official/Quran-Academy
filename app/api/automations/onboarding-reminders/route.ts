@@ -1,4 +1,5 @@
 import { connectToDB } from "@/lib/db/db";
+import { createCommunicationLog } from "@/lib/utils/communication-log-creator";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
 import Inquire from "@/models/inquire.model";
 import Student from "@/models/student.model";
@@ -43,9 +44,18 @@ async function sendOnboardingReminderEmail(inquire: any) {
     // 4. Send email
     await client.sendTransacEmail({
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: inquire.email },  { email: "oqaabdullah@gmail.com" }],
+      to: [{ email: inquire.email },  
+        { email: "oqaabdullah@gmail.com" }
+      ],
       subject,
       htmlContent,
+    });
+    createCommunicationLog({
+      receiverName: inquire.name,
+      receiverEmail: inquire.email,
+      receiverType: "parent",
+      channel: "email",
+      messageType: "onboarding-reminder",
     });
 
   } catch (err: any) {
@@ -93,7 +103,13 @@ async function sendOnboardingReminderWhatsApp(inquire: any) {
     if (!res.ok) {
       console.warn(`⚠️ Failed WhatsApp onboarding reminder to ${inquire.phone}:`, data);
     } else {
-      console.log(`✅ WhatsApp onboarding reminder sent to ${inquire.phone}`);
+      createCommunicationLog({
+        receiverName: inquire.name,
+        receiverNumber: inquire.phone,
+        receiverType: "parent",
+        channel: "whatsapp",
+        messageType: "onboarding-reminder",
+      });
     }
   } catch (err: any) {
     console.warn(`⚠️ WhatsApp error for ${inquire.phone}:`, err.message);

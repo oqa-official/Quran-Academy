@@ -5,6 +5,7 @@ import Student from "@/models/student.model";
 import { shouldSendReminder } from "@/lib/utils/class-reminder-functions";
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
+import { createCommunicationLog } from "@/lib/utils/communication-log-creator";
 
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
@@ -46,6 +47,13 @@ async function sendClassReminderWhatsApp(student: any, minutesLeft: number) {
     );
 
     const data = await res.json();
+    createCommunicationLog({
+      receiverName: student.name,
+      receiverNumber: student.phone,
+      receiverType: "student",
+      channel: "whatsapp",
+      messageType: "class-reminder",
+    });
     if (!res.ok) console.warn("⚠️ Failed to send WhatsApp class reminder:", data);
   } catch (err: any) {
     console.error("⚠️ WhatsApp error:", err.message);
@@ -89,6 +97,13 @@ async function sendParentClassReminderWhatsApp(parent: any, minutesLeft: number,
     );
 
     const data = await res.json();
+    createCommunicationLog({
+      receiverName: student.name,
+      receiverNumber: parent.phone,
+      receiverType: "parent",
+      channel: "whatsapp",
+      messageType: "class-reminder",
+    });
     if (!res.ok) console.warn("⚠️ Failed to send WhatsApp parent reminder:", data);
   } catch (err: any) {
     console.error("⚠️ WhatsApp parent error:", err.message);
@@ -129,6 +144,13 @@ async function sendParentReminderEmail(parent: any, student: any, minutesLeft: n
       subject: renderTemplate(dbTemplate.subject, templateData),
       htmlContent: renderTemplate(dbTemplate.bodyHtml, templateData),
     });
+    createCommunicationLog({
+      receiverName: student.name,
+      receiverEmail: parent.email,
+      receiverType: "parent",
+      channel: "email",
+      messageType: "class-reminder",
+    });
 
   } catch (err: any) {
     console.warn(`⚠️ Failed to send parent reminder email to ${parent.email}:`, err?.response?.body || err);
@@ -162,9 +184,18 @@ async function sendReminderEmail(student: any, minutesLeft: number) {
 
     await client.sendTransacEmail({
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: student.email },  { email: "oqaabdullah@gmail.com" }],
+      to: [{ email: student.email },  
+        { email: "oqaabdullah@gmail.com" }
+      ],
       subject: renderTemplate(dbTemplate.subject, templateData),
       htmlContent: renderTemplate(dbTemplate.bodyHtml, templateData),
+    });
+    createCommunicationLog({
+      receiverName: student.name,
+      receiverEmail: student.email,
+      receiverType: "student",
+      channel: "email",
+      messageType: "class-reminder",
     });
 
   } catch (err: any) {
@@ -177,7 +208,7 @@ export async function POST() {
   await connectToDB();
 
   const students = await Student.find({
-    status: { $in: ["ongoing", "onleave"] },
+    status: { $in: ["ongoing", "onleave", "trial"] },
   }).populate("parentInquiry"); // ✅ populate parent details
 
   let sentCount = 0;

@@ -20,6 +20,7 @@ import {
   renderTemplate,
   validateTemplate,
 } from "@/lib/utils/emailTemplate";
+import { createCommunicationLog } from "@/lib/utils/communication-log-creator";
 
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN!;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
@@ -31,7 +32,10 @@ async function sendStudentCredentialsWhatsApp(student: {
   userId: string;
   educationMail: string;
   password: string;
-}) {
+}, 
+  receiverType: "student" | "parent" = "student",
+  receiverName?: string
+) {
   try {
     const res = await fetch(
       `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`,
@@ -68,6 +72,13 @@ async function sendStudentCredentialsWhatsApp(student: {
     if (!res.ok) {
       console.warn("⚠️ Failed WhatsApp to", student.phone, data);
     } else {
+      createCommunicationLog({
+        receiverName: student.name,
+        receiverNumber: student.phone,
+        receiverType,
+        channel: "whatsapp",
+        messageType: "student-created",
+      });
       console.log("✅ WhatsApp sent to", student.phone);
     }
   } catch (err: any) {
@@ -80,7 +91,9 @@ const REQUIRED_FIELDS = ["name", "userId", "educationMail", "password"];
 
 async function sendStudentCredentialsEmail(
   student: any,
-  recipientEmail: string
+  recipientEmail: string,
+  receiverType: "student" | "parent" = "student",
+  receiverName?: string
 ) {
   try {
     const client = new TransactionalEmailsApi();
@@ -101,13 +114,22 @@ async function sendStudentCredentialsEmail(
 
     const emailData = {
       sender: { email: "oqa.official@gmail.com", name: "Online Quran Academy" },
-      to: [{ email: recipientEmail },  { email: "oqaabdullah@gmail.com" }],
+      to: [{ email: recipientEmail },  
+        { email: "oqaabdullah@gmail.com" }
+      ],
       subject,
       htmlContent,
     };
 
     await client.sendTransacEmail(emailData);
     console.log("✅ Student email sent successfully:", recipientEmail);
+    createCommunicationLog({
+      receiverName:  student.name,
+      receiverEmail: recipientEmail,
+      receiverType,
+      channel: "email",
+      messageType: "student-created",
+    });
   } catch (err: any) {
     console.warn(
       `⚠️ Failed to send email to ${recipientEmail}:`,
@@ -120,19 +142,21 @@ async function sendStudentCredentialsEmail(
 async function notifyParentIfDifferent(student: any, parentInquiryId: string) {
   const parent = await inquireModel
     .findById(parentInquiryId)
-    .lean<{ email?: string; phone?: string }>();
+    .lean<{ email?: string; phone?: string; name?: string }>();
 
   if (!parent) return;
 
   const parentEmail = parent.email;
   const parentPhone = parent.phone;
+  const parentName = parent.name || "Parent";
+
 
   if (parentEmail && parentEmail !== student.email) {
-    await sendStudentCredentialsEmail(student, parentEmail);
+    await sendStudentCredentialsEmail(student, parentEmail, "parent", parentName);
   }
 
   if (parentPhone && parentPhone !== student.phone) {
-    await sendStudentCredentialsWhatsApp({ ...student, phone: parentPhone });
+    await sendStudentCredentialsWhatsApp({ ...student, phone: parentPhone }, "parent", parentName);
   }
 }
 

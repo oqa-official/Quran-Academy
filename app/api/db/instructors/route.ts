@@ -4,6 +4,7 @@ import Instructor from "@/models/instructor.model";
 import { connectToDB } from "@/lib/db/db";
 import { generateInstructorEducationMail, generateInstructorPassword, generateInstructorUserId } from "@/lib/utils/instructorHelpers";
 import { fallbackTemplates, getEmailTemplate, renderTemplate, validateTemplate } from "@/lib/utils/emailTemplate";
+import { createCommunicationLog } from "@/lib/utils/communication-log-creator";
 
 // ✅ GET all instructors
 export async function GET(request: Request) {
@@ -62,7 +63,13 @@ async function sendTeacherAddedWhatsApp(user: any) {
     if (!res.ok) {
       console.warn("⚠️ Failed to send WhatsApp teacher_added:", data);
     } else {
-      console.log("✅ WhatsApp teacher_added sent:", data);
+      createCommunicationLog({
+        receiverName: user.name,
+        receiverNumber: user.number,
+        receiverType: "teacher",
+        channel: "whatsapp",
+        messageType: "teacher-created",
+      });
     }
   } catch (err: any) {
     console.error("⚠️ WhatsApp error (teacher_added):", err.message);
@@ -102,6 +109,15 @@ async function sendInstructorCredentialsEmail(user: any) {
     };
 
     const result = await client.sendTransacEmail(emailData);
+    if (result) {
+      createCommunicationLog({
+        receiverName: user.name,
+        receiverEmail: user.email,
+        receiverType: "teacher",
+        channel: "email",
+        messageType: "teacher-created",
+      });
+    }
   } catch (err: any) {
     console.warn("⚠️ Failed to send instructor email:", err?.response?.body || err);
   }
